@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="card">
+        <div class="card-header"><h2>Mathematik</h2></div>
+        <div class="card-body">
+            {% if mathematics_list %}
+                <table class="table table-striped">
+                    <tr>
+                        <th>Skriptenname</th>
+                        <th>Preis</th>
+                        <th>Verfügbarkeit</th>
+                    </tr>
+                    {% for skript in mathematics_list %}
+                        <tr>
+                            <td>{{ skript.name }}</td>
+                            <td>{{ skript.price }} €</td>
+                            {% if skript.stock > 0 %}
+                                <td>{{ skript.stock }} Exemplare</td>
+                            {% else %}
+                                <td>Ausverkauft</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                Derzeit sind keine Skripte verfügbar.
+            {% endif %}
+        </div>
+    </div>
+    <div class="card" style="margin-top: 2em">
+        <div class="card-header"><h2>Physik</h2></div>
+        <div class="card-body">
+            {% if physics_list %}
+                <table class="table table-striped">
+                    <tr>
+                        <th>Skriptenname</th>
+                        <th>Preis</th>
+                        <th>Verfügbarkeit</th>
+                    </tr>
+                    {% for skript in physics_list %}
+                        <tr>
+                            <td>{{ skript.name }}</td>
+                            <td>{{ skript.price }} €</td>
+                            {% if skript.stock > 0 %}
+                                <td>{{ skript.stock }} Exemplare</td>
+                            {% else %}
+                                <td>Ausverkauft</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                Derzeit sind keine Skripte verfügbar.
+            {% endif %}
+        </div>
+    </div>
+    <div class="card" style="margin-top: 2em">
+        <div class="card-header"><h2>Informatik</h2></div>
+        <div class="card-body">
+            {% if informatics_list %}
+                <table class="table table-striped">
+                    <tr>
+                        <th>Skriptenname</th>
+                        <th>Preis</th>
+                        <th>Verfügbarkeit</th>
+                    </tr>
+                    {% for skript in informatics_list %}
+                        <tr>
+                            <td>{{ skript.name }}</td>
+                            <td>{{ skript.price }} €</td>
+                            {% if skript.stock > 0 %}
+                                <td>{{ skript.stock }} Exemplare</td>
+                            {% else %}
+                                <td>Ausverkauft</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                Derzeit sind keine Skripte verfügbar.
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
