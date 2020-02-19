@@ -8,3 +8,10 @@ class SaleForm(forms.Form):
         attrs={"class": "form-control", "style": "text-align: left;"}))
     balance = forms.DecimalField(max_digits=6, decimal_places=2, required=False, widget=forms.NumberInput(
         attrs={"class": "form-control", "style": "text-align: right;"}))
+
+
+class CashbookForm(forms.Form):
+    start = forms.DateField(required=False, widget=forms.DateInput(attrs={"class": "form-control"}))
+    end = forms.DateField(required=False, widget=forms.DateInput(attrs={"class": "form-control"}))
+    update = forms.DecimalField(max_digits=6, decimal_places=2, required=False, widget=forms.NumberInput(
+        attrs={"class": "form-control", "style": "text-align: right;"}))

@@ -17,43 +17,86 @@ def get_type(ean):
         return "lecturenote"
 
 
-# Abgeschlossene Verkäufe
-class Sale(models.Model):
+# Kassenvorgänge
+class CashBookEntry(models.Model):
     def __str__(self):
         return self.time.strftime("%Y-%m-%d %H:%M:%S")
 
     class Meta:
-        verbose_name = "Verkauf"
-        verbose_name_plural = "Verkäufe"
+        verbose_name = "Kassenbucheintrag"
+        verbose_name_plural = "Kassenbucheinträge"
 
-    vendor = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Verkäufer")
-    time = models.DateTimeField(default=datetime.now, verbose_name="Verkaufszeitpunkt")
-    ean = models.IntegerField(verbose_name="EAN")
-    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis")
+    @classmethod
+    def correction(cls, user, amount):
+        cls(user=user, detail="Korrektur", amount=amount).save()
+
+    @classmethod
+    def withdrawal(cls, user, amount):
+        cls(user=user, detail="Entnahme", amount=amount).save()
+
+    @classmethod
+    def deposit(cls, user, amount):
+        cls(user=user, detail="Einlage", amount=amount).save()
+
+    @classmethod
+    def sale(cls, user, ean, amount):
+        cls(user=user, detail="Artikel-EAN: " + str(ean), amount=amount).save()
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Benutzer")
+    time = models.DateTimeField(default=datetime.now, verbose_name="Zeitpunkt")
+    detail = models.CharField(max_length=20, verbose_name="Details")
+    amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Betrag")
 
 
 # Kassenstand
-class Account(models.Model):
+class Balance(models.Model):
     def __str__(self):
-        return self.date.strftime("%Y-%m-%d %H:%M:%S")
+        return self.time.strftime("%Y-%m-%d %H:%M:%S")
 
     class Meta:
         verbose_name = "Kassenstand"
         verbose_name_plural = "Kassenstände"
 
-    TYPE = [
-        ("withdrawal", "Abschöpfen"),
-        ("sale", "Verkauf"),
-        ("opening", "Kassenöfnung"),
-        ("closing", "Kassenschluss"),
-        ("correction", "Korrektur"),
-    ]
+    @classmethod
+    def count_latest(cls, user, amount):
+        latest = Balance.objects.latest("time")
+        if latest.amount == amount:
+            latest.counted = True
+            latest.save()
+            Balance.objects.filter(type="Zwischenstand").exclude(pk=latest.pk).delete()
+        else:
+            CashBookEntry.correction(user, amount - latest.amount)
+            latest.counted = True
+            latest.amount = amount
+            latest.save()
+            Balance.objects.filter(type="Zwischenstand").exclude(pk=latest.pk).delete()
 
-    date = models.DateTimeField(default=datetime.now, verbose_name="Zeitpunkt")
-    changed_by = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Nutzer")
-    balance = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Kassenstand")
-    counted = models.BooleanField(default=False, verbose_name="Gezählt")
-    type = models.CharField(max_length=20, choices=TYPE, null=True, verbose_name="Art")
+    @classmethod
+    def add_temp(cls, user, amount, counted):
+        cls(user=user, amount=amount, counted=counted, type="Zwischenstand").save()
+
+    @classmethod
+    def add_update(cls, user, amount):
+        Balance.objects.filter(type="Zwischenstand").delete()
+        cls(user=user, amount=amount, counted=True, type="Zwischenstand").save()
+
+    @classmethod
+    def add_opening(cls, user):
+        cls(user=user, amount=Balance.objects.latest("time").amount, counted=False, type="Kassenbeginn").save()
+
+    @classmethod
+    def add_closing(cls, user, amount):
+        cls(user=user, amount=amount, counted=True, type="Kassenschluss").save()
+        Balance.objects.filter(type="Zwischenstand").delete()
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Benutzer")
+    time = models.DateTimeField(default=datetime.now, verbose_name="Zeitpunkt")
+    amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Kassenstand")
+    counted = models.BooleanField(verbose_name="Gezählt")
+    type = models.CharField(max_length=20, verbose_name="Art")
+
+    def is_opening(self):
+        return self.type == "Kassenbeginn"
 
 
 # Autoren
@@ -134,17 +177,12 @@ class Cart(models.Model):
         sale_time = datetime.now()
         for cart_item in CartItem.objects.filter(cart=self):
             for i in range(abs(cart_item.quantity)):
-                sale = Sale(vendor=self.vendor, time=sale_time, ean=cart_item.ean,
-                            price=copysign(cart_item.price_single(), cart_item.quantity))
-                sale.save()
+                CashBookEntry().sale(self.vendor, cart_item.ean, copysign(cart_item.price_single(), cart_item.quantity))
 
         if str(reason) == "sale" and self.total() != 0:
-            Account(changed_by=self.vendor, balance=Account.objects.latest("date").balance + self.total(),
-                    counted=False, type=str(reason)).save()
-        elif str(reason) == "opening" or str(reason) == "closing":
-            Account(changed_by=self.vendor, balance=Account.objects.latest("date").balance + self.total(),
-                    counted=True, type=str(reason)).save()
-            Account.objects.filter(type="sale").delete()
+            Balance().add_temp(self.vendor, Balance.objects.latest("time").amount + self.total(), False)
+        elif str(reason) == "closing":
+            Balance().add_closing(self.vendor, Balance.objects.latest("time").amount + self.total())
 
         self.delete()
 

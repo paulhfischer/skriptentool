@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import LectureNote, Cart, CartItem, Account, Author, Sale
+from core.models import LectureNote, Cart, CartItem, Balance, Author, CashBookEntry
 
 
 @admin.register(LectureNote)
@@ -25,21 +25,21 @@ class CartAdmin(admin.ModelAdmin):
     inlines = [CartItemInline]
 
 
-@admin.register(Sale)
-class CartAdmin(admin.ModelAdmin):
-    list_display = ["time", "vendor", "ean", "price"]
-    list_filter = ["ean", "vendor"]
+@admin.register(CashBookEntry)
+class CashBookEntryAdmin(admin.ModelAdmin):
+    list_display = ["time", "user", "amount", "detail"]
+    list_filter = ["user", "detail"]
     list_display_links = ["time"]
     ordering = ["-time"]
 
 
-@admin.register(Account)
-class AccountAdmin(admin.ModelAdmin):
-    list_display = ["date", "changed_by", "balance", "type"]
-    list_filter = ["type", "changed_by"]
+@admin.register(Balance)
+class BalanceAdmin(admin.ModelAdmin):
+    list_display = ["time", "user", "amount", "type"]
+    list_filter = ["type", "user"]
     list_editable = []
-    list_display_links = ["date"]
-    ordering = ["-date"]
+    list_display_links = ["time"]
+    ordering = ["-time"]
 
 
 @admin.register(Author)

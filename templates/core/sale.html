@@ -1,6 +1,8 @@
 {% extends "base.html" %}
+{% load filters %}
+
 {% block content %}
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user|has_group:"Verkäufer" %}
 
         <script>
             $(document).ready(function () {

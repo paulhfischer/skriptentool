@@ -2,17 +2,104 @@
 {% load filters %}
 
 {% block content %}
-    {% if user.is_authenticated and user|has_group:"Finanz" %}
+    {% if user.is_authenticated and user|has_group:"Finanzer" %}
         <div class="card">
-            <div class="card-header"><h2>Kassenbuch</h2></div>
+            <div class="card-header"><h2>Verwaltung</h2></div>
             <div class="card-body">
-                TODO
+                <div class="row">
+                    <div class="col-6" style="padding-right: 3rem">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Kassenstand</span>
+                            </div>
+                            <input type="number" value={{ balance }} class="form-control" style="text-align: right;"
+                                   readonly>
+                            <div class="input-group-append">
+                                <span class="input-group-text">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" style="padding-left: 3rem">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Einlage / Entnahme</span>
+                                </div>
+                                {{ cashbook_form.update }}
+                                <div class="input-group-append">
+                                    <span class="input-group-text">€</span>
+                                </div>
+                                <button type="submit" name="change" class="btn btn-dark" style="margin-left: 2rem">
+                                    Buchen
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card" style="margin-top: 2em">
-            <div class="card-header"><h2>Verwaltung</h2></div>
+            <div class="card-header">
+                <h2>Kassenbuch</h2>
+                <form method="post" style="padding-top: 0.75rem">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Vom</span>
+                        </div>
+                        {{ cashbook_form.start }}
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" style="border-left: none;">bis zum</span>
+                        </div>
+                        {{ cashbook_form.end }}
+                        <button type="submit" name="refresh" class="btn btn-dark" style="margin-left: 4rem">
+                            Aktualisieren
+                        </button>
+                    </div>
+                </form>
+            </div>
             <div class="card-body">
-                TODO
+                <table class="table table-xsm">
+                    <tr>
+                        <th>Zeitpunkt</th>
+                        <th>Benutzername</th>
+                        <th>Kassenstand</th>
+                        <th>Beschreibung</th>
+                    </tr>
+                    {% for foo in cashbook %}
+                        {% if foo.3 == "Kassenbeginn" or foo.3 == "Kassenschluss" or foo.3 == "Zwischenstand" %}
+                            <tr class="table-secondary">
+                                <th>{{ foo.0 }}</th>
+                                <th>{{ foo.1|username_from_id }}</th>
+                                <th style="text-align: right">{{ foo.2 }} €</th>
+                                <th style="text-align: right">{{ foo.3 }}</th>
+                            </tr>
+                        {% elif foo.3 == "Korrektur" %}
+                            <tr class="table-danger">
+                                <td>{{ foo.0 }}</td>
+                                <td>{{ foo.1|username_from_id }}</td>
+                                <td style="text-align: right">{{ foo.2 }} €</td>
+                                <td style="text-align: right">{{ foo.3 }}</td>
+                            </tr>
+                        {% elif foo.3 == "Einlage" or foo.3 == "Entnahme" %}
+                            <tr class="table-success">
+                                <td>{{ foo.0 }}</td>
+                                <td>{{ foo.1|username_from_id }}</td>
+                                <td style="text-align: right">{{ foo.2 }} €</td>
+                                <td style="text-align: right">{{ foo.3 }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{ foo.0 }}</td>
+                                <td>{{ foo.1|username_from_id }}</td>
+                                <td style="text-align: right">{{ foo.2 }} €</td>
+                                <td style="text-align: right">{{ foo.3 }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+
             </div>
         </div>
     {% endif %}
