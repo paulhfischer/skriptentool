@@ -1,8 +1,10 @@
+import csv
 from datetime import timedelta, datetime
 from itertools import chain
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from core.forms import SaleForm, CashbookForm
@@ -31,7 +33,7 @@ def finance(request):
     else:
         valid = False
 
-    if "refresh" in request.POST and valid:
+    if "refresh" in request.POST or "csv" in request.POST and valid:
         start = form.cleaned_data["start"]
         end = form.cleaned_data["end"]
 
@@ -42,6 +44,17 @@ def finance(request):
         elif update < 0:
             CashBookEntry.withdrawal(request.user, update)
         Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
+
+    if "csv" in request.POST and valid:
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = "attatchment; filename='kassenbuch.csv'"
+        writer = csv.writer(response)
+        writer.writerow(["Zeitpunkt", "Preis", "Beschreibung"])
+        for foo in CashBookEntry.objects.filter(
+                time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")]).values_list(
+                "time", "amount", "detail"):
+            writer.writerow([foo[0].strftime("%Y-%m-%d %H:%M:%S"), foo[1], foo[2]])
+        return response
 
     context = {
         "cashbook_form": CashbookForm(initial={"start": start, "end": end}),
