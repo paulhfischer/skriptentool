@@ -1,6 +1,24 @@
 from django.contrib import admin
 
-from core.models import LectureNote, Cart, CartItem, Balance, Author, CashBookEntry
+from core.models import Author, Balance, Cart, CartItem, CashBookEntry, Deposit, LectureNote, PrintingQuota
+
+
+@admin.register(Deposit)
+class DepositAdmin(admin.ModelAdmin):
+    list_display = ["ean", "name", "price"]
+    list_filter = []
+    list_editable = []
+    list_display_links = ["ean"]
+    ordering = ["-ean"]
+
+
+@admin.register(PrintingQuota)
+class PrintingQuotaAdmin(admin.ModelAdmin):
+    list_display = ["ean", "pages", "price", "active"]
+    list_filter = ["active"]
+    list_editable = ["active"]
+    list_display_links = ["ean"]
+    ordering = ["-ean"]
 
 
 @admin.register(LectureNote)

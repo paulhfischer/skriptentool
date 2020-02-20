@@ -8,34 +8,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0004_auto_20200220_1158'),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL), ('core', '0004_auto_20200220_1158'), ]
 
-    operations = [
-        migrations.CreateModel(
-            name='Balance',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('time', models.DateTimeField(default=datetime.datetime.now, verbose_name='Zeitpunkt')),
-                ('amount', models.DecimalField(decimal_places=2, max_digits=6, verbose_name='Kassenstand')),
-                ('counted', models.BooleanField(verbose_name='Gezählt')),
-                ('type', models.CharField(max_length=20, verbose_name='Art')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL,
-                                           verbose_name='Benutzer')),
-            ],
-            options={
-                'verbose_name': 'Kassenstand',
-                'verbose_name_plural': 'Kassenstände',
-            },
-        ),
-        migrations.AlterField(
-            model_name='cashbookentry',
-            name='time',
-            field=models.DateTimeField(default=datetime.datetime.now, verbose_name='Zeitpunkt'),
-        ),
-        migrations.DeleteModel(
-            name='Account',
-        ),
-    ]
+    operations = [migrations.CreateModel(name = 'Balance', fields = [
+        ('id', models.AutoField(auto_created = True, primary_key = True, serialize = False, verbose_name = 'ID')),
+        ('time', models.DateTimeField(default = datetime.datetime.now, verbose_name = 'Zeitpunkt')),
+        ('amount', models.DecimalField(decimal_places = 2, max_digits = 6, verbose_name = 'Kassenstand')),
+        ('counted', models.BooleanField(verbose_name = 'Gezählt')),
+        ('type', models.CharField(max_length = 20, verbose_name = 'Art')), ('user', models.ForeignKey(
+            on_delete = django.db.models.deletion.PROTECT, to = settings.AUTH_USER_MODEL,
+            verbose_name = 'Benutzer')), ], options = {'verbose_name': 'Kassenstand',
+                                                       'verbose_name_plural': 'Kassenstände', }, ),
+                  migrations.AlterField(model_name = 'cashbookentry', name = 'time',
+                                        field = models.DateTimeField(default = datetime.datetime.now,
+                                                                     verbose_name = 'Zeitpunkt'), ),
+                  migrations.DeleteModel(name = 'Account', ), ]

@@ -4,14 +4,8 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('core', '0002_auto_20200220_0845'),
-    ]
+    dependencies = [('core', '0002_auto_20200220_0845'), ]
 
-    operations = [
-        migrations.AlterField(
-            model_name='sale',
-            name='price',
-            field=models.DecimalField(decimal_places=2, max_digits=5, verbose_name='Preis'),
-        ),
-    ]
+    operations = [migrations.AlterField(model_name = 'sale', name = 'price',
+                                        field = models.DecimalField(decimal_places = 2, max_digits = 5,
+                                                                    verbose_name = 'Preis'), ), ]

@@ -19,14 +19,70 @@
                         e.preventDefault()
                     }
                 });
+                {% if add_deposit %}$('#addDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
+                {% if remove_deposit %}$('#removeDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
             });
         </script>
+
+        <div class="modal fade" id="addDepositModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Kautionsschein benötigt!</h2>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-6">
+                                    <button type="submit" name="has_deposit"
+                                            value="{{ deposit_item }}|{{ add_deposit }}"
+                                            class="btn btn-dark btn-block">Vorhanden
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" name="add_deposit"
+                                            value="{{ deposit_item }}|{{ add_deposit }}"
+                                            class="btn btn-dark btn-block">Hinzufügen
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="removeDepositModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Kautionsscheinnummer eingeben</h2>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-6">
+                                    {{ form.deposit }}
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" name="remove_deposit" value="{{ remove_deposit }}"
+                                            class="btn btn-dark btn-block">Bestätigen
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-3">
                 <div class="card">
                     <div class="card-header"><h2>Buchen</h2></div>
-                    {% if own_cart and last_balance.type != "opening" or own_cart and last_balance.counted %}
+                    {% if own_cart and not last_balance.is_opening or own_cart and last_balance.counted %}
                         <div class="card-body">
                             <form method="post">
                                 {% csrf_token %}
@@ -53,6 +109,7 @@
                     {% if last_balance.counted %}
                         <div class="card-body">
                             <div class="input-group mb-3">
+                                <!--suppress HtmlFormInputWithoutLabel -->
                                 <input type="number" value={{ balance }} class="form-control" style="text-align: right;"
                                        readonly>
                                 <div class="input-group-append">
@@ -75,53 +132,8 @@
                         </div>
                     {% endif %}
                 </div>
-            </div>
 
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="float-left">Aktueller Verkaufsvorgang</h2>
-                        {% if not own_cart.is_empty and own_cart %}
-                            <form method="post" class="float-right" style="margin-top: 0.25rem;">
-                                {% csrf_token %}
-                                <button type="submit" name="next_own" class="btn btn-dark btn-block">Abschließen
-                                </button>
-                            </form>
-                        {% endif %}
-                    </div>
-                    {% if own_cart %}
-                        <div class="card-body">
-                            <table class="table table-striped">
-                                <tr>
-                                    <th>EAN</th>
-                                    <th>Name</th>
-                                    <th>Kategorie</th>
-                                    <th>Preis</th>
-                                    <th>Anzahl</th>
-                                    <th>Summe</th>
-                                </tr>
-                                {% for foo in items %}
-                                    <tr>
-                                        <td>{{ foo.ean }}</td>
-                                        <td>{{ foo.name }}</td>
-                                        <td>{{ foo.type_str }}</td>
-                                        <td>{{ foo.price_single }} €</td>
-                                        <td>{{ foo.quantity }}</td>
-                                        <td>{{ foo.price_total }} €</td>
-                                    </tr>
-                                {% endfor %}
-                                <tr>
-                                    <th colspan="5"></th>
-                                    <th>{{ own_cart.total }} €</th>
-                                </tr>
-                            </table>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="col-3">
-                <div class="card">
+                <div class="card" style="margin-top: 2em">
                     <div class="card-header"><h2>Verkauf</h2></div>
                     <div class="card-body">
                         <form method="post">
@@ -162,6 +174,49 @@
                             {% endif %}
                         </form>
                     </div>
+                </div>
+            </div>
+
+            <div class="col-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="float-left">Aktueller Verkaufsvorgang</h2>
+                        {% if not own_cart.is_empty and own_cart %}
+                            <form method="post" class="float-right" style="margin-top: 0.25rem;">
+                                {% csrf_token %}
+                                <button type="submit" name="next_own" class="btn btn-dark btn-block">Abschließen
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    {% if own_cart %}
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>EAN</th>
+                                    <th>Name</th>
+                                    <th>Kategorie</th>
+                                    <th>Preis</th>
+                                    <th>Anzahl</th>
+                                    <th>Summe</th>
+                                </tr>
+                                {% for foo in items %}
+                                    <tr>
+                                        <td>{{ foo.ean }}</td>
+                                        <td>{{ foo.name }}</td>
+                                        <td>{{ foo.type_str }}</td>
+                                        <td>{{ foo.price_single }} €</td>
+                                        <td>{{ foo.quantity }}</td>
+                                        <td>{{ foo.price_total }} €</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <th colspan="5"></th>
+                                    <th>{{ own_cart.total }} €</th>
+                                </tr>
+                            </table>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
