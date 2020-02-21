@@ -8,7 +8,7 @@ from django.db import models
 
 # Funktionen
 def get_product(ean):
-    ean = int(ean)
+    ean = str(ean)
     if LectureNote.objects.filter(ean = ean).exists():
         return LectureNote.objects.get(ean = ean)
     if PrintingQuota.objects.filter(ean = ean).exists():
@@ -49,7 +49,7 @@ class CashBookEntry(models.Model):
 
     @classmethod
     def sale(cls, user, ean, amount):
-        cls(user = user, detail = "Artikel-EAN: " + str(ean), amount = amount).save()
+        cls(user = user, detail = "Artikel-EAN: " + ean, amount = amount).save()
 
     user = models.ForeignKey(User, on_delete = models.PROTECT, verbose_name = "Benutzer")
     time = models.DateTimeField(default = datetime.now, verbose_name = "Zeitpunkt")
@@ -124,13 +124,13 @@ class Author(models.Model):
 # Kaution
 class Deposit(models.Model):
     def __str__(self):
-        return self.name + " (" + str(self.ean) + ")"
+        return self.name + " (" + self.ean + ")"
 
     class Meta:
         verbose_name = "Kaution"
         verbose_name_plural = "Kautionen"
 
-    ean = models.IntegerField(verbose_name = "EAN")
+    ean = models.CharField(max_length = 20, verbose_name = "EAN")
     name = models.CharField(max_length = 256, verbose_name = "Bezeichnung")
     price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Kautionsbetrag")
     active = True
@@ -139,7 +139,7 @@ class Deposit(models.Model):
 # Skripten
 class LectureNote(models.Model):
     def __str__(self):
-        return self.name + " (" + str(self.ean) + ")"
+        return self.name + " (" + self.ean + ")"
 
     class Meta:
         verbose_name = "Skript"
@@ -153,7 +153,7 @@ class LectureNote(models.Model):
         ("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in
         range(2015, datetime.now().year)]
 
-    ean = models.IntegerField(verbose_name = "EAN")
+    ean = models.CharField(max_length = 20, verbose_name = "EAN")
     name = models.CharField(max_length = 256, verbose_name = "Skriptname")
     subject = models.CharField(max_length = 1, choices = SUBJECTS, null = True, verbose_name = "Studiengang")
     price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Preis")
@@ -178,7 +178,7 @@ class LectureNote(models.Model):
 # Druckkontingent
 class PrintingQuota(models.Model):
     def __str__(self):
-        return str(self.pages) + " Seiten" + " (" + str(self.ean) + ")"
+        return str(self.pages) + " Seiten" + " (" + self.ean + ")"
 
     class Meta:
         verbose_name = "Druckkontingent"
@@ -187,7 +187,7 @@ class PrintingQuota(models.Model):
     def name(self):
         return str(self.pages) + " Seiten"
 
-    ean = models.IntegerField(verbose_name = "EAN")
+    ean = models.CharField(max_length = 20, verbose_name = "EAN")
     price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Preis")
     pages = models.IntegerField(verbose_name = "Seitenzahl")
     active = models.BooleanField(verbose_name = "Steht zum Verkauf")
@@ -196,7 +196,7 @@ class PrintingQuota(models.Model):
 # Kautionsschein
 class DepositNote(models.Model):
     def __str__(self):
-        return str(self.ean)
+        return self.ean
 
     class Meta:
         verbose_name = "Kautionsschein"
@@ -205,6 +205,13 @@ class DepositNote(models.Model):
     @classmethod
     def exists(cls, ean):
         return DepositNote.objects.filter(ean = ean).exists()
+
+    @classmethod
+    def refunded(cls, ean):
+        if DepositNote.exists(ean):
+            if DepositNote.objects.get(ean = ean).refunded_time:
+                return True
+        return False
 
     @classmethod
     def refund(cls, ean, user):
@@ -217,11 +224,11 @@ class DepositNote(models.Model):
     @classmethod
     def new_ean(cls):
         try:
-            return DepositNote.objects.latest("ean").ean + 1
+            return str(int(DepositNote.objects.latest("ean").ean) + 1)
         except ObjectDoesNotExist:
-            return 1500
+            return str(1500)
 
-    ean = models.IntegerField(verbose_name = "EAN")
+    ean = models.CharField(max_length = 20, verbose_name = "EAN")
     price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Kautionsbetrag")
     sold_time = models.DateTimeField(blank = True, null = True, verbose_name = "Verkaufszeitpunkt")
     sold_by = models.ForeignKey(User, on_delete = models.PROTECT, blank = True, null = True, related_name = "sold_by",
@@ -324,7 +331,7 @@ class Cart(models.Model):
 # Artikel in Verkaufsvorgängen
 class CartItem(models.Model):
     def __str__(self):
-        return str(self.ean)
+        return self.ean
 
     class Meta:
         verbose_name = "Artikel"
@@ -332,7 +339,7 @@ class CartItem(models.Model):
 
     TYPES = [("lecturenote", "Skript"), ("printingquota", "Druckkontingent"), ("deposit", "Kautionsschein")]
 
-    ean = models.IntegerField(verbose_name = "EAN")
+    ean = models.CharField(max_length = 20, verbose_name = "EAN")
     type = models.CharField(max_length = 256, choices = TYPES, null = True, verbose_name = "Art")
     quantity = models.IntegerField(verbose_name = "Anzahl")
     cart = models.ForeignKey(Cart, on_delete = models.CASCADE)

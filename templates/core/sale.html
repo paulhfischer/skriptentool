@@ -4,18 +4,17 @@
 {% block content %}
     {% if user.is_authenticated and user|has_group:"Verkäufer" %}
 
-        <!--suppress HtmlFormInputWithoutLabel -->
         <script>
             $(document).ready(function () {
                 $(this).keydown(function (e) {
-                    if (e.keyCode === 18) {
+                    if (18 === e.keyCode) {
                         $("#id_ean_remove").focus();
                         e.preventDefault()
                     }
                 });
 
                 $(this).keyup(function (e) {
-                    if (e.keyCode === 18) {
+                    if (18 === e.keyCode) {
                         $("#id_ean_add").focus();
                         e.preventDefault()
                     }
@@ -87,7 +86,7 @@
 
                 <!-- Buchungsformular -->
                 {% if own_cart and not last_balance.is_opening or own_cart and last_balance.counted %}
-                    <div class="card" style="margin-bottom: 2em">
+                    <div class="card" style="margin-bottom: 2em;">
                         <div class="card-header"><h2>Buchen</h2></div>
                         <div class="card-body">
                             <form method="post">
@@ -111,12 +110,13 @@
                 {% endif %}
 
                 <!-- Kassenstand -->
-                <div class="card" style="margin-bottom: 2em">
+                <div class="card" style="margin-bottom: 2em;">
                     <div class="card-header"><h2>Kassenstand</h2></div>
                     {% if last_balance.counted %}
                         <div class="card-body">
                             <div class="input-group mb-3">
-                                <input type="number" value={{ last_balance.amount }} class="form-control"
+                                <!--suppress HtmlFormInputWithoutLabel -->
+                                <input type="number" value={{ balance }} class="form-control"
                                        style="text-align: right;" readonly>
                                 <div class="input-group-append">
                                     <span class="input-group-text">€</span>
@@ -202,6 +202,13 @@
                     </div>
                     {% if own_cart %}
                         <div class="card-body">
+                            {% if error %}
+                                <div class="alert alert-dismissible alert-danger">
+                                    <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i>
+                                    </button>
+                                    {{ error }}
+                                </div>
+                            {% endif %}
                             {% if new_deposit %}
                                 <div class="alert alert-dismissible alert-success">
                                     <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i>

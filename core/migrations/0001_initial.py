@@ -84,16 +84,16 @@ class Migration(migrations.Migration):
                                                                                      ('S2017', 'Sommersemester 2017'),
                                                                                      ('S2018', 'Sommersemester 2018'),
                                                                                      ('S2019', 'Sommersemester 2019'), (
-                                                                                     'W2015',
-                                                                                     'Wintersemester 2015 / 2016'), (
-                                                                                     'W2016',
-                                                                                     'Wintersemester 2016 / 2017'), (
-                                                                                     'W2017',
-                                                                                     'Wintersemester 2017 / 2018'), (
-                                                                                     'W2018',
-                                                                                     'Wintersemester 2018 / 2019'), (
-                                                                                     'W2019',
-                                                                                     'Wintersemester 2019 / 2020')],
+                                                                                         'W2015',
+                                                                                         'Wintersemester 2015 / 2016'),
+                                                                                     ('W2016',
+                                                                                      'Wintersemester 2016 / 2017'), (
+                                                                                         'W2017',
+                                                                                         'Wintersemester 2017 / 2018'),
+                                                                                     ('W2018',
+                                                                                      'Wintersemester 2018 / 2019'), (
+                                                                                         'W2019',
+                                                                                         'Wintersemester 2019 / 2020')],
                                                                                  max_length = 256, null = True,
                                                                                  verbose_name = 'Semester (bis)')), (
                                                                              'active', models.BooleanField(
@@ -103,11 +103,11 @@ class Migration(migrations.Migration):
                                                                                                               models.CharField(
                                                                                                                   choices = [
                                                                                                                       (
-                                                                                                                      'F1',
-                                                                                                                      'Farbe 1'),
+                                                                                                                          'F1',
+                                                                                                                          'Farbe 1'),
                                                                                                                       (
-                                                                                                                      'F2',
-                                                                                                                      'Farbe 2')],
+                                                                                                                          'F2',
+                                                                                                                          'Farbe 2')],
                                                                                                                   max_length = 20,
                                                                                                                   null = True,
                                                                                                                   verbose_name = 'Deckblattfarbe')),
@@ -144,14 +144,14 @@ class Migration(migrations.Migration):
                                                                                               verbose_name = 'ID')), (
                                                                           'ean',
                                                                           models.IntegerField(verbose_name = 'EAN')), (
-                                                                      'type', models.CharField(
-                                                                          choices = [('lecturenote', 'Skript'),
-                                                                                     ('quota', 'Druckkontingent'),
-                                                                                     ('deposit', 'Kautionsschein')],
-                                                                          max_length = 256, null = True,
-                                                                          verbose_name = 'Art')), ('quantity',
-                                                                                                   models.IntegerField(
-                                                                                                       verbose_name = 'Anzahl')),
+                                                                          'type', models.CharField(
+                                                                              choices = [('lecturenote', 'Skript'),
+                                                                                         ('quota', 'Druckkontingent'),
+                                                                                         ('deposit', 'Kautionsschein')],
+                                                                              max_length = 256, null = True,
+                                                                              verbose_name = 'Art')), ('quantity',
+                                                                                                       models.IntegerField(
+                                                                                                           verbose_name = 'Anzahl')),
                                                                       ('cart', models.ForeignKey(
                                                                           on_delete = django.db.models.deletion.CASCADE,
                                                                           to = 'core.Cart')), ],

@@ -28,7 +28,7 @@ def finance(request):
         end = datetime.today().date()
 
         form = CashbookForm(request.POST)
-        if form.is_valid():  # TODO
+        if form.is_valid():
             valid = True
         else:
             valid = False
@@ -67,14 +67,14 @@ def finance(request):
 
         return render(request, "core/finance.html", context)
     else:
-        return HttpResponse("")
+        return HttpResponse()
 
 
 # Verkauf
 def sale(request):
     if request.user.is_authenticated and has_group(request.user, "Verkäufer"):
         form = SaleForm(request.POST)
-        if form.is_valid():  # TODO
+        if form.is_valid():
             valid = True
         else:
             valid = False
@@ -96,9 +96,14 @@ def sale(request):
                         except AttributeError:
                             if get_type(form.cleaned_data["ean_add"]) != "deposit":
                                 own_cart.add(form.cleaned_data["ean_add"])
+                            else:
+                                error = "Kautionsschein kann nur mit Skript verkauft werden!"
                     if form.cleaned_data["ean_remove"]:
                         if get_type(form.cleaned_data["ean_remove"]) == "deposit":  # Überprüfe ob Kautionsauszahlung
-                            remove_deposit = form.cleaned_data["ean_remove"]
+                            if has_group(request.user, "Referent"):
+                                remove_deposit = form.cleaned_data["ean_remove"]
+                            else:
+                                error = "Kautionsscheine können nur von Referenten erstattet werden"
                         else:
                             own_cart.remove(form.cleaned_data["ean_remove"])
                 if "has_deposit" in request.POST and valid:  # Kautionsschein vorhanden
@@ -113,9 +118,13 @@ def sale(request):
                         own_cart.add(request.POST["add_deposit"].split("|")[0])
                         own_cart.add(request.POST["add_deposit"].split("|")[1])
                 if "remove_deposit" in request.POST and valid:  # Kautionsauszahlung
-                    if request.POST["remove_deposit"]:
+                    if request.POST["remove_deposit"] and has_group(request.user, "Referent"):
                         if DepositNote.exists(form.cleaned_data["deposit"]):
-                            DepositNote.refund(form.cleaned_data["deposit"], request.user)
+                            if DepositNote.refunded(form.cleaned_data["deposit"]):
+                                error = "Der Kautionsschein mit der Nummer " + form.cleaned_data[
+                                    "deposit"] + " wurde bereits erstattet!"
+                            else:
+                                DepositNote.refund(form.cleaned_data["deposit"], request.user)
                         else:
                             DepositNote(ean = form.cleaned_data["deposit"],
                                         price = get_product(request.POST["remove_deposit"]).price,
@@ -155,6 +164,12 @@ def sale(request):
                    "last_balance": Balance.objects.latest("time"), }
 
         try:
+            # noinspection PyUnboundLocalVariable
+            context.update({"error": error})
+        except UnboundLocalError:
+            pass
+
+        try:
             context.update({"own_cart": Cart.objects.get(vendor = request.user)})
         except ObjectDoesNotExist:
             pass
@@ -163,7 +178,6 @@ def sale(request):
             context.update({"alien_cart": Cart.objects.exclude(vendor = request.user).get()})
         except ObjectDoesNotExist:
             pass
-
         try:
             # noinspection PyUnboundLocalVariable
             context.update({"items": CartItem.objects.filter(cart = own_cart)})
@@ -196,4 +210,4 @@ def sale(request):
 
         return render(request, "core/sale.html", context)
     else:
-        return HttpResponse("")
+        return HttpResponse()
