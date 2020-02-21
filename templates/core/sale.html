@@ -4,6 +4,7 @@
 {% block content %}
     {% if user.is_authenticated and user|has_group:"Verkäufer" %}
 
+        <!--suppress HtmlFormInputWithoutLabel -->
         <script>
             $(document).ready(function () {
                 $(this).keydown(function (e) {
@@ -24,6 +25,8 @@
             });
         </script>
 
+
+        <!-- PopUp für Kautionsscheinverkauf -->
         <div class="modal fade" id="addDepositModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -53,6 +56,7 @@
             </div>
         </div>
 
+        <!-- PopUp für Kautionsscheinrücknahme -->
         <div class="modal fade" id="removeDepositModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -80,9 +84,11 @@
 
         <div class="row">
             <div class="col-3">
-                <div class="card">
-                    <div class="card-header"><h2>Buchen</h2></div>
-                    {% if own_cart and not last_balance.is_opening or own_cart and last_balance.counted %}
+
+                <!-- Buchungsformular -->
+                {% if own_cart and not last_balance.is_opening or own_cart and last_balance.counted %}
+                    <div class="card" style="margin-bottom: 2em">
+                        <div class="card-header"><h2>Buchen</h2></div>
                         <div class="card-body">
                             <form method="post">
                                 {% csrf_token %}
@@ -101,17 +107,17 @@
                                 <button type="submit" name="order" class="btn btn-dark btn-block">Buchen</button>
                             </form>
                         </div>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
 
-                <div class="card" style="margin-top: 2em">
+                <!-- Kassenstand -->
+                <div class="card" style="margin-bottom: 2em">
                     <div class="card-header"><h2>Kassenstand</h2></div>
                     {% if last_balance.counted %}
                         <div class="card-body">
                             <div class="input-group mb-3">
-                                <!--suppress HtmlFormInputWithoutLabel -->
-                                <input type="number" value={{ balance }} class="form-control" style="text-align: right;"
-                                       readonly>
+                                <input type="number" value={{ last_balance.amount }} class="form-control"
+                                       style="text-align: right;" readonly>
                                 <div class="input-group-append">
                                     <span class="input-group-text">€</span>
                                 </div>
@@ -133,11 +139,14 @@
                     {% endif %}
                 </div>
 
-                <div class="card" style="margin-top: 2em">
+                <!-- Verkauf steuern -->
+                <div class="card">
                     <div class="card-header"><h2>Verkauf</h2></div>
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
+
+                            <!-- Meldungen -->
                             {% if alien_cart %}
                                 <div class="alert alert-danger">
                                     <strong>{{ alien_cart.vendor }}</strong> noch aktiv!
@@ -153,6 +162,7 @@
                                 </div>
                             {% endif %}
 
+                            <!-- Buttons -->
                             {% if own_cart and last_balance.counted and own_cart.is_empty %}
                                 <button type="submit" name="close_own" class="btn btn-dark btn-block"
                                         value="{{ own_cart.vendor }}">Verkauf schließen
@@ -177,6 +187,7 @@
                 </div>
             </div>
 
+            <!-- Verkaufsvorgang -->
             <div class="col-9">
                 <div class="card">
                     <div class="card-header">
@@ -191,6 +202,13 @@
                     </div>
                     {% if own_cart %}
                         <div class="card-body">
+                            {% if new_deposit %}
+                                <div class="alert alert-dismissible alert-success">
+                                    <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i>
+                                    </button>
+                                    Kautionsscheinnummer: <strong>{{ new_deposit }}</strong>
+                                </div>
+                            {% endif %}
                             <table class="table table-striped">
                                 <tr>
                                     <th>EAN</th>

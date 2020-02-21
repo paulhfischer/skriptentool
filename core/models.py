@@ -8,6 +8,7 @@ from django.db import models
 
 # Funktionen
 def get_product(ean):
+    ean = int(ean)
     if LectureNote.objects.filter(ean = ean).exists():
         return LectureNote.objects.get(ean = ean)
     if PrintingQuota.objects.filter(ean = ean).exists():
@@ -171,8 +172,7 @@ class LectureNote(models.Model):
     file = models.FileField(upload_to = "skripten/", verbose_name = "Datei")
 
     def get_deposit(self):
-        if self.deposit:
-            return self.deposit
+        return self.deposit
 
 
 # Druckkontingent
@@ -191,6 +191,47 @@ class PrintingQuota(models.Model):
     price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Preis")
     pages = models.IntegerField(verbose_name = "Seitenzahl")
     active = models.BooleanField(verbose_name = "Steht zum Verkauf")
+
+
+# Kautionsschein
+class DepositNote(models.Model):
+    def __str__(self):
+        return str(self.ean)
+
+    class Meta:
+        verbose_name = "Kautionsschein"
+        verbose_name_plural = "Kautionsscheine"
+
+    @classmethod
+    def exists(cls, ean):
+        return DepositNote.objects.filter(ean = ean).exists()
+
+    @classmethod
+    def refund(cls, ean, user):
+        if DepositNote.exists(ean):
+            note = DepositNote.objects.get(ean = ean)
+            note.refunded_by = user
+            note.refunded_time = datetime.now()
+            note.save()
+
+    @classmethod
+    def new_ean(cls):
+        try:
+            return DepositNote.objects.latest("ean").ean + 1
+        except ObjectDoesNotExist:
+            return 1500
+
+    ean = models.IntegerField(verbose_name = "EAN")
+    price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Kautionsbetrag")
+    sold_time = models.DateTimeField(blank = True, null = True, verbose_name = "Verkaufszeitpunkt")
+    sold_by = models.ForeignKey(User, on_delete = models.PROTECT, blank = True, null = True, related_name = "sold_by",
+                                verbose_name = "Verkauft von")
+    refunded_time = models.DateTimeField(blank = True, null = True, verbose_name = "Rückgabezeitpunkt")
+    refunded_by = models.ForeignKey(User, on_delete = models.PROTECT, blank = True, null = True,
+                                    related_name = "refunded_by", verbose_name = "Zurückgegeben von")
+
+    def is_refunded(self):
+        return self.refunded_by
 
 
 # Verkaufsvorgänge

@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from core.forms import CashbookForm, SaleForm
-from core.models import Balance, Cart, CartItem, CashBookEntry, LectureNote, get_product, get_type
+from core.models import Balance, Cart, CartItem, CashBookEntry, DepositNote, LectureNote, get_product, get_type
 from core.templatetags.filters import has_group
 
 
@@ -106,12 +106,20 @@ def sale(request):
                         own_cart.add(request.POST["has_deposit"].split("|")[0])
                 if "add_deposit" in request.POST and valid:  # Kautionseinzahlung
                     if request.POST["add_deposit"]:
-                        # TODO store deposit number -> create new and output
+                        new_deposit = DepositNote.new_ean()
+                        DepositNote(ean = new_deposit,
+                                    price = get_product(request.POST["add_deposit"].split("|")[1]).price,
+                                    sold_by = request.user, sold_time = datetime.now()).save()
                         own_cart.add(request.POST["add_deposit"].split("|")[0])
                         own_cart.add(request.POST["add_deposit"].split("|")[1])
                 if "remove_deposit" in request.POST and valid:  # Kautionsauszahlung
                     if request.POST["remove_deposit"]:
-                        # TODO store deposit number -> form.cleaned_data["deposit"]
+                        if DepositNote.exists(form.cleaned_data["deposit"]):
+                            DepositNote.refund(form.cleaned_data["deposit"], request.user)
+                        else:
+                            DepositNote(ean = form.cleaned_data["deposit"],
+                                        price = get_product(request.POST["remove_deposit"]).price,
+                                        refunded_by = request.user, refunded_time = datetime.now()).save()
                         own_cart.remove(request.POST["remove_deposit"])
 
             if not own_cart.is_empty():
@@ -159,6 +167,12 @@ def sale(request):
         try:
             # noinspection PyUnboundLocalVariable
             context.update({"items": CartItem.objects.filter(cart = own_cart)})
+        except UnboundLocalError:
+            pass
+
+        try:
+            # noinspection PyUnboundLocalVariable
+            context.update({"new_deposit": new_deposit})
         except UnboundLocalError:
             pass
 

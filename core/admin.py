@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import Author, Balance, Cart, CartItem, CashBookEntry, Deposit, LectureNote, PrintingQuota
+from core.models import Author, Balance, Cart, CartItem, CashBookEntry, Deposit, DepositNote, LectureNote, PrintingQuota
 
 
 @admin.register(Deposit)
@@ -41,6 +41,13 @@ class CartAdmin(admin.ModelAdmin):
     list_display_links = ["vendor"]
     ordering = ["-time"]
     inlines = [CartItemInline]
+
+
+@admin.register(DepositNote)
+class DepositNoteAdmin(admin.ModelAdmin):
+    list_display = ["ean", "price", "sold_time", "sold_by", "refunded_time", "refunded_by"]
+    list_display_links = ["ean"]
+    ordering = ["-ean"]
 
 
 @admin.register(CashBookEntry)
