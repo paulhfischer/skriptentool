@@ -21,6 +21,8 @@
                 });
                 {% if add_deposit %}$('#addDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
                 {% if remove_deposit %}$('#removeDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
+                {% if remove_old_deposit %}$('#removeOldDepositModal').modal({backdrop: 'static', keyboard: false})
+                    ;{% endif %}
             });
         </script>
 
@@ -72,6 +74,34 @@
                                 <div class="col-6">
                                     <button type="submit" name="remove_deposit" value="{{ remove_deposit }}"
                                             class="btn btn-dark btn-block">Bestätigen
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PopUp für Kautionsscheinrücknahme alter Scheine -->
+        <div class="modal fade" id="removeOldDepositModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Alter Kautionsschein</h2>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-6">
+                                    <button type="submit"
+                                            class="btn btn-dark btn-block">Nicht erstatten
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" name="remove_old_deposit" value="{{ remove_old_deposit }}"
+                                            class="btn btn-danger btn-block">Erstatten
                                     </button>
                                 </div>
                             </div>

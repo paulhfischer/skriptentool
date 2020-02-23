@@ -214,6 +214,12 @@ class DepositNote(models.Model):
         return False
 
     @classmethod
+    def is_refundable(cls, ean):
+        if DepositNote.exists(ean):
+            return DepositNote.objects.get(ean = ean).refundable
+        return False
+
+    @classmethod
     def refund(cls, ean, user):
         if DepositNote.exists(ean):
             note = DepositNote.objects.get(ean = ean)
@@ -236,6 +242,7 @@ class DepositNote(models.Model):
     refunded_time = models.DateTimeField(blank = True, null = True, verbose_name = "Rückgabezeitpunkt")
     refunded_by = models.ForeignKey(User, on_delete = models.PROTECT, blank = True, null = True,
                                     related_name = "refunded_by", verbose_name = "Zurückgegeben von")
+    refundable = models.BooleanField(verbose_name = "Darf erstattet werden")
 
     def is_refunded(self):
         return self.refunded_by
