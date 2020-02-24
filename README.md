@@ -10,9 +10,13 @@
 - Verkaufsschichten
     - Backend-Verwaltung für Finanzer & Referenten
     - Verkäufer sieht eigene Schichten und Status
+- Deckblattgenerierung
+- Druckauftrag-Generierung
+
+## Requirements
+- PDFTK
+- LatexMK
 
 ## Feature-Requests
-- Deckblattgenerierung
 - LDAP-Verbindung
-- Druckauftrag erstellen
 - Mails an [skripten-owner@fs.tum.de](mailto:skripten-owner@fs.tum.de) bei Fehlern

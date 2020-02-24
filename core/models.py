@@ -1,30 +1,38 @@
+import os
 from datetime import datetime
 from math import copysign
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.timezone import localtime
 
+from SkriptenTool.storage import OverwriteStorage
 
-# Funktionen
+
 def get_product(ean):
     ean = str(ean)
-    if LectureNote.objects.filter(ean = ean).exists():
-        return LectureNote.objects.get(ean = ean)
-    if PrintingQuota.objects.filter(ean = ean).exists():
-        return PrintingQuota.objects.get(ean = ean)
-    if Deposit.objects.filter(ean = ean).exists():
-        return Deposit.objects.get(ean = ean)
+    if LectureNote.objects.filter(ean=ean).exists():
+        return LectureNote.objects.get(ean=ean)
+    if PrintingQuota.objects.filter(ean=ean).exists():
+        return PrintingQuota.objects.get(ean=ean)
+    if Deposit.objects.filter(ean=ean).exists():
+        return Deposit.objects.get(ean=ean)
 
 
 def get_type(ean):
-    if LectureNote.objects.filter(ean = ean).exists():
+    if LectureNote.objects.filter(ean=ean).exists():
         return "lecturenote"
-    if PrintingQuota.objects.filter(ean = ean).exists():
+    if PrintingQuota.objects.filter(ean=ean).exists():
         return "printingquota"
-    if Deposit.objects.filter(ean = ean).exists():
+    if Deposit.objects.filter(ean=ean).exists():
         return "deposit"
+
+
+def get_filename(instance, filename):
+    filename = instance.ean + ".pdf"
+    return os.path.join("media/skripten", filename)
 
 
 # Kassenvorgänge
@@ -38,24 +46,24 @@ class CashBookEntry(models.Model):
 
     @classmethod
     def correction(cls, user, amount):
-        cls(user = user, detail = "Korrektur", amount = amount).save()
+        cls(user=user, detail="Korrektur", amount=amount).save()
 
     @classmethod
     def withdrawal(cls, user, amount):
-        cls(user = user, detail = "Entnahme", amount = amount).save()
+        cls(user=user, detail="Entnahme", amount=amount).save()
 
     @classmethod
     def deposit(cls, user, amount):
-        cls(user = user, detail = "Einlage", amount = amount).save()
+        cls(user=user, detail="Einlage", amount=amount).save()
 
     @classmethod
     def sale(cls, user, ean, amount):
-        cls(user = user, detail = "Artikel-EAN: " + ean, amount = amount).save()
+        cls(user=user, detail="Artikel-EAN: " + ean, amount=amount).save()
 
-    user = models.ForeignKey(User, on_delete = models.PROTECT, verbose_name = "Benutzer")
-    time = models.DateTimeField(default = datetime.now, verbose_name = "Zeitpunkt")
-    detail = models.CharField(max_length = 20, verbose_name = "Details")
-    amount = models.DecimalField(max_digits = 6, decimal_places = 2, verbose_name = "Betrag")
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Benutzer")
+    time = models.DateTimeField(default=datetime.now, verbose_name="Zeitpunkt")
+    detail = models.CharField(max_length=20, verbose_name="Details")
+    amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Betrag")
 
 
 # Kassenstand
@@ -73,37 +81,37 @@ class Balance(models.Model):
         if latest.amount == amount:
             latest.counted = True
             latest.save()
-            Balance.objects.filter(type = "Zwischenstand").exclude(pk = latest.pk).delete()
+            Balance.objects.filter(type="Zwischenstand").exclude(pk=latest.pk).delete()
         else:
             CashBookEntry.correction(user, amount - latest.amount)
             latest.counted = True
             latest.amount = amount
             latest.save()
-            Balance.objects.filter(type = "Zwischenstand").exclude(pk = latest.pk).delete()
+            Balance.objects.filter(type="Zwischenstand").exclude(pk=latest.pk).delete()
 
     @classmethod
     def add_temp(cls, user, amount, counted):
-        cls(user = user, amount = amount, counted = counted, type = "Zwischenstand").save()
+        cls(user=user, amount=amount, counted=counted, type="Zwischenstand").save()
 
     @classmethod
     def add_update(cls, user, amount):
-        Balance.objects.filter(type = "Zwischenstand").delete()
-        cls(user = user, amount = amount, counted = True, type = "Zwischenstand").save()
+        Balance.objects.filter(type="Zwischenstand").delete()
+        cls(user=user, amount=amount, counted=True, type="Zwischenstand").save()
 
     @classmethod
     def add_opening(cls, user):
-        cls(user = user, amount = Balance.objects.latest("time").amount, counted = False, type = "Kassenbeginn").save()
+        cls(user=user, amount=Balance.objects.latest("time").amount, counted=False, type="Kassenbeginn").save()
 
     @classmethod
     def add_closing(cls, user, amount):
-        cls(user = user, amount = amount, counted = True, type = "Kassenschluss").save()
-        Balance.objects.filter(type = "Zwischenstand").delete()
+        cls(user=user, amount=amount, counted=True, type="Kassenschluss").save()
+        Balance.objects.filter(type="Zwischenstand").delete()
 
-    user = models.ForeignKey(User, on_delete = models.PROTECT, verbose_name = "Benutzer")
-    time = models.DateTimeField(default = datetime.now, verbose_name = "Zeitpunkt")
-    amount = models.DecimalField(max_digits = 6, decimal_places = 2, verbose_name = "Kassenstand")
-    counted = models.BooleanField(verbose_name = "Gezählt")
-    type = models.CharField(max_length = 20, verbose_name = "Art")
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Benutzer")
+    time = models.DateTimeField(default=datetime.now, verbose_name="Zeitpunkt")
+    amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Kassenstand")
+    counted = models.BooleanField(verbose_name="Gezählt")
+    type = models.CharField(max_length=20, verbose_name="Art")
 
     def is_opening(self):
         return self.type == "Kassenbeginn"
@@ -118,8 +126,8 @@ class Author(models.Model):
         verbose_name = "Autor"
         verbose_name_plural = "Autoren"
 
-    name = models.CharField(max_length = 256, verbose_name = "Name")
-    mail = models.EmailField(max_length = 256, verbose_name = "E-Mail Adresse")
+    name = models.CharField(max_length=256, verbose_name="Name")
+    mail = models.EmailField(max_length=256, verbose_name="E-Mail Adresse")
 
 
 # Kaution
@@ -131,9 +139,9 @@ class Deposit(models.Model):
         verbose_name = "Kaution"
         verbose_name_plural = "Kautionen"
 
-    ean = models.CharField(max_length = 20, verbose_name = "EAN")
-    name = models.CharField(max_length = 256, verbose_name = "Bezeichnung")
-    price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Kautionsbetrag")
+    ean = models.CharField(max_length=20, verbose_name="EAN")
+    name = models.CharField(max_length=256, verbose_name="Bezeichnung")
+    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag")
     active = True
 
 
@@ -154,23 +162,62 @@ class LectureNote(models.Model):
         ("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in
         range(2015, datetime.now().year)]
 
-    ean = models.CharField(max_length = 20, verbose_name = "EAN")
-    name = models.CharField(max_length = 256, verbose_name = "Skriptname")
-    subject = models.CharField(max_length = 1, choices = SUBJECTS, null = True, verbose_name = "Studiengang")
-    price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Preis")
-    author = models.ForeignKey(Author, on_delete = models.PROTECT, null = True, verbose_name = "Autor")
-    semester_start = models.CharField(max_length = 256, choices = SEMESTERS, null = True,
-                                      verbose_name = "Semester (von)")
-    semester_end = models.CharField(max_length = 256, choices = SEMESTERS, null = True, verbose_name = "Semester (bis)")
-    active = models.BooleanField(verbose_name = "Steht zum Verkauf")
-    deposit = models.ForeignKey(Deposit, on_delete = models.PROTECT, blank = True, null = True,
-                                verbose_name = "Kaution")
-    stock = models.IntegerField(verbose_name = "Bestand")
-    color = models.CharField(max_length = 20, choices = COLORS, null = True, verbose_name = "Deckblattfarbe")
-    papersize = models.CharField(max_length = 20, choices = PAPERSIZES, null = True, verbose_name = "Papiergröße")
-    sides = models.CharField(max_length = 20, choices = SIDES, null = True, verbose_name = "Seitigkeit")
-    printnotes = models.CharField(max_length = 256, verbose_name = "Kommentar für Druck")
-    file = models.FileField(upload_to = "skripten/", verbose_name = "Datei")
+    @classmethod
+    def get_subject(cls, subject):
+        try:
+            return list(filter(lambda x: x[0] == subject, LectureNote.SUBJECTS))[0][1]
+        except IndexError:
+            return ""
+
+    @classmethod
+    def get_color(cls, color):
+        try:
+            return list(filter(lambda x: x[0] == color, LectureNote.COLORS))[0][1]
+        except IndexError:
+            return ""
+
+    @classmethod
+    def get_papersize(cls, papersize):
+        try:
+            return list(filter(lambda x: x[0] == papersize, LectureNote.PAPERSIZES))[0][1]
+        except IndexError:
+            return ""
+
+    @classmethod
+    def get_sides(cls, sides):
+        try:
+            return list(filter(lambda x: x[0] == sides, LectureNote.SIDES))[0][1]
+        except IndexError:
+            return ""
+
+    @classmethod
+    def get_semester(cls, semester):
+        try:
+            return list(filter(lambda x: x[0] == semester, LectureNote.SEMESTERS))[0][1]
+        except IndexError:
+            return ""
+
+    ean = models.CharField(max_length=20, verbose_name="EAN")
+    name = models.CharField(max_length=256, verbose_name="Skriptname")
+    subject = models.CharField(max_length=1, choices=SUBJECTS, null=True, verbose_name="Studiengang")
+    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis")
+    study_grants = models.BooleanField(verbose_name="Studienzuschüsse")
+    author = models.ForeignKey(Author, on_delete=models.PROTECT, null=True, verbose_name="Autor")
+    semester_start = models.CharField(max_length=256, choices=SEMESTERS, verbose_name="Semester (von)")
+    semester_end = models.CharField(max_length=256, choices=SEMESTERS, null=True, blank=True,
+                                    verbose_name="Semester (bis)")
+    active = models.BooleanField(verbose_name="Steht zum Verkauf")
+    deposit = models.ForeignKey(Deposit, on_delete=models.PROTECT, blank=True, null=True,
+                                verbose_name="Kaution")
+    stock = models.IntegerField(verbose_name="Bestand", default=0)
+    color = models.CharField(max_length=20, choices=COLORS, null=True, blank=True,
+                             verbose_name="Deckblattfarbe")
+    papersize = models.CharField(max_length=20, choices=PAPERSIZES, null=True, blank=True,
+                                 verbose_name="Papiergröße")
+    sides = models.CharField(max_length=20, choices=SIDES, null=True, blank=True, verbose_name="Seitigkeit")
+    printnotes = models.CharField(max_length=256, verbose_name="Kommentar für Druck", null=True, blank=True)
+    file = models.FileField(upload_to=get_filename, verbose_name="Datei", storage=OverwriteStorage(),
+                            validators=[FileExtensionValidator(allowed_extensions=["pdf"])])
 
     def get_deposit(self):
         return self.deposit
@@ -188,10 +235,10 @@ class PrintingQuota(models.Model):
     def name(self):
         return str(self.pages) + " Seiten"
 
-    ean = models.CharField(max_length = 20, verbose_name = "EAN")
-    price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Preis")
-    pages = models.IntegerField(verbose_name = "Seitenzahl")
-    active = models.BooleanField(verbose_name = "Steht zum Verkauf")
+    ean = models.CharField(max_length=20, verbose_name="EAN")
+    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis")
+    pages = models.IntegerField(verbose_name="Seitenzahl")
+    active = models.BooleanField(verbose_name="Steht zum Verkauf")
 
 
 # Verkaufsschichten
@@ -210,16 +257,16 @@ class Shift(models.Model):
 
     @classmethod
     def end_shift(cls, user):
-        if Shift.objects.filter(vendor = user).exists():
-            shift = Shift.objects.filter(vendor = user).latest("time_start")
+        if Shift.objects.filter(vendor=user).exists():
+            shift = Shift.objects.filter(vendor=user).latest("time_start")
             shift.time_end = datetime.now()
             shift.save()
 
-    time_start = models.DateTimeField(verbose_name = "Verkaufsstart")
-    time_end = models.DateTimeField(blank = True, null = True, verbose_name = "Verkaufsende")
-    vendor = models.ForeignKey(User, on_delete = models.PROTECT, verbose_name = "Verkäufer")
-    valid = models.BooleanField(verbose_name = "Überprüft")
-    payout = models.BooleanField(verbose_name = "Bezahlt")
+    time_start = models.DateTimeField(verbose_name="Verkaufsstart")
+    time_end = models.DateTimeField(blank=True, null=True, verbose_name="Verkaufsende")
+    vendor = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Verkäufer")
+    valid = models.BooleanField(verbose_name="Überprüft")
+    payout = models.BooleanField(verbose_name="Bezahlt")
 
 
 # Kautionsschein
@@ -233,25 +280,25 @@ class DepositNote(models.Model):
 
     @classmethod
     def exists(cls, ean):
-        return DepositNote.objects.filter(ean = ean).exists()
+        return DepositNote.objects.filter(ean=ean).exists()
 
     @classmethod
     def refunded(cls, ean):
         if DepositNote.exists(ean):
-            if DepositNote.objects.get(ean = ean).refunded_time:
+            if DepositNote.objects.get(ean=ean).refunded_time:
                 return True
         return False
 
     @classmethod
     def is_refundable(cls, ean):
         if DepositNote.exists(ean):
-            return DepositNote.objects.get(ean = ean).refundable
+            return DepositNote.objects.get(ean=ean).refundable
         return False
 
     @classmethod
     def refund(cls, ean, user):
         if DepositNote.exists(ean):
-            note = DepositNote.objects.get(ean = ean)
+            note = DepositNote.objects.get(ean=ean)
             note.refunded_by = user
             note.refunded_time = datetime.now()
             note.save()
@@ -263,15 +310,15 @@ class DepositNote(models.Model):
         except ObjectDoesNotExist:
             return str(1500)
 
-    ean = models.CharField(max_length = 20, verbose_name = "EAN")
-    price = models.DecimalField(max_digits = 5, decimal_places = 2, verbose_name = "Kautionsbetrag")
-    sold_time = models.DateTimeField(blank = True, null = True, verbose_name = "Verkaufszeitpunkt")
-    sold_by = models.ForeignKey(User, on_delete = models.PROTECT, blank = True, null = True, related_name = "sold_by",
-                                verbose_name = "Verkauft von")
-    refunded_time = models.DateTimeField(blank = True, null = True, verbose_name = "Rückgabezeitpunkt")
-    refunded_by = models.ForeignKey(User, on_delete = models.PROTECT, blank = True, null = True,
-                                    related_name = "refunded_by", verbose_name = "Zurückgegeben von")
-    refundable = models.BooleanField(verbose_name = "Darf erstattet werden")
+    ean = models.CharField(max_length=20, verbose_name="EAN")
+    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag")
+    sold_time = models.DateTimeField(blank=True, null=True, verbose_name="Verkaufszeitpunkt")
+    sold_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="sold_by",
+                                verbose_name="Verkauft von")
+    refunded_time = models.DateTimeField(blank=True, null=True, verbose_name="Rückgabezeitpunkt")
+    refunded_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True,
+                                    related_name="refunded_by", verbose_name="Zurückgegeben von")
+    refundable = models.BooleanField(verbose_name="Darf erstattet werden")
 
     def is_refunded(self):
         return self.refunded_by
@@ -286,14 +333,14 @@ class Cart(models.Model):
         verbose_name = "Verkaufsvorgang"
         verbose_name_plural = "Verkaufsvorgänge"
 
-    vendor = models.ForeignKey(User, on_delete = models.PROTECT, verbose_name = "Verkäufer")
-    time = models.DateTimeField(default = datetime.now, verbose_name = "Erstellzeitpunkt")
+    vendor = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Verkäufer")
+    time = models.DateTimeField(default=datetime.now, verbose_name="Erstellzeitpunkt")
 
     def is_empty(self):
-        return not CartItem.objects.filter(cart = self).exists()
+        return not CartItem.objects.filter(cart=self).exists()
 
     def close(self, reason):
-        for cart_item in CartItem.objects.filter(cart = self):
+        for cart_item in CartItem.objects.filter(cart=self):
             for i in range(abs(cart_item.quantity)):
                 CashBookEntry().sale(self.vendor, cart_item.ean, copysign(cart_item.price_single(), cart_item.quantity))
 
@@ -310,7 +357,7 @@ class Cart(models.Model):
         if product:
             if product.active:
                 try:
-                    cart_item = CartItem.objects.get(ean = ean, cart = self)
+                    cart_item = CartItem.objects.get(ean=ean, cart=self)
                     if cart_item.quantity == -1:
                         cart_item.delete()
                     else:
@@ -322,7 +369,7 @@ class Cart(models.Model):
                     except AttributeError:
                         pass
                 except ObjectDoesNotExist:
-                    cart_item = CartItem(ean = ean, quantity = 1, type = get_type(ean), cart = self)
+                    cart_item = CartItem(ean=ean, quantity=1, type=get_type(ean), cart=self)
                     cart_item.save()
                     try:
                         product.stock -= 1
@@ -334,7 +381,7 @@ class Cart(models.Model):
         product = get_product(ean)
         if product:
             try:
-                cart_item = CartItem.objects.get(ean = ean, cart = self)
+                cart_item = CartItem.objects.get(ean=ean, cart=self)
                 if cart_item.quantity == 1:
                     cart_item.delete()
                 else:
@@ -346,7 +393,7 @@ class Cart(models.Model):
                 except AttributeError:
                     pass
             except ObjectDoesNotExist:
-                cart_item = CartItem(ean = ean, quantity = -1, type = get_type(ean), cart = self)
+                cart_item = CartItem(ean=ean, quantity=-1, type=get_type(ean), cart=self)
                 cart_item.save()
                 try:
                     product.stock += 1
@@ -357,7 +404,7 @@ class Cart(models.Model):
     def total(self):
         total = 0
         try:
-            cart_items = CartItem.objects.filter(cart = self)
+            cart_items = CartItem.objects.filter(cart=self)
             for item in cart_items:
                 total += item.price_total()
         except ObjectDoesNotExist:
@@ -376,34 +423,34 @@ class CartItem(models.Model):
 
     TYPES = [("lecturenote", "Skript"), ("printingquota", "Druckkontingent"), ("deposit", "Kautionsschein")]
 
-    ean = models.CharField(max_length = 20, verbose_name = "EAN")
-    type = models.CharField(max_length = 256, choices = TYPES, null = True, verbose_name = "Art")
-    quantity = models.IntegerField(verbose_name = "Anzahl")
-    cart = models.ForeignKey(Cart, on_delete = models.CASCADE)
+    ean = models.CharField(max_length=20, verbose_name="EAN")
+    type = models.CharField(max_length=256, choices=TYPES, null=True, verbose_name="Art")
+    quantity = models.IntegerField(verbose_name="Anzahl")
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
 
     def price_single(self):
         if self.type == "lecturenote":
-            return LectureNote.objects.get(ean = self.ean).price
+            return LectureNote.objects.get(ean=self.ean).price
         elif self.type == "printingquota":
-            return PrintingQuota.objects.get(ean = self.ean).price
+            return PrintingQuota.objects.get(ean=self.ean).price
         elif self.type == "deposit":
-            return Deposit.objects.get(ean = self.ean).price
+            return Deposit.objects.get(ean=self.ean).price
 
     def name(self):
         if self.type == "lecturenote":
-            return LectureNote.objects.get(ean = self.ean).name
+            return LectureNote.objects.get(ean=self.ean).name
         elif self.type == "printingquota":
-            return PrintingQuota.objects.get(ean = self.ean).name()
+            return PrintingQuota.objects.get(ean=self.ean).name()
         elif self.type == "deposit":
-            return Deposit.objects.get(ean = self.ean).name
+            return Deposit.objects.get(ean=self.ean).name
 
     def price_total(self):
         if self.type == "lecturenote":
-            return LectureNote.objects.get(ean = self.ean).price * self.quantity
+            return LectureNote.objects.get(ean=self.ean).price * self.quantity
         elif self.type == "printingquota":
-            return PrintingQuota.objects.get(ean = self.ean).price * self.quantity
+            return PrintingQuota.objects.get(ean=self.ean).price * self.quantity
         elif self.type == "deposit":
-            return Deposit.objects.get(ean = self.ean).price * self.quantity
+            return Deposit.objects.get(ean=self.ean).price * self.quantity
 
     def type_str(self):
         return dict(self.TYPES)[self.type]

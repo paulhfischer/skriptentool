@@ -3,6 +3,7 @@
 
 {% block content %}
     {% if user.is_authenticated and user|has_group:"Verkäufer" %}
+        {{ tex }}
         <div class="row">
             <div class="mx-auto col-6">
                 <div class="card">

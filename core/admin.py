@@ -1,7 +1,60 @@
+import os
+
 from django.contrib import admin
 
 from core.models import Author, Balance, Cart, CartItem, CashBookEntry, Deposit, DepositNote, LectureNote, \
     PrintingQuota, Shift
+
+
+def generate_cover(modeladmin, request, queryset):
+    for lecturenote in queryset:
+        if lecturenote.semester_end:
+            semester = LectureNote.get_semester(lecturenote.semester_start) + " bis " + LectureNote.get_semester(
+                lecturenote.semester_end)
+        else:
+            semester = LectureNote.get_semester(lecturenote.semester_start)
+        pages = os.popen("pdfinfo " + lecturenote.file.path + " | grep 'Pages' | awk '{print $2}'").read().strip()
+        template = open("media/deckblätter/vorlage/deckblatt.tex").read()
+        code = template.replace("_studienzuschüsse_", str(lecturenote.study_grants)).replace("_author_", str(
+            lecturenote.author)).replace(
+            "_title_", lecturenote.name).replace("_semester_", semester).replace("_price_",
+                                                                                 str(lecturenote.price).replace(".",
+                                                                                                                ",")).replace(
+            "_pages_", pages).replace("_ean_", str(lecturenote.ean))
+        file = open("media/deckblätter/" + str(lecturenote.ean) + ".tex", "w+")
+        file.write(code)
+        file.close()
+        os.system("cd media/deckblätter; latexmk -pdf " + str(lecturenote.ean) + ".tex; latexmk -c " + str(
+            lecturenote.ean) + ".tex")
+        os.system("cd media; pdftk deckblätter/" + str(lecturenote.ean) + ".pdf skripten/" + str(
+            lecturenote.ean) + ".pdf cat output druck/" + str(lecturenote.ean) + ".pdf")
+
+
+generate_cover.short_description = "Deckblätter generieren"
+
+
+def generate_order(modeladmin, request, queryset):
+    for lecturenote in queryset:
+        if lecturenote.printnotes:
+            printnotes = lecturenote.printnotes
+        else:
+            printnotes = ""
+        template = open("media/skriptenaufträge/vorlage/skriptenauftrag.xfdf").read()
+        code = template.replace("_file_", lecturenote.file.path.split("/")[-1]).replace("_color_",
+                                                                                        LectureNote.get_color(
+                                                                                            lecturenote.color)).replace(
+            "_papersize_", LectureNote.get_papersize(lecturenote.papersize)).replace("_sides_", LectureNote.get_sides(
+            lecturenote.sides)).replace("_amount_", "").replace("_subject_",
+                                                                LectureNote.get_subject(lecturenote.subject)).replace(
+            "_printnotes_", printnotes).replace("_name_", "")
+        file = open("media/skriptenaufträge/" + str(lecturenote.ean) + ".xfdf", "w+")
+        file.write(code)
+        file.close()
+        os.system("cd media/skriptenaufträge; pdftk vorlage/skriptenauftrag.pdf fill_form " + str(
+            lecturenote.ean) + ".xfdf output " + str(lecturenote.ean) + ".pdf")
+
+
+generate_order.short_description = "Skriptenaufträge generieren"
 
 
 @admin.register(Deposit)
@@ -29,6 +82,7 @@ class LectureNoteAdmin(admin.ModelAdmin):
     list_editable = ["active", "stock", "printnotes"]
     list_display_links = ["ean"]
     ordering = ["-ean"]
+    actions = [generate_cover, generate_order]
 
 
 @admin.register(Shift)

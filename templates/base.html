@@ -61,9 +61,9 @@
                            href="{{ finance_url }}">Kassenbuch</a>
                     </li>
                 {% endif %}
-                {% if user|has_group:"Referent" %}
+                {% if user|has_group:"Referent" or user|has_group:"Finanzer" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url "admin:index" %}">Admin</a>
+                        <a class="nav-link" href="{% url "admin:index" %}">Verwaltung</a>
                     </li>
                 {% endif %}
             </ul>

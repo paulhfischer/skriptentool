@@ -14,9 +14,11 @@ from core.templatetags.filters import has_group
 
 # Katalog
 def catalogue(request):
-    context = {"mathematics_list": LectureNote.objects.filter(subject = "M", active = True).order_by("name"),
-               "physics_list": LectureNote.objects.filter(subject = "P", active = True).order_by("name"),
-               "informatics_list": LectureNote.objects.filter(subject = "I", active = True).order_by("name"), }
+    context = {
+        "mathematics_list": LectureNote.objects.filter(subject="M", active=True).order_by("name"),
+        "physics_list": LectureNote.objects.filter(subject="P", active=True).order_by("name"),
+        "informatics_list": LectureNote.objects.filter(subject="I", active=True).order_by("name"),
+    }
 
     return render(request, "core/catalogue.html", context)
 
@@ -24,7 +26,7 @@ def catalogue(request):
 # Verkaufsschichten
 def shifts(request):
     if request.user.is_authenticated and has_group(request.user, "Verkäufer"):
-        context = {"shifts": Shift.objects.filter(vendor = request.user).order_by("-time_start")}
+        context = {"shifts": Shift.objects.filter(vendor=request.user).order_by("-time_start")}
         return render(request, "core/shifts.html", context)
     else:
         return HttpResponse()
@@ -33,7 +35,7 @@ def shifts(request):
 # Finanz
 def finance(request):
     if request.user.is_authenticated and has_group(request.user, "Finanzer"):
-        start = datetime.today().date() - timedelta(weeks = 1)
+        start = datetime.today().date() - timedelta(weeks=1)
         end = datetime.today().date()
 
         form = CashbookForm(request.POST)
@@ -55,24 +57,28 @@ def finance(request):
             Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
 
         if "csv" in request.POST and valid:
-            response = HttpResponse(content_type = "text/csv")
+            response = HttpResponse(content_type="text/csv")
             response["Content-Disposition"] = "attatchment; filename='kassenbuch.csv'"
             writer = csv.writer(response)
             writer.writerow(["Zeitpunkt", "Preis", "Beschreibung"])
-            for foo in CashBookEntry.objects.filter(time__range = [start.strftime("%Y-%m-%d"),
-                                                                   (end + timedelta(days = 1)).strftime(
-                                                                       "%Y-%m-%d")]).values_list("time", "amount",
-                                                                                                 "detail"):
+            for foo in CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"),
+                                                                 (end + timedelta(days=1)).strftime(
+                                                                     "%Y-%m-%d")]).values_list("time", "amount",
+                                                                                               "detail"):
                 writer.writerow([foo[0].strftime("%Y-%m-%d %H:%M:%S"), foo[1], foo[2]])
             return response
 
-        context = {"cashbook_form": CashbookForm(initial = {"start": start, "end": end}), "cashbook": sorted(list(chain(
-            CashBookEntry.objects.filter(time__range = [start.strftime("%Y-%m-%d"),
-                                                        (end + timedelta(days = 1)).strftime("%Y-%m-%d")]).values_list(
-                "time", "user", "amount", "detail"), Balance.objects.filter(time__range = [start.strftime("%Y-%m-%d"), (
-                    end + timedelta(days = 1)).strftime("%Y-%m-%d")]).values_list("time", "user", "amount", "type"))),
-            key = lambda x: x[0], reverse = True), "balance": str(Balance.objects.latest("time").amount),
-                   "test": form.cleaned_data["update"], }
+        context = {
+            "cashbook_form": CashbookForm(initial={"start": start, "end": end}), "cashbook": sorted(list(chain(
+                CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"),
+                                                          (end + timedelta(days=1)).strftime("%Y-%m-%d")]).values_list(
+                    "time", "user", "amount", "detail"), Balance.objects.filter(time__range=[start.strftime("%Y-%m-%d"),
+                                                                                             (end + timedelta(
+                                                                                                 days=1)).strftime(
+                                                                                                 "%Y-%m-%d")]).values_list(
+                    "time", "user", "amount", "type"))), key=lambda x: x[0], reverse=True),
+            "balance": str(Balance.objects.latest("time").amount), "test": form.cleaned_data["update"],
+        }
 
         return render(request, "core/finance.html", context)
     else:
@@ -93,8 +99,8 @@ def sale(request):
                 if form.cleaned_data["balance"]:
                     Balance().count_latest(request.user, form.cleaned_data["balance"])
 
-        if Cart.objects.filter(vendor = request.user.id).exists():  # Eigener Warenkorb existiert
-            own_cart = Cart.objects.get(vendor = request.user.id)
+        if Cart.objects.filter(vendor=request.user.id).exists():  # Eigener Warenkorb existiert
+            own_cart = Cart.objects.get(vendor=request.user.id)
 
             if not Balance.objects.latest("time").is_opening() or Balance.objects.latest("time").counted:
                 if "order" in request.POST and valid:  # Buchungsvorgang
@@ -109,9 +115,7 @@ def sale(request):
                                 error = "Kautionsschein kann nur mit Skript verkauft werden!"
                     if form.cleaned_data["ean_remove"]:
                         if get_type(form.cleaned_data["ean_remove"]) == "deposit":  # Überprüfe ob Kautionsauszahlung
-                            # if has_group(request.user, "Referent"):
-                            remove_deposit = form.cleaned_data[
-                                "ean_remove"]  # else:  #   error = "Kautionsscheine können nur von Referenten erstattet werden"
+                            remove_deposit = form.cleaned_data["ean_remove"]
                         else:
                             own_cart.remove(form.cleaned_data["ean_remove"])
                 if "has_deposit" in request.POST and valid:  # Kautionsschein vorhanden
@@ -120,9 +124,9 @@ def sale(request):
                 if "add_deposit" in request.POST and valid:  # Kautionseinzahlung
                     if request.POST["add_deposit"]:
                         new_deposit = DepositNote.new_ean()
-                        DepositNote(ean = new_deposit,
-                                    price = get_product(request.POST["add_deposit"].split("|")[1]).price,
-                                    sold_by = request.user, sold_time = datetime.now(), refundable = False).save()
+                        DepositNote(ean=new_deposit,
+                                    price=get_product(request.POST["add_deposit"].split("|")[1]).price,
+                                    sold_by=request.user, sold_time=datetime.now(), refundable=False).save()
                         own_cart.add(request.POST["add_deposit"].split("|")[0])
                         own_cart.add(request.POST["add_deposit"].split("|")[1])
                 if "remove_deposit" in request.POST and valid:  # Kautionsauszahlung
@@ -144,16 +148,16 @@ def sale(request):
                 if "remove_old_deposit" in request.POST and valid and has_group(request.user,
                                                                                 "Referent"):  # Kautionsauszahlung alter Scheine
                     if request.POST["remove_old_deposit"]:
-                        DepositNote(ean = request.POST["remove_old_deposit"].split("|")[0],
-                                    price = get_product(request.POST["remove_old_deposit"].split("|")[1]).price,
-                                    refunded_by = request.user, refunded_time = datetime.now(),
-                                    refundable = True).save()
+                        DepositNote(ean=request.POST["remove_old_deposit"].split("|")[0],
+                                    price=get_product(request.POST["remove_old_deposit"].split("|")[1]).price,
+                                    refunded_by=request.user, refunded_time=datetime.now(),
+                                    refundable=True).save()
                         own_cart.remove(request.POST["remove_old_deposit"].split("|")[1])
 
             if not own_cart.is_empty():
                 if "next_own" in request.POST:  # Eigenen Verkaufsvorgang beenden und neuen öffnen
                     own_cart.close("sale")
-                    own_cart = Cart(vendor = request.user)
+                    own_cart = Cart(vendor=request.user)
                     own_cart.save()
 
             if Balance.objects.latest("time").counted and own_cart.is_empty():
@@ -166,7 +170,7 @@ def sale(request):
             if not alien_cart.is_empty():
                 if "next_alien" in request.POST:  # Fremden Verkaufsvorgang beenden und neuen öffnen
                     alien_cart.close("sale")
-                    alien_cart = Cart(vendor = User.objects.get(username = request.POST.get("next_alien")))
+                    alien_cart = Cart(vendor=User.objects.get(username=request.POST.get("next_alien")))
                     alien_cart.save()
 
             if Balance.objects.latest("time").counted and alien_cart.is_empty():
@@ -175,13 +179,15 @@ def sale(request):
 
         else:  # Kein Warenkorb existiert
             if "open" in request.POST:  # Verkaufsvorgang starten
-                Cart(vendor = request.user).save()
+                Cart(vendor=request.user).save()
                 Balance().add_opening(request.user)
-                Shift(time_start = datetime.now(), vendor = request.user, valid = False, payout = False).save()
+                Shift(time_start=datetime.now(), vendor=request.user, valid=False, payout=False).save()
 
-        context = {"balance": str(Balance.objects.latest("time").amount),
-                   "form": SaleForm(initial = {"balance": Balance.objects.latest("time").amount}),
-                   "last_balance": Balance.objects.latest("time"), }
+        context = {
+            "balance": str(Balance.objects.latest("time").amount),
+            "form": SaleForm(initial={"balance": Balance.objects.latest("time").amount}),
+            "last_balance": Balance.objects.latest("time"),
+        }
 
         try:
             # noinspection PyUnboundLocalVariable
@@ -190,17 +196,17 @@ def sale(request):
             pass
 
         try:
-            context.update({"own_cart": Cart.objects.get(vendor = request.user)})
+            context.update({"own_cart": Cart.objects.get(vendor=request.user)})
         except ObjectDoesNotExist:
             pass
 
         try:
-            context.update({"alien_cart": Cart.objects.exclude(vendor = request.user).get()})
+            context.update({"alien_cart": Cart.objects.exclude(vendor=request.user).get()})
         except ObjectDoesNotExist:
             pass
         try:
             # noinspection PyUnboundLocalVariable
-            context.update({"items": CartItem.objects.filter(cart = own_cart)})
+            context.update({"items": CartItem.objects.filter(cart=own_cart)})
         except UnboundLocalError:
             pass
 
