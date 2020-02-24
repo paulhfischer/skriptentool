@@ -34,6 +34,7 @@
 
         {% url "core:catalogue" as catalogue_url %}
         {% url "core:sale" as sale_url %}
+        {% url "core:shifts" as shifts_url %}
         {% url "core:finance" as finance_url %}
 
         <div class="collapse navbar-collapse" id="navbar">
@@ -48,10 +49,16 @@
                            href="{{ sale_url }}">Verkauf</a>
                     </li>
                 {% endif %}
+                {% if user|has_group:"Verkäufer" %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == shifts_url %}active{% endif %}"
+                           href="{{ shifts_url }}">Verkaufsschichten</a>
+                    </li>
+                {% endif %}
                 {% if user|has_group:"Finanzer" %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == finance_url %}active{% endif %}"
-                           href="{{ finance_url }}">Finanz</a>
+                           href="{{ finance_url }}">Kassenbuch</a>
                     </li>
                 {% endif %}
                 {% if user|has_group:"Referent" %}

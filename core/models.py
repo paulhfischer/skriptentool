@@ -4,6 +4,7 @@ from math import copysign
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.utils.timezone import localtime
 
 
 # Funktionen
@@ -29,7 +30,7 @@ def get_type(ean):
 # Kassenvorgänge
 class CashBookEntry(models.Model):
     def __str__(self):
-        return self.time.strftime("%Y-%m-%d %H:%M:%S")
+        return localtime(self.time).strftime("%d.%m.%Y %H:%M")
 
     class Meta:
         verbose_name = "Kassenbucheintrag"
@@ -60,7 +61,7 @@ class CashBookEntry(models.Model):
 # Kassenstand
 class Balance(models.Model):
     def __str__(self):
-        return self.time.strftime("%Y-%m-%d %H:%M:%S")
+        return localtime(self.time).strftime("%d.%m.%Y %H:%M")
 
     class Meta:
         verbose_name = "Kassenstand"
@@ -193,6 +194,34 @@ class PrintingQuota(models.Model):
     active = models.BooleanField(verbose_name = "Steht zum Verkauf")
 
 
+# Verkaufsschichten
+class Shift(models.Model):
+    def __str__(self):
+        if self.time_end:
+            return localtime(self.time_start).strftime("%d.%m.%Y") + " (" + localtime(self.time_start).strftime(
+                "%H:%M") + " bis " + localtime(self.time_end).strftime("%H:%M") + ")"
+        else:
+            return localtime(self.time_start).strftime("%d.%m.%Y") + " (" + localtime(self.time_start).strftime(
+                "%H:%M") + " bis jetzt)"
+
+    class Meta:
+        verbose_name = "Verkaufsschicht"
+        verbose_name_plural = "Verkaufsschichten"
+
+    @classmethod
+    def end_shift(cls, user):
+        if Shift.objects.filter(vendor = user).exists():
+            shift = Shift.objects.filter(vendor = user).latest("time_start")
+            shift.time_end = datetime.now()
+            shift.save()
+
+    time_start = models.DateTimeField(verbose_name = "Verkaufsstart")
+    time_end = models.DateTimeField(blank = True, null = True, verbose_name = "Verkaufsende")
+    vendor = models.ForeignKey(User, on_delete = models.PROTECT, verbose_name = "Verkäufer")
+    valid = models.BooleanField(verbose_name = "Überprüft")
+    payout = models.BooleanField(verbose_name = "Bezahlt")
+
+
 # Kautionsschein
 class DepositNote(models.Model):
     def __str__(self):
@@ -272,6 +301,7 @@ class Cart(models.Model):
             Balance().add_temp(self.vendor, Balance.objects.latest("time").amount + self.total(), False)
         elif str(reason) == "closing":
             Balance().add_closing(self.vendor, Balance.objects.latest("time").amount + self.total())
+            Shift.end_shift(self.vendor)
 
         self.delete()
 

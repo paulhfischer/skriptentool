@@ -68,7 +68,7 @@
                     <tr>
                         <th>Zeitpunkt</th>
                         <th>Benutzername</th>
-                        <th>Kassenstand</th>
+                        <th style="text-align: right;">Kassenstand</th>
                         <th>Beschreibung</th>
                     </tr>
                     {% for foo in cashbook %}
@@ -77,28 +77,28 @@
                                 <th>{{ foo.0 }}</th>
                                 <th>{{ foo.1|username_from_id }}</th>
                                 <th style="text-align: right;">{{ foo.2 }} €</th>
-                                <th style="text-align: right;">{{ foo.3 }}</th>
+                                <th>{{ foo.3 }}</th>
                             </tr>
                         {% elif foo.3 == "Korrektur" %}
                             <tr class="table-danger">
                                 <td>{{ foo.0 }}</td>
                                 <td>{{ foo.1|username_from_id }}</td>
                                 <td style="text-align: right;">{{ foo.2 }} €</td>
-                                <td style="text-align: right;">{{ foo.3 }}</td>
+                                <td>{{ foo.3 }}</td>
                             </tr>
                         {% elif foo.3 == "Einlage" or foo.3 == "Entnahme" %}
                             <tr class="table-success">
                                 <td>{{ foo.0 }}</td>
                                 <td>{{ foo.1|username_from_id }}</td>
                                 <td style="text-align: right;">{{ foo.2 }} €</td>
-                                <td style="text-align: right;">{{ foo.3 }}</td>
+                                <td>{{ foo.3 }}</td>
                             </tr>
                         {% else %}
                             <tr>
                                 <td>{{ foo.0 }}</td>
                                 <td>{{ foo.1|username_from_id }}</td>
                                 <td style="text-align: right;">{{ foo.2 }} €</td>
-                                <td style="text-align: right;">{{ foo.3 }}</td>
+                                <td>{{ foo.3 }}</td>
                             </tr>
                         {% endif %}
                     {% endfor %}

@@ -2,8 +2,8 @@ from django import forms
 
 
 class SaleForm(forms.Form):
-    ean_add = forms.CharField(label = "Artikel hinzufügen", required = False, widget = forms.TextInput(
-        attrs = {"class": "form-control", "style": "text-align: left;", "autofocus": ""}))
+    ean_add = forms.CharField(label = "Artikel hinzufügen", required = False,
+                              widget = forms.TextInput(attrs = {"class": "form-control", "style": "text-align: left;"}))
     ean_remove = forms.CharField(label = "Artikel entfernen", required = False, widget = forms.TextInput(
         attrs = {"class": "form-control", "style": "text-align: left;"}))
     balance = forms.DecimalField(max_digits = 6, decimal_places = 2, required = False, widget = forms.NumberInput(

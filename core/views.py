@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from core.forms import CashbookForm, SaleForm
-from core.models import Balance, Cart, CartItem, CashBookEntry, DepositNote, LectureNote, get_product, get_type
+from core.models import Balance, Cart, CartItem, CashBookEntry, DepositNote, LectureNote, Shift, get_product, get_type
 from core.templatetags.filters import has_group
 
 
@@ -19,6 +19,15 @@ def catalogue(request):
                "informatics_list": LectureNote.objects.filter(subject = "I", active = True).order_by("name"), }
 
     return render(request, "core/catalogue.html", context)
+
+
+# Verkaufsschichten
+def shifts(request):
+    if request.user.is_authenticated and has_group(request.user, "Verkäufer"):
+        context = {"shifts": Shift.objects.filter(vendor = request.user).order_by("-time_start")}
+        return render(request, "core/shifts.html", context)
+    else:
+        return HttpResponse()
 
 
 # Finanz
@@ -116,7 +125,7 @@ def sale(request):
                                     sold_by = request.user, sold_time = datetime.now(), refundable = False).save()
                         own_cart.add(request.POST["add_deposit"].split("|")[0])
                         own_cart.add(request.POST["add_deposit"].split("|")[1])
-                if "remove_deposit" in request.POST and valid:  # Kautionsauszahlung TODO
+                if "remove_deposit" in request.POST and valid:  # Kautionsauszahlung
                     if request.POST["remove_deposit"]:
                         if DepositNote.exists(form.cleaned_data["deposit"]):
                             if DepositNote.is_refundable(form.cleaned_data["deposit"]):
@@ -133,7 +142,7 @@ def sale(request):
                         else:
                             error = "Dieser Kautionsschein kann nur von Referenten erstattet werden!"
                 if "remove_old_deposit" in request.POST and valid and has_group(request.user,
-                                                                                "Referent"):  # Kautionsauszahlung alter Scheine TODO
+                                                                                "Referent"):  # Kautionsauszahlung alter Scheine
                     if request.POST["remove_old_deposit"]:
                         DepositNote(ean = request.POST["remove_old_deposit"].split("|")[0],
                                     price = get_product(request.POST["remove_old_deposit"].split("|")[1]).price,
@@ -168,6 +177,7 @@ def sale(request):
             if "open" in request.POST:  # Verkaufsvorgang starten
                 Cart(vendor = request.user).save()
                 Balance().add_opening(request.user)
+                Shift(time_start = datetime.now(), vendor = request.user, valid = False, payout = False).save()
 
         context = {"balance": str(Balance.objects.latest("time").amount),
                    "form": SaleForm(initial = {"balance": Balance.objects.latest("time").amount}),

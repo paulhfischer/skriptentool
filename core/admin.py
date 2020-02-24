@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from core.models import Author, Balance, Cart, CartItem, CashBookEntry, Deposit, DepositNote, LectureNote, PrintingQuota
+from core.models import Author, Balance, Cart, CartItem, CashBookEntry, Deposit, DepositNote, LectureNote, \
+    PrintingQuota, Shift
 
 
 @admin.register(Deposit)
@@ -28,6 +29,15 @@ class LectureNoteAdmin(admin.ModelAdmin):
     list_editable = ["active", "stock", "printnotes"]
     list_display_links = ["ean"]
     ordering = ["-ean"]
+
+
+@admin.register(Shift)
+class ShiftAdmin(admin.ModelAdmin):
+    list_display = ["time_start", "time_end", "vendor", "valid", "payout"]
+    list_filter = ["vendor", "valid"]
+    list_editable = ["valid", "payout"]
+    list_display_links = ["time_start"]
+    ordering = ["-time_start"]
 
 
 class CartItemInline(admin.StackedInline):

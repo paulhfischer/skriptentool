@@ -7,13 +7,12 @@
 - Verkaufsvorgang
 - Kautionsverwaltung
 - Kassenbuch inkl. csv-Export
+- Verkaufsschichten
+    - Backend-Verwaltung für Finanzer & Referenten
+    - Verkäufer sieht eigene Schichten und Status
 
 ## Feature-Requests
 - Deckblattgenerierung
 - LDAP-Verbindung
 - Druckauftrag erstellen
 - Mails an [skripten-owner@fs.tum.de](mailto:skripten-owner@fs.tum.de) bei Fehlern
-- Verkaufsschichten anzeigen
-    - Übersicht für Referenten -> Hier dann manuell verkäufe verfizieren bzw. löschen
-    - Finanz sieht alle verifizierten Verkäufe und kann diese verbuchen -> checkmark
-    - evtl.: verkäufer sieht seine verifizierten verkäufe

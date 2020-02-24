@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load filters %}
+
+{% block content %}
+    {% if user.is_authenticated and user|has_group:"Verkäufer" %}
+        <div class="row">
+            <div class="mx-auto col-6">
+                <div class="card">
+                    <div class="card-header"><h2>Deine Verkaufsschichten</h2></div>
+                    <div class="card-body">
+                        {% if shifts %}
+                            <table class="table table-xsm">
+                                <tr>
+                                    <th>Zeitraum</th>
+                                    <th style="text-align: center;">Bestätigt</th>
+                                    <th style="text-align: center;">Ausbezahlt</th>
+                                </tr>
+                                {% for shift in shifts %}
+                                    <tr>
+                                        <td>{{ shift }}</td>
+                                        <td style="text-align: center;">{% if shift.valid %}
+                                            <i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}
+                                        </td>
+                                        <td style="text-align: center;">{% if shift.payout %}
+                                            <i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            {% for shift in shifts %}
+
+                            {% endfor %}
+                        {% else %}
+                            Du hattest noch keine Verkaufsschichten.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

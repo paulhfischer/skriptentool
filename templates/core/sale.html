@@ -19,8 +19,14 @@
                         e.preventDefault()
                     }
                 });
+                $('#id_ean_add').focus();
                 {% if add_deposit %}$('#addDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
-                {% if remove_deposit %}$('#removeDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
+                {% if remove_deposit %}
+                    $('#removeDepositModal').modal({backdrop: 'static', keyboard: false});
+                    $('#removeDepositModal').on('shown.bs.modal', function () {
+                        $('#id_deposit').focus();
+                    });
+                {% endif %}
                 {% if remove_old_deposit %}$('#removeOldDepositModal').modal({backdrop: 'static', keyboard: false})
                     ;{% endif %}
             });
@@ -251,18 +257,18 @@
                                     <th>EAN</th>
                                     <th>Name</th>
                                     <th>Kategorie</th>
-                                    <th>Preis</th>
-                                    <th>Anzahl</th>
-                                    <th>Summe</th>
+                                    <th style="text-align: right;">Preis</th>
+                                    <th style="text-align: center;">Anzahl</th>
+                                    <th style="text-align: right;">Summe</th>
                                 </tr>
                                 {% for foo in items %}
                                     <tr>
                                         <td>{{ foo.ean }}</td>
                                         <td>{{ foo.name }}</td>
                                         <td>{{ foo.type_str }}</td>
-                                        <td>{{ foo.price_single }} €</td>
-                                        <td>{{ foo.quantity }}</td>
-                                        <td>{{ foo.price_total }} €</td>
+                                        <td style="text-align: right;">{{ foo.price_single }} €</td>
+                                        <td style="text-align: center;">{{ foo.quantity }}</td>
+                                        <td style="text-align: right;">{{ foo.price_total }} €</td>
                                     </tr>
                                 {% endfor %}
                                 <tr>
