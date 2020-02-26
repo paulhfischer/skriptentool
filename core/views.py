@@ -121,7 +121,7 @@ def sale(request):
                         DepositNote(ean=new_deposit,
                                     price=get_product(request.POST["add_deposit"].split("|")[1]).price,
                                     sold_by=request.user,
-                                    sold_time=datetime.now(),
+                                    sold_time=timezone.now(),
                                     refundable=False).save()
                         own_cart.add(request.POST["add_deposit"].split("|")[0])
                         own_cart.add(request.POST["add_deposit"].split("|")[1])
@@ -145,7 +145,7 @@ def sale(request):
                         DepositNote(ean=request.POST["remove_old_deposit"].split("|")[0],
                                     price=get_product(request.POST["remove_old_deposit"].split("|")[1]).price,
                                     refunded_by=request.user,
-                                    refunded_time=datetime.now(),
+                                    refunded_time=timezone.now(),
                                     refundable=True).save()
                         own_cart.remove(request.POST["remove_old_deposit"].split("|")[1])
 
@@ -176,7 +176,7 @@ def sale(request):
             if "open" in request.POST:  # Verkaufsvorgang starten
                 Cart(vendor=request.user).save()
                 Balance().add_opening(request.user)
-                Shift(time_start=datetime.now(), vendor=request.user, valid=False, payout=False).save()
+                Shift(time_start=timezone.now(), vendor=request.user, valid=False, payout=False).save()
 
         context = {
             "balance": str(Balance.objects.latest("time").amount),

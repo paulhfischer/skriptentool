@@ -1,5 +1,9 @@
 {% load filters %}
 {% load static %}
+{% url "core:catalogue" as catalogue_url %}
+{% url "core:sale" as sale_url %}
+{% url "core:shifts" as shifts_url %}
+{% url "core:finance" as finance_url %}
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -21,7 +25,15 @@
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
 
-    <title>SkriptenTool</title>
+    {% if request.path == catalogue_url %}
+        <title>Katalog | SkriptenTool</title>
+    {% elif request.path == sale_url %}
+        <title>Verkauf | SkriptenTool</title>
+    {% elif request.path == shifts_url %}
+        <title>Verkaufschichten | SkriptenTool</title>
+    {% elif request.path == finance_url %}
+        <title>Kassenbuch | SkriptenTool</title>
+    {% endif %}
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -31,11 +43,6 @@
                 aria-controls="navbar" aria-expanded="false">
             <span class="navbar-toggler-icon"></span>
         </button>
-
-        {% url "core:catalogue" as catalogue_url %}
-        {% url "core:sale" as sale_url %}
-        {% url "core:shifts" as shifts_url %}
-        {% url "core:finance" as finance_url %}
 
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav mr-auto">

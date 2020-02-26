@@ -1,12 +1,11 @@
 import os
-from datetime import datetime
 from math import copysign
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.utils.timezone import localtime
+from django.utils import timezone
 
 from SkriptenTool.storage import OverwriteStorage
 
@@ -41,7 +40,7 @@ def get_filename(instance, filename):
 
 class CashBookEntry(models.Model):
     def __str__(self):
-        return localtime(self.time).strftime("%d.%m.%Y %H:%M")
+        return timezone.localtime(self.time).strftime("%d.%m.%Y %H:%M")
 
     class Meta:
         verbose_name = "Kassenbucheintrag"
@@ -64,14 +63,14 @@ class CashBookEntry(models.Model):
         cls(user=user, detail="Artikel-EAN: " + ean, amount=amount).save()
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Benutzer")
-    time = models.DateTimeField(default=datetime.now, verbose_name="Zeitpunkt")
+    time = models.DateTimeField(default=timezone.now, verbose_name="Zeitpunkt")
     detail = models.CharField(max_length=20, verbose_name="Details")
-    amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Betrag")
+    amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Betrag in Euro")
 
 
 class Balance(models.Model):
     def __str__(self):
-        return localtime(self.time).strftime("%d.%m.%Y %H:%M")
+        return timezone.localtime(self.time).strftime("%d.%m.%Y %H:%M")
 
     class Meta:
         verbose_name = "Kassenstand"
@@ -110,8 +109,8 @@ class Balance(models.Model):
         Balance.objects.filter(type="Zwischenstand").delete()
 
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Benutzer")
-    time = models.DateTimeField(default=datetime.now, verbose_name="Zeitpunkt")
-    amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Kassenstand")
+    time = models.DateTimeField(default=timezone.now, verbose_name="Zeitpunkt")
+    amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Kassenstand in Euro")
     counted = models.BooleanField(verbose_name="Gezählt")
     type = models.CharField(max_length=20, verbose_name="Art")
 
@@ -141,11 +140,10 @@ class Deposit(models.Model):
 
     ean = models.CharField(max_length=20, verbose_name="EAN")
     name = models.CharField(max_length=256, verbose_name="Bezeichnung")
-    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag")
+    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag in Euro")
     active = True
 
 
-# Skripten
 class LectureNote(models.Model):
     def __str__(self):
         return self.name + " (" + self.ean + ")"
@@ -155,11 +153,28 @@ class LectureNote(models.Model):
         verbose_name_plural = "Skripten"
 
     SUBJECTS = [("M", "Mathematik"), ("P", "Physik"), ("I", "Informatik"), ]
-    COLORS = [("F1", "Farbe 1"), ("F2", "Farbe 2"), ]
+    COLORS = [("royalblau", "Royalblau"),
+              ("eisblau", "Eisblau"),
+              ("karibikblau", "Karibikblau"),
+              ("seegrün", "Seegrün"),
+              ("grasgrün", "Grasgrün"),
+              ("maigrün", "Maigrün"),
+              ("grau", "Grau"),
+              ("fuchsia", "Fuchsia"),
+              ("lila", "Lila"),
+              ("violett", "Violett"),
+              ("ziegelrot", "Ziegelrot"),
+              ("rosa", "Rosa"),
+              ("lachs", "Lachs"),
+              ("orange", "Orange"),
+              ("camel", "Camel"),
+              ("hellgelb", "Hellgelb"),
+              ("goldgelb", "Goldgelb"),
+              ("chamois", "Chamois"), ]
     PAPERSIZES = [("A4_portrait", "A4 (Hochformat)"), ("A4_landscape", "A4 (Querformat)"), ]
     SIDES = [("simplex", "Einseitig"), ("duplex", "Doppelseitig"), ]
-    SEMESTERS = [("S" + str(year), "Sommersemester " + str(year)) for year in range(2015, datetime.now().year)]\
-              + [("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in range(2015, datetime.now().year)]
+    SEMESTERS = [("S" + str(year), "Sommersemester " + str(year)) for year in range(2015, timezone.now().year)] \
+                + [("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in range(2015, timezone.now().year)]
 
     @classmethod
     def get_subject(cls, subject):
@@ -230,7 +245,7 @@ class PrintingQuota(models.Model):
         return str(self.pages) + " Seiten"
 
     ean = models.CharField(max_length=20, verbose_name="EAN")
-    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis")
+    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis in Euro")
     pages = models.IntegerField(verbose_name="Seitenzahl")
     active = models.BooleanField(verbose_name="Steht zum Verkauf")
 
@@ -238,16 +253,16 @@ class PrintingQuota(models.Model):
 class Shift(models.Model):
     def __str__(self):
         if self.time_end:
-            return localtime(self.time_start).strftime("%d.%m.%Y")\
-                   + " ("\
-                   + localtime(self.time_start).strftime("%H:%M")\
-                   + " bis "\
-                   + localtime(self.time_end).strftime("%H:%M")\
+            return timezone.localtime(self.time_start).strftime("%d.%m.%Y") \
+                   + " (" \
+                   + timezone.localtime(self.time_start).strftime("%H:%M") \
+                   + " bis " \
+                   + timezone.localtime(self.time_end).strftime("%H:%M") \
                    + ")"
         else:
-            return localtime(self.time_start).strftime("%d.%m.%Y")\
-                   + " ("\
-                   + localtime(self.time_start).strftime("%H:%M")\
+            return timezone.localtime(self.time_start).strftime("%d.%m.%Y") \
+                   + " (" \
+                   + timezone.localtime(self.time_start).strftime("%H:%M") \
                    + " bis jetzt)"
 
     class Meta:
@@ -258,7 +273,7 @@ class Shift(models.Model):
     def end_shift(cls, user):
         if Shift.objects.filter(vendor=user).exists():
             shift = Shift.objects.filter(vendor=user).latest("time_start")
-            shift.time_end = datetime.now()
+            shift.time_end = timezone.now()
             shift.save()
 
     time_start = models.DateTimeField(verbose_name="Verkaufsstart")
@@ -298,7 +313,7 @@ class DepositNote(models.Model):
         if DepositNote.exists(ean):
             note = DepositNote.objects.get(ean=ean)
             note.refunded_by = user
-            note.refunded_time = datetime.now()
+            note.refunded_time = timezone.now()
             note.save()
 
     @classmethod
@@ -309,12 +324,12 @@ class DepositNote(models.Model):
             return str(1500)
 
     ean = models.CharField(max_length=20, verbose_name="EAN")
-    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag")
+    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag in Euro")
     sold_time = models.DateTimeField(blank=True, null=True, verbose_name="Verkaufszeitpunkt")
     sold_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="sold_by", verbose_name="Verkauft von")
     refunded_time = models.DateTimeField(blank=True, null=True, verbose_name="Rückgabezeitpunkt")
     refunded_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="refunded_by", verbose_name="Zurückgegeben von")
-    refundable = models.BooleanField(verbose_name="Darf erstattet werden")
+    refundable = models.BooleanField(verbose_name="Erstattbar")
 
     def is_refunded(self):
         return self.refunded_by
@@ -329,7 +344,7 @@ class Cart(models.Model):
         verbose_name_plural = "Verkaufsvorgänge"
 
     vendor = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Verkäufer")
-    time = models.DateTimeField(default=datetime.now, verbose_name="Erstellzeitpunkt")
+    time = models.DateTimeField(default=timezone.now, verbose_name="Erstellzeitpunkt")
 
     def is_empty(self):
         return not CartItem.objects.filter(cart=self).exists()
