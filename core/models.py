@@ -15,19 +15,23 @@ def get_product(ean):
     ean = str(ean)
     if LectureNote.objects.filter(ean=ean).exists():
         return LectureNote.objects.get(ean=ean)
-    if PrintingQuota.objects.filter(ean=ean).exists():
+    elif PrintingQuota.objects.filter(ean=ean).exists():
         return PrintingQuota.objects.get(ean=ean)
-    if Deposit.objects.filter(ean=ean).exists():
+    elif Deposit.objects.filter(ean=ean).exists():
         return Deposit.objects.get(ean=ean)
+    else:
+        raise Exception("Produkt mit der EAN " + ean + " wurde nicht gefunden!")
 
 
 def get_type(ean):
     if LectureNote.objects.filter(ean=ean).exists():
         return "lecturenote"
-    if PrintingQuota.objects.filter(ean=ean).exists():
+    elif PrintingQuota.objects.filter(ean=ean).exists():
         return "printingquota"
-    if Deposit.objects.filter(ean=ean).exists():
+    elif Deposit.objects.filter(ean=ean).exists():
         return "deposit"
+    else:
+        raise Exception("Produkt mit der EAN " + ean + " wurde nicht gefunden!")
 
 
 def get_filename(instance, filename):
@@ -35,7 +39,6 @@ def get_filename(instance, filename):
     return os.path.join("media/skripten", filename)
 
 
-# Kassenvorgänge
 class CashBookEntry(models.Model):
     def __str__(self):
         return localtime(self.time).strftime("%d.%m.%Y %H:%M")
@@ -66,7 +69,6 @@ class CashBookEntry(models.Model):
     amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Betrag")
 
 
-# Kassenstand
 class Balance(models.Model):
     def __str__(self):
         return localtime(self.time).strftime("%d.%m.%Y %H:%M")
@@ -117,7 +119,6 @@ class Balance(models.Model):
         return self.type == "Kassenbeginn"
 
 
-# Autoren
 class Author(models.Model):
     def __str__(self):
         return self.name
@@ -130,7 +131,6 @@ class Author(models.Model):
     mail = models.EmailField(max_length=256, verbose_name="E-Mail Adresse")
 
 
-# Kaution
 class Deposit(models.Model):
     def __str__(self):
         return self.name + " (" + self.ean + ")"
@@ -158,9 +158,8 @@ class LectureNote(models.Model):
     COLORS = [("F1", "Farbe 1"), ("F2", "Farbe 2"), ]
     PAPERSIZES = [("A4_portrait", "A4 (Hochformat)"), ("A4_landscape", "A4 (Querformat)"), ]
     SIDES = [("simplex", "Einseitig"), ("duplex", "Doppelseitig"), ]
-    SEMESTERS = [("S" + str(year), "Sommersemester " + str(year)) for year in range(2015, datetime.now().year)] + [
-        ("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in
-        range(2015, datetime.now().year)]
+    SEMESTERS = [("S" + str(year), "Sommersemester " + str(year)) for year in range(2015, datetime.now().year)]\
+              + [("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in range(2015, datetime.now().year)]
 
     @classmethod
     def get_subject(cls, subject):
@@ -204,16 +203,12 @@ class LectureNote(models.Model):
     study_grants = models.BooleanField(verbose_name="Studienzuschüsse")
     author = models.ForeignKey(Author, on_delete=models.PROTECT, null=True, verbose_name="Autor")
     semester_start = models.CharField(max_length=256, choices=SEMESTERS, verbose_name="Semester (von)")
-    semester_end = models.CharField(max_length=256, choices=SEMESTERS, null=True, blank=True,
-                                    verbose_name="Semester (bis)")
+    semester_end = models.CharField(max_length=256, choices=SEMESTERS, null=True, blank=True, verbose_name="Semester (bis)")
     active = models.BooleanField(verbose_name="Steht zum Verkauf")
-    deposit = models.ForeignKey(Deposit, on_delete=models.PROTECT, blank=True, null=True,
-                                verbose_name="Kaution")
+    deposit = models.ForeignKey(Deposit, on_delete=models.PROTECT, blank=True, null=True, verbose_name="Kaution")
     stock = models.IntegerField(verbose_name="Bestand", default=0)
-    color = models.CharField(max_length=20, choices=COLORS, null=True, blank=True,
-                             verbose_name="Deckblattfarbe")
-    papersize = models.CharField(max_length=20, choices=PAPERSIZES, null=True, blank=True,
-                                 verbose_name="Papiergröße")
+    color = models.CharField(max_length=20, choices=COLORS, null=True, blank=True, verbose_name="Deckblattfarbe")
+    papersize = models.CharField(max_length=20, choices=PAPERSIZES, null=True, blank=True, verbose_name="Papiergröße")
     sides = models.CharField(max_length=20, choices=SIDES, null=True, blank=True, verbose_name="Seitigkeit")
     printnotes = models.CharField(max_length=256, verbose_name="Kommentar für Druck", null=True, blank=True)
     file = models.FileField(upload_to=get_filename, verbose_name="Datei", storage=OverwriteStorage(),
@@ -223,7 +218,6 @@ class LectureNote(models.Model):
         return self.deposit
 
 
-# Druckkontingent
 class PrintingQuota(models.Model):
     def __str__(self):
         return str(self.pages) + " Seiten" + " (" + self.ean + ")"
@@ -241,15 +235,20 @@ class PrintingQuota(models.Model):
     active = models.BooleanField(verbose_name="Steht zum Verkauf")
 
 
-# Verkaufsschichten
 class Shift(models.Model):
     def __str__(self):
         if self.time_end:
-            return localtime(self.time_start).strftime("%d.%m.%Y") + " (" + localtime(self.time_start).strftime(
-                "%H:%M") + " bis " + localtime(self.time_end).strftime("%H:%M") + ")"
+            return localtime(self.time_start).strftime("%d.%m.%Y")\
+                   + " ("\
+                   + localtime(self.time_start).strftime("%H:%M")\
+                   + " bis "\
+                   + localtime(self.time_end).strftime("%H:%M")\
+                   + ")"
         else:
-            return localtime(self.time_start).strftime("%d.%m.%Y") + " (" + localtime(self.time_start).strftime(
-                "%H:%M") + " bis jetzt)"
+            return localtime(self.time_start).strftime("%d.%m.%Y")\
+                   + " ("\
+                   + localtime(self.time_start).strftime("%H:%M")\
+                   + " bis jetzt)"
 
     class Meta:
         verbose_name = "Verkaufsschicht"
@@ -269,7 +268,6 @@ class Shift(models.Model):
     payout = models.BooleanField(verbose_name="Bezahlt")
 
 
-# Kautionsschein
 class DepositNote(models.Model):
     def __str__(self):
         return self.ean
@@ -313,18 +311,15 @@ class DepositNote(models.Model):
     ean = models.CharField(max_length=20, verbose_name="EAN")
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag")
     sold_time = models.DateTimeField(blank=True, null=True, verbose_name="Verkaufszeitpunkt")
-    sold_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="sold_by",
-                                verbose_name="Verkauft von")
+    sold_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="sold_by", verbose_name="Verkauft von")
     refunded_time = models.DateTimeField(blank=True, null=True, verbose_name="Rückgabezeitpunkt")
-    refunded_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True,
-                                    related_name="refunded_by", verbose_name="Zurückgegeben von")
+    refunded_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="refunded_by", verbose_name="Zurückgegeben von")
     refundable = models.BooleanField(verbose_name="Darf erstattet werden")
 
     def is_refunded(self):
         return self.refunded_by
 
 
-# Verkaufsvorgänge
 class Cart(models.Model):
     def __str__(self):
         return str(self.vendor)
@@ -412,7 +407,6 @@ class Cart(models.Model):
         return total
 
 
-# Artikel in Verkaufsvorgängen
 class CartItem(models.Model):
     def __str__(self):
         return self.ean
@@ -421,7 +415,7 @@ class CartItem(models.Model):
         verbose_name = "Artikel"
         verbose_name_plural = "Artikel"
 
-    TYPES = [("lecturenote", "Skript"), ("printingquota", "Druckkontingent"), ("deposit", "Kautionsschein")]
+    TYPES = [("lecturenote", "Skript"), ("printingquota", "Druckkontingent"), ("deposit", "Kautionsschein"), ]
 
     ean = models.CharField(max_length=20, verbose_name="EAN")
     type = models.CharField(max_length=256, choices=TYPES, null=True, verbose_name="Art")

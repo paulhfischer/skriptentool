@@ -12,7 +12,6 @@ from core.models import Balance, Cart, CartItem, CashBookEntry, DepositNote, Lec
 from core.templatetags.filters import has_group
 
 
-# Katalog
 def catalogue(request):
     context = {
         "mathematics_list": LectureNote.objects.filter(subject="M", active=True).order_by("name"),
@@ -23,16 +22,16 @@ def catalogue(request):
     return render(request, "core/catalogue.html", context)
 
 
-# Verkaufsschichten
 def shifts(request):
     if request.user.is_authenticated and has_group(request.user, "Verkäufer"):
-        context = {"shifts": Shift.objects.filter(vendor=request.user).order_by("-time_start")}
+        context = {
+            "shifts": Shift.objects.filter(vendor=request.user).order_by("-time_start")
+        }
         return render(request, "core/shifts.html", context)
     else:
         return HttpResponse()
 
 
-# Finanz
 def finance(request):
     if request.user.is_authenticated and has_group(request.user, "Finanzer"):
         start = datetime.today().date() - timedelta(weeks=1)
@@ -61,22 +60,18 @@ def finance(request):
             response["Content-Disposition"] = "attatchment; filename='kassenbuch.csv'"
             writer = csv.writer(response)
             writer.writerow(["Zeitpunkt", "Preis", "Beschreibung"])
-            for foo in CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"),
-                                                                 (end + timedelta(days=1)).strftime(
-                                                                     "%Y-%m-%d")]).values_list("time", "amount",
-                                                                                               "detail"):
+            for foo in CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")])\
+                                            .values_list("time", "amount", "detail"):
                 writer.writerow([foo[0].strftime("%Y-%m-%d %H:%M:%S"), foo[1], foo[2]])
             return response
 
         context = {
-            "cashbook_form": CashbookForm(initial={"start": start, "end": end}), "cashbook": sorted(list(chain(
-                CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"),
-                                                          (end + timedelta(days=1)).strftime("%Y-%m-%d")]).values_list(
-                    "time", "user", "amount", "detail"), Balance.objects.filter(time__range=[start.strftime("%Y-%m-%d"),
-                                                                                             (end + timedelta(
-                                                                                                 days=1)).strftime(
-                                                                                                 "%Y-%m-%d")]).values_list(
-                    "time", "user", "amount", "type"))), key=lambda x: x[0], reverse=True),
+            "cashbook_form": CashbookForm(initial={"start": start, "end": end}),
+            "cashbook": sorted(list(chain(CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")])
+                                                               .values_list("time", "user", "amount", "detail"),
+                                          Balance.objects.filter(time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")])
+                                                         .values_list("time", "user", "amount", "type"))),
+                               key=lambda x: x[0], reverse=True),
             "balance": str(Balance.objects.latest("time").amount), "test": form.cleaned_data["update"],
         }
 
@@ -85,7 +80,6 @@ def finance(request):
         return HttpResponse()
 
 
-# Verkauf
 def sale(request):
     if request.user.is_authenticated and has_group(request.user, "Verkäufer"):
         form = SaleForm(request.POST)
@@ -126,7 +120,9 @@ def sale(request):
                         new_deposit = DepositNote.new_ean()
                         DepositNote(ean=new_deposit,
                                     price=get_product(request.POST["add_deposit"].split("|")[1]).price,
-                                    sold_by=request.user, sold_time=datetime.now(), refundable=False).save()
+                                    sold_by=request.user,
+                                    sold_time=datetime.now(),
+                                    refundable=False).save()
                         own_cart.add(request.POST["add_deposit"].split("|")[0])
                         own_cart.add(request.POST["add_deposit"].split("|")[1])
                 if "remove_deposit" in request.POST and valid:  # Kautionsauszahlung
@@ -134,8 +130,7 @@ def sale(request):
                         if DepositNote.exists(form.cleaned_data["deposit"]):
                             if DepositNote.is_refundable(form.cleaned_data["deposit"]):
                                 if DepositNote.refunded(form.cleaned_data["deposit"]):
-                                    error = "Der Kautionsschein mit der Nummer " + form.cleaned_data[
-                                        "deposit"] + " wurde bereits erstattet!"
+                                    error = "Der Kautionsschein mit der Nummer " + form.cleaned_data["deposit"] + " wurde bereits erstattet!"
                                 else:
                                     DepositNote.refund(form.cleaned_data["deposit"], request.user)
                                     own_cart.remove(request.POST["remove_deposit"])
@@ -145,12 +140,12 @@ def sale(request):
                             remove_old_deposit = form.cleaned_data["deposit"] + "|" + request.POST["remove_deposit"]
                         else:
                             error = "Dieser Kautionsschein kann nur von Referenten erstattet werden!"
-                if "remove_old_deposit" in request.POST and valid and has_group(request.user,
-                                                                                "Referent"):  # Kautionsauszahlung alter Scheine
+                if "remove_old_deposit" in request.POST and valid and has_group(request.user, "Referent"):  # Kautionsauszahlung alter Scheine
                     if request.POST["remove_old_deposit"]:
                         DepositNote(ean=request.POST["remove_old_deposit"].split("|")[0],
                                     price=get_product(request.POST["remove_old_deposit"].split("|")[1]).price,
-                                    refunded_by=request.user, refunded_time=datetime.now(),
+                                    refunded_by=request.user,
+                                    refunded_time=datetime.now(),
                                     refundable=True).save()
                         own_cart.remove(request.POST["remove_old_deposit"].split("|")[1])
 

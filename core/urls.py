@@ -4,5 +4,9 @@ from core import views
 
 app_name = "core"
 
-urlpatterns = [path('', views.catalogue, name="catalogue"), path('verkauf/', views.sale, name="sale"),
-               path('finanz/', views.finance, name="finance"), path('schichten/', views.shifts, name="shifts"), ]
+urlpatterns = [
+    path('', views.catalogue, name="catalogue"),
+    path('verkauf/', views.sale, name="sale"),
+    path('finanz/', views.finance, name="finance"),
+    path('schichten/', views.shifts, name="shifts"),
+]

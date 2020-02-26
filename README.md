@@ -13,9 +13,16 @@
 - Deckblattgenerierung
 - Druckauftrag-Generierung
 
-## Requirements
+## Dependencies
 - PDFTK
 - LatexMK
+- pdfinfo
+
+## Setup
+- Superadmin: admin | admin
+- Dependencies erstellen
+- Anfnags-Kassenstand setzen
+- Gruppen erstellen (Verkäufer, Referent, Finanzer)
 
 ## Feature-Requests
 - LDAP-Verbindung
