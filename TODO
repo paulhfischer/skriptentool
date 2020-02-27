@@ -1,0 +1,14 @@
+* negative price works in lecture_notes
+* wrong ean leads to 404
+* kasseneinlage can go negative (you can remove more than you have)
+* kaution EAN disjunkt pls
+* "Alter Kautionsschein" ODER falsche nummer eingegeben. (nummer anzeigen zum überprüfen)
+* EAN in Kautionsscheinnummer umbenennen
+* Pls show error when any command fails
+* Escape all input into tex templates
+* XML injection in template replacement of skripenauftrag.xfdf
+* lecturenotes.ean could be used for many injections, therefore pls always validate. (CAREFUL!!!! IMPORTANT!!)
+  either: use escape_ean() function to sanitize output
+  or:     replace all uses of ean with uuids where the format is known.
+  or:     database field can only store integers
+  or:     all of the above
