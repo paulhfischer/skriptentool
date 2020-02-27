@@ -64,7 +64,7 @@ def generate_order(lecturenote):
 @admin.register(Deposit)
 class DepositAdmin(admin.ModelAdmin):
     fields = ["ean", "name", "price"]
-    readonly_fields = ["ean"]
+    readonly_fields = []
 
     list_display = ["ean", "name", "price"]
     list_display_links = ["ean"]
@@ -79,7 +79,7 @@ class DepositAdmin(admin.ModelAdmin):
 @admin.register(PrintingQuota)
 class PrintingQuotaAdmin(admin.ModelAdmin):
     fields = ["ean", "pages", "price", "active"]
-    readonly_fields = ["ean"]
+    readonly_fields = []
 
     list_display = ["ean", "pages", "price", "active"]
     list_display_links = ["ean"]
@@ -109,7 +109,7 @@ class LectureNoteAdmin(admin.ModelAdmin):
             "fields": ["color", "papersize", "sides", "printnotes", "file"],
         }],
     ]
-    readonly_fields = ["ean"]
+    readonly_fields = []
 
     list_display = ["ean", "name", "subject", "active", "stock", "printnotes"]
     list_display_links = ["ean"]

@@ -4,8 +4,9 @@ from itertools import chain
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
+from django.utils import timezone
 
 from core.forms import CashbookForm, SaleForm
 from core.models import Balance, Cart, CartItem, CashBookEntry, DepositNote, LectureNote, Shift, get_product, get_type
@@ -29,7 +30,7 @@ def shifts(request):
         }
         return render(request, "core/shifts.html", context)
     else:
-        return HttpResponse()
+        raise Http404
 
 
 def finance(request):
@@ -72,12 +73,12 @@ def finance(request):
                                           Balance.objects.filter(time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")])
                                                          .values_list("time", "user", "amount", "type"))),
                                key=lambda x: x[0], reverse=True),
-            "balance": str(Balance.objects.latest("time").amount), "test": form.cleaned_data["update"],
+            "balance": str(Balance.objects.latest("time").amount),
         }
 
         return render(request, "core/finance.html", context)
     else:
-        return HttpResponse()
+        raise Http404
 
 
 def sale(request):
@@ -237,4 +238,4 @@ def sale(request):
 
         return render(request, "core/sale.html", context)
     else:
-        return HttpResponse()
+        raise Http404
