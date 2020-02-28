@@ -61,17 +61,17 @@ def finance(request):
             response["Content-Disposition"] = "attatchment; filename='kassenbuch.csv'"
             writer = csv.writer(response)
             writer.writerow(["Zeitpunkt", "Preis", "Beschreibung"])
-            for foo in CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")])\
-                                            .values_list("time", "amount", "detail"):
+            for foo in CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")]) \
+                    .values_list("time", "amount", "detail"):
                 writer.writerow([foo[0].strftime("%Y-%m-%d %H:%M:%S"), foo[1], foo[2]])
             return response
 
         context = {
             "cashbook_form": CashbookForm(initial={"start": start, "end": end}),
             "cashbook": sorted(list(chain(CashBookEntry.objects.filter(time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")])
-                                                               .values_list("time", "user", "amount", "detail"),
+                                          .values_list("time", "user", "amount", "detail"),
                                           Balance.objects.filter(time__range=[start.strftime("%Y-%m-%d"), (end + timedelta(days=1)).strftime("%Y-%m-%d")])
-                                                         .values_list("time", "user", "amount", "type"))),
+                                          .values_list("time", "user", "amount", "type"))),
                                key=lambda x: x[0], reverse=True),
             "balance": str(Balance.objects.latest("time").amount),
         }
@@ -118,8 +118,8 @@ def sale(request):
                         own_cart.add(request.POST["has_deposit"].split("|")[0])
                 if "add_deposit" in request.POST and valid:  # Kautionseinzahlung
                     if request.POST["add_deposit"]:
-                        new_deposit = DepositNote.new_ean()
-                        DepositNote(ean=new_deposit,
+                        new_deposit = DepositNote.new_number()
+                        DepositNote(number=new_deposit,
                                     price=get_product(request.POST["add_deposit"].split("|")[1]).price,
                                     sold_by=request.user,
                                     sold_time=timezone.now(),
@@ -143,7 +143,7 @@ def sale(request):
                             error = "Dieser Kautionsschein kann nur von Referenten erstattet werden!"
                 if "remove_old_deposit" in request.POST and valid and has_group(request.user, "Referent"):  # Kautionsauszahlung alter Scheine
                     if request.POST["remove_old_deposit"]:
-                        DepositNote(ean=request.POST["remove_old_deposit"].split("|")[0],
+                        DepositNote(number=request.POST["remove_old_deposit"].split("|")[0],
                                     price=get_product(request.POST["remove_old_deposit"].split("|")[1]).price,
                                     refunded_by=request.user,
                                     refunded_time=timezone.now(),

@@ -2,10 +2,11 @@ import os
 from math import copysign
 
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy
 
 from SkriptenTool.storage import OverwriteStorage
 
@@ -36,6 +37,25 @@ def get_type(ean):
 def get_filename(instance, filename):
     filename = instance.ean + ".pdf"
     return os.path.join("media/skripten", filename)
+
+
+def validate_number(value):
+    if not value.isdigit():
+        raise ValidationError(
+            gettext_lazy("%(value)s ist keine Zahl"),
+            params={"value": value}
+        )
+
+
+def validate_unique(obj):
+    pass
+    # if LectureNote.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists() or \
+    #   PrintingQuota.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists() or \
+    #   Deposit.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists():
+    #    raise forms.ValidationError(
+    #        gettext_lazy("Ein Artikel mit der EAN %(value)s existiert bereits"),
+    #        params={"value": obj.ean}
+    #    )
 
 
 class CashBookEntry(models.Model):
@@ -138,7 +158,7 @@ class Deposit(models.Model):
         verbose_name = "Kaution"
         verbose_name_plural = "Kautionen"
 
-    ean = models.CharField(max_length=20, verbose_name="EAN")
+    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number, validate_unique])
     name = models.CharField(max_length=256, verbose_name="Bezeichnung")
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag in Euro")
     active = True
@@ -211,7 +231,7 @@ class LectureNote(models.Model):
         except IndexError:
             return ""
 
-    ean = models.CharField(max_length=20, verbose_name="EAN")
+    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number, validate_unique])
     name = models.CharField(max_length=256, verbose_name="Skriptname")
     subject = models.CharField(max_length=1, choices=SUBJECTS, null=True, verbose_name="Studiengang")
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis")
@@ -244,7 +264,7 @@ class PrintingQuota(models.Model):
     def name(self):
         return str(self.pages) + " Seiten"
 
-    ean = models.CharField(max_length=20, verbose_name="EAN")
+    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number, validate_unique])
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis in Euro")
     pages = models.IntegerField(verbose_name="Seitenzahl")
     active = models.BooleanField(verbose_name="Steht zum Verkauf")
@@ -285,45 +305,45 @@ class Shift(models.Model):
 
 class DepositNote(models.Model):
     def __str__(self):
-        return self.ean
+        return self.number
 
     class Meta:
         verbose_name = "Kautionsschein"
         verbose_name_plural = "Kautionsscheine"
 
     @classmethod
-    def exists(cls, ean):
-        return DepositNote.objects.filter(ean=ean).exists()
+    def exists(cls, number):
+        return DepositNote.objects.filter(number=number).exists()
 
     @classmethod
-    def refunded(cls, ean):
-        if DepositNote.exists(ean):
-            if DepositNote.objects.get(ean=ean).refunded_time:
+    def refunded(cls, number):
+        if DepositNote.exists(number):
+            if DepositNote.objects.get(number=number).refunded_time:
                 return True
         return False
 
     @classmethod
-    def is_refundable(cls, ean):
-        if DepositNote.exists(ean):
-            return DepositNote.objects.get(ean=ean).refundable
+    def is_refundable(cls, number):
+        if DepositNote.exists(number):
+            return DepositNote.objects.get(number=number).refundable
         return False
 
     @classmethod
-    def refund(cls, ean, user):
-        if DepositNote.exists(ean):
-            note = DepositNote.objects.get(ean=ean)
+    def refund(cls, number, user):
+        if DepositNote.exists(number):
+            note = DepositNote.objects.get(number=number)
             note.refunded_by = user
             note.refunded_time = timezone.now()
             note.save()
 
     @classmethod
-    def new_ean(cls):
+    def new_number(cls):
         try:
-            return str(int(DepositNote.objects.latest("ean").ean) + 1)
+            return str(int(DepositNote.objects.latest("number").number) + 1)
         except ObjectDoesNotExist:
             return str(1500)
 
-    ean = models.CharField(max_length=20, verbose_name="EAN")
+    number = models.CharField(max_length=20, verbose_name="Kautionsscheinnummer")
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag in Euro")
     sold_time = models.DateTimeField(blank=True, null=True, verbose_name="Verkaufszeitpunkt")
     sold_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="sold_by", verbose_name="Verkauft von")

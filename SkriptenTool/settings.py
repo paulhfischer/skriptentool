@@ -1,16 +1,14 @@
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from SkriptenTool import config
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+BASE_DIR = config.BASE_DIR
 
-DEBUG = True
+SECRET_KEY = config.SECRET_KEY
 
-ALLOWED_HOSTS = ['localhost',
-                 '127.0.0.1',
-                 'fischerp.net',
-                 'fsmpi.de',
-                 'mpi.fs.tum.de', ]
+DEBUG = config.DEBUG
+
+ALLOWED_HOSTS = config.ALLOWED_HOSTS
 
 INSTALLED_APPS = ['django.contrib.admin',
                   'django.contrib.auth',
@@ -66,4 +64,6 @@ LOGIN_REDIRECT_URL = 'core:sale'
 
 LOGOUT_REDIRECT_URL = 'core:catalogue'
 
-ADMINS = [('Paul Fischer', 'paul.fischer@fs.tum.de')]
+ADMINS = config.ADMINS
+
+MEDIA_URL = os.path.join(BASE_DIR, 'media/')

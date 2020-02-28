@@ -1,77 +1,74 @@
 import os
+import subprocess
 
-from django import forms
 from django.contrib import admin
+from django.contrib.humanize.templatetags.humanize import intcomma
+from django.core.exceptions import FieldError
 
+from SkriptenTool import config
 from core.models import Author, Deposit, DepositNote, LectureNote, PrintingQuota, Shift
 from core.templatetags.filters import has_group
-
-import subprocess
+from core.utils.functions import get_pdf_page_count, tex_escape, xml_escape
 
 admin.site.site_header = "SkriptenTool"
 admin.site.site_title = "SkriptenTool"
 admin.site.index_title = "Verwaltung"
 
 
-COVERS_DIR                        = "media/deckblätter"
-LECTURE_NOTES_DIR                 = "media/skripten"
-ORDERS_DIR                        = "media/skriptenaufträge"
-OUTPUT_DIR                        = "media/druck"
-COVER_TEMPLATE_FILE               = os.path.join(COVERS_DIR, "vorlage/deckblatt.tex")
-LECTURE_NOTES_ORDER_TEMPLATE_FILE = os.path.join(ORDERS_DIR, "vorlage/skriptenauftrag.xfdf")
-
-
-def get_pdf_page_count(path):
-    output = subprocess.run(['pdfinfo', path], stdout=subprocess.PIPE).stdout.decode()
-    for line in output.splitlines():
-        if line.startswith("Pages:"):
-            return line.split(":")[1].strip()
-
-    return "Unknown"
-
-
 def generate_cover(lecturenote):
     if lecturenote.semester_end:
-        semester = LectureNote.get_semester(lecturenote.semester_start)\
-                   + " bis "\
+        semester = LectureNote.get_semester(lecturenote.semester_start) \
+                   + " bis " \
                    + LectureNote.get_semester(lecturenote.semester_end)
     else:
         semester = LectureNote.get_semester(lecturenote.semester_start)
 
-    with open(COVER_TEMPLATE_FILE, "r") as f:
+    with open(config.COVER_TEMPLATE_FILE) as f:
         template = f.read()
 
-    content = template.replace("_studienzuschüsse_", str(lecturenote.study_grants))\
-                      .replace("_author_", lecturenote.author.name)\
-                      .replace("_title_", lecturenote.name)\
-                      .replace("_semester_", semester)\
-                      .replace("_price_", str(lecturenote.price).replace(".", ","))\
-                      .replace("_pages_", get_pdf_page_count(lecturenote.file.path))\
-                      .replace("_ean_", lecturenote.ean)
+    content = template.replace("_studygrants_", tex_escape(lecturenote.study_grants)) \
+        .replace("_author_", tex_escape(lecturenote.author.name)) \
+        .replace("_title_", tex_escape(lecturenote.name)) \
+        .replace("_semester_", tex_escape(semester)) \
+        .replace("_price_", tex_escape(str(intcomma(lecturenote.price)))) \
+        .replace("_pages_", tex_escape(get_pdf_page_count(lecturenote.file.path))) \
+        .replace("_ean_", tex_escape(lecturenote.ean))
 
-    with open(os.path.join(COVERS_DIR, lecturenote.ean + ".tex"), "w+") as f:
+    with open(os.path.join(config.COVERS_DIR, lecturenote.ean + ".tex"), "w+") as f:
         f.write(content)
 
-    return subprocess.run(['./contrib/generate_cover.sh', lecturenote.ean]).returncode == 0
+    return subprocess.run(["core/utils/generate_cover.sh", lecturenote.ean, config.COVERS_DIR, config.LECTURE_NOTES_DIR, config.OUTPUT_DIR]).returncode == 0
 
 
 def generate_order(lecturenote):
-    with open(LECTURE_NOTES_ORDER_TEMPLATE_FILE, "r") as f:
+    with open(config.ORDER_TEMPLATE_CONTENT_FILE) as f:
         template = f.read()
 
-    content = template.replace("_file_", lecturenote.ean + ".pdf")\
-                      .replace("_color_", LectureNote.get_color(lecturenote.color))\
-                      .replace("_papersize_", LectureNote.get_papersize(lecturenote.papersize))\
-                      .replace("_sides_", LectureNote.get_sides(lecturenote.sides))\
-                      .replace("_amount_", "")\
-                      .replace("_subject_", LectureNote.get_subject(lecturenote.subject))\
-                      .replace("_printnotes_", lecturenote.printnotes or "")\
-                      .replace("_name_", "")
+    content = template.replace("_file_", xml_escape(lecturenote.ean + ".pdf")) \
+        .replace("_color_", xml_escape(LectureNote.get_color(lecturenote.color))) \
+        .replace("_papersize_", xml_escape(LectureNote.get_papersize(lecturenote.papersize))) \
+        .replace("_sides_", xml_escape(LectureNote.get_sides(lecturenote.sides))) \
+        .replace("_amount_", xml_escape("")) \
+        .replace("_subject_", xml_escape(LectureNote.get_subject(lecturenote.subject))) \
+        .replace("_printnotes_", xml_escape(lecturenote.printnotes or "")) \
+        .replace("_name_", xml_escape(""))
 
-    with open(os.path.join(ORDERS_DIR, lecturenote.ean + ".xfdf"), "w+") as f:
+    with open(os.path.join(config.ORDERS_DIR, lecturenote.ean + ".xfdf"), "w+") as f:
         f.write(content)
 
-    return subprocess.run(['./contrib/generate_order.sh', lecturenote.ean]).returncode == 0
+    return subprocess.run(["core/utils/generate_order.sh", lecturenote.ean, config.ORDERS_DIR, config.ORDER_TEMPLATE_FORM_FILE]).returncode == 0
+
+
+def update_files(ean_old, ean_new):
+    lecturenote = LectureNote.objects.get(ean=ean_new)
+
+    if subprocess.run(["core/utils/rename_files.sh", ean_old, ean_new, config.COVERS_DIR, config.OUTPUT_DIR, config.LECTURE_NOTES_DIR,
+                       config.ORDERS_DIR]).returncode == 0:
+        lecturenote.file = os.path.relpath(os.path.join(config.LECTURE_NOTES_DIR, ean_new + ".pdf"), config.BASE_DIR)
+        lecturenote.save()
+        return True
+    else:
+        return False
 
 
 @admin.register(Deposit)
@@ -109,11 +106,34 @@ class LectureNoteAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super(LectureNoteAdmin, self).save_model(request, obj, form, change)
 
-        if not generate_cover(obj):
-            raise forms.ValidationError("Error while generating cover")
+        print(form.changed_data)
 
-        if not generate_order(obj):
-            raise forms.ValidationError("Error while generating order")
+        if change and "ean" in form.changed_data:
+            print("DO1")
+            if not update_files(form.initial["ean"], obj.ean):
+                raise FieldError("Umbennenung der Skripten ist fehlgeschlagen")
+
+        if "study_grants" in form.changed_data or \
+                "author" in form.changed_data or \
+                "name" in form.changed_data or \
+                "semester_start" in form.changed_data or \
+                "semester_end" in form.changed_data or \
+                "price" in form.changed_data or \
+                "file" in form.changed_data or \
+                "ean" in form.changed_data:
+            print("DO2")
+            if not generate_cover(obj):
+                raise FieldError("Generierung des Deckblatts ist fehlgeschlagen!")
+
+        if "ean" in form.changed_data or \
+                "color" in form.changed_data or \
+                "papersize" in form.changed_data or \
+                "sides" in form.changed_data or \
+                "subject" in form.changed_data or \
+                "printnotes" in form.changed_data:
+            print("DO3")
+            if not generate_order(obj):
+                raise FieldError("Generierung des Skriptenauftrags ist fehlgeschlagen!")
 
     fieldsets = [
         [None, {
@@ -171,17 +191,17 @@ class ShiftAdmin(admin.ModelAdmin):
 
 @admin.register(DepositNote)
 class DepositNoteAdmin(admin.ModelAdmin):
-    fields = ["ean", "price", ("sold_time", "sold_by"), ("refunded_time", "refunded_by"), "refundable"]
-    readonly_fields = ["ean", "price", "sold_time", "sold_by", "refunded_time", "refunded_by"]
+    fields = ["number", "price", ("sold_time", "sold_by"), ("refunded_time", "refunded_by"), "refundable"]
+    readonly_fields = ["number", "price", "sold_time", "sold_by", "refunded_time", "refunded_by"]
 
-    list_display = ["ean", "price", "sold_time", "refunded_time", "refundable"]
-    list_display_links = ["ean"]
+    list_display = ["number", "price", "sold_time", "refunded_time", "refundable"]
+    list_display_links = ["number"]
     list_editable = ["refundable"]
     list_filter = ["refundable"]
 
-    search_fields = ["ean"]
+    search_fields = ["number"]
 
-    ordering = ["-ean"]
+    ordering = ["-number"]
 
 
 @admin.register(Author)

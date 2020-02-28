@@ -7,16 +7,16 @@
 \usepackage{ifthen}
 \input{vorlage/barcode.tex}
 
-\newboolean{studienzuschuesse}
-\setboolean{studienzuschuesse}{_studienzuschüsse_}
+\newboolean{studygrants}
+\setboolean{studygrants}{_studygrants_}
 
 \pagestyle{empty}
 
 \begin{document}
 
-\ifstudienzuschuesse
+\ifstudygrants
     \begin{flushright}
-    \includegraphics[width=3cm]{vorlage/studienzuschüsse.pdf}
+    \includegraphics[width=3cm]{vorlage/studygrants.pdf}
     \end{flushright}
 \fi
 
@@ -34,7 +34,7 @@
 
 \vfill
 
-\ifstudienzuschuesse
+\ifstudygrants
 \Huge Schutzgebühr \\
 \else
 \Huge Preis \\
