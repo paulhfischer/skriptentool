@@ -1,20 +1,25 @@
-* negative price works in lecture_notes
+##### IMPORTANT #####
+* kautions EANS disjunkt
+    * validator is created, problem: cannot save with same ean if not changed
+* XML injection in template replacement of skripenauftrag.xfdf
+    * partwise done, see utils.funcitons.xml_escape
+
+
+##### NICE TO HAVE #####
 * wrong ean leads to 404
 * kasseneinlage can go negative (you can remove more than you have)
-* kautions EANS disjunkt                                                                        #Validation Function TBD
-* "Alter Kautionsschein" ODER falsche nummer eingegeben. (nummer anzeigen zum überprüfen)       # DONE
-* EAN in Kautionsscheinnummer umbenennen                                                        # DONE + ean->number
-* Pls show error when any command fails                                                         # DONE
-* Escape all input into tex templates                                                           # DONE
-* XML injection in template replacement of skripenauftrag.xfdf                                  # Can be implemented in utils.funcitons.xml_escape
-* lecturenotes.ean could be used for many injections, therefore pls always validate.            # DONE
-  either: use escape_ean() function to sanitize output
-  or:     replace all uses of ean with uuids where the format is known.
-  or:     database field can only store integers                                                # <-
-  or:     all of the above
 
-* if ean is changed rename files                                                                #DONE
 
-* only redo files if relevant change                                                            #DONE
-
-* Umlaute in xfdf renderfehler                                                                  # DONE
+##### DONE #####
+* lecturenotes.ean could be used for many injections, therefore pls always validate.
+    either: use escape_ean() function to sanitize output
+    or:     replace all uses of ean with uuids where the format is known.
+ -> or:     database field can only store integers
+    or:     all of the above
+* only redo files if relevant change
+* if ean is changed rename files
+* Escape all input into tex templates
+* Pls show error when any command fails
+* EAN in Kautionsscheinnummer umbenennen
+* "Alter Kautionsschein" ODER falsche nummer eingegeben. (nummer anzeigen zum überprüfen)
+* negative price works in lecture_notes

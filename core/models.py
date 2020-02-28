@@ -1,9 +1,10 @@
 import os
+from decimal import Decimal
 from math import copysign
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
@@ -234,7 +235,7 @@ class LectureNote(models.Model):
     ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number, validate_unique])
     name = models.CharField(max_length=256, verbose_name="Skriptname")
     subject = models.CharField(max_length=1, choices=SUBJECTS, null=True, verbose_name="Studiengang")
-    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis")
+    price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis", validators=[MinValueValidator(Decimal(0.00))])
     study_grants = models.BooleanField(verbose_name="Studienzuschüsse")
     author = models.ForeignKey(Author, on_delete=models.PROTECT, null=True, verbose_name="Autor")
     semester_start = models.CharField(max_length=256, choices=SEMESTERS, verbose_name="Semester (von)")
