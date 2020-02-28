@@ -48,15 +48,20 @@ def validate_number(value):
         )
 
 
-def validate_unique(obj):
-    pass
-    # if LectureNote.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists() or \
-    #   PrintingQuota.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists() or \
-    #   Deposit.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists():
-    #    raise forms.ValidationError(
-    #        gettext_lazy("Ein Artikel mit der EAN %(value)s existiert bereits"),
-    #        params={"value": obj.ean}
-    #    )
+def validate_unique(obj, model, exclude):
+    errors = {}
+    try:
+        super(model, obj).clean_fields(exclude)
+    except ValidationError as e:
+        errors.update(e)
+
+    if LectureNote.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists() or \
+            PrintingQuota.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists() or \
+            Deposit.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists():
+        errors.update({'ean': ["Ein Artikel mit dieser EAN existiert bereits"]})
+
+    if errors:
+        raise ValidationError(errors)
 
 
 class CashBookEntry(models.Model):
@@ -159,10 +164,13 @@ class Deposit(models.Model):
         verbose_name = "Kaution"
         verbose_name_plural = "Kautionen"
 
-    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number, validate_unique])
+    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number])
     name = models.CharField(max_length=256, verbose_name="Bezeichnung")
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag in Euro")
     active = True
+
+    def clean_fields(self, exclude=None):
+        validate_unique(self, Deposit, exclude)
 
 
 class LectureNote(models.Model):
@@ -232,7 +240,7 @@ class LectureNote(models.Model):
         except IndexError:
             return ""
 
-    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number, validate_unique])
+    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number])
     name = models.CharField(max_length=256, verbose_name="Skriptname")
     subject = models.CharField(max_length=1, choices=SUBJECTS, null=True, verbose_name="Studiengang")
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis", validators=[MinValueValidator(Decimal(0.00))])
@@ -253,6 +261,9 @@ class LectureNote(models.Model):
     def get_deposit(self):
         return self.deposit
 
+    def clean_fields(self, exclude=None):
+        validate_unique(self, LectureNote, exclude)
+
 
 class PrintingQuota(models.Model):
     def __str__(self):
@@ -265,10 +276,13 @@ class PrintingQuota(models.Model):
     def name(self):
         return str(self.pages) + " Seiten"
 
-    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number, validate_unique])
+    ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number])
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Preis in Euro")
     pages = models.IntegerField(verbose_name="Seitenzahl")
     active = models.BooleanField(verbose_name="Steht zum Verkauf")
+
+    def clean_fields(self, exclude=None):
+        validate_unique(self, PrintingQuota, exclude)
 
 
 class Shift(models.Model):

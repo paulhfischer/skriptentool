@@ -106,10 +106,7 @@ class LectureNoteAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super(LectureNoteAdmin, self).save_model(request, obj, form, change)
 
-        print(form.changed_data)
-
         if change and "ean" in form.changed_data:
-            print("DO1")
             if not update_files(form.initial["ean"], obj.ean):
                 raise FieldError("Umbennenung der Skripten ist fehlgeschlagen")
 
@@ -121,7 +118,6 @@ class LectureNoteAdmin(admin.ModelAdmin):
                 "price" in form.changed_data or \
                 "file" in form.changed_data or \
                 "ean" in form.changed_data:
-            print("DO2")
             if not generate_cover(obj):
                 raise FieldError("Generierung des Deckblatts ist fehlgeschlagen!")
 
@@ -131,7 +127,6 @@ class LectureNoteAdmin(admin.ModelAdmin):
                 "sides" in form.changed_data or \
                 "subject" in form.changed_data or \
                 "printnotes" in form.changed_data:
-            print("DO3")
             if not generate_order(obj):
                 raise FieldError("Generierung des Skriptenauftrags ist fehlgeschlagen!")
 

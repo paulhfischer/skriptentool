@@ -4,12 +4,12 @@
 Wichtig: `python3`, `pdftk`, `latexmk`, `pdfinfo` und `curl` müssen bereits installiert sein.
 
 ```shell
-sh -c "$(curl -fsSL https://gitlab.lrz.de/fischerp/skriptentool/blob/master/install.sh)"
+sh -c "$(curl -fsSL https://gitlab.lrz.de/fischerp/skriptentool/raw/master/tools/install.sh)"
 ```
 
 ## Update
 ```shell
-sh -c "$(curl -fsSL https://gitlab.lrz.de/fischerp/skriptentool/blob/master/update.sh)"
+sh -c "$(curl -fsSL https://gitlab.lrz.de/fischerp/skriptentool/raw/master/tools/update.sh)"
 ```
 
 ## Bedienungsanleitung
