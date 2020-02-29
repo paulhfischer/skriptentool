@@ -8,7 +8,7 @@ class SaleForm(forms.Form):
                                  widget=forms.TextInput(attrs={"class": "form-control", "style": "text-align: left;"}))
     balance = forms.DecimalField(max_digits=6, decimal_places=2, required=False,
                                  widget=forms.NumberInput(attrs={"class": "form-control", "style": "text-align: right;"}))
-    deposit = forms.CharField(required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
+    deposit_number = forms.CharField(required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
 
 
 class CashbookForm(forms.Form):

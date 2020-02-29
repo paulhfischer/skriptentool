@@ -38,4 +38,4 @@ class Command(BaseCommand):
         referent.permissions.add(Permission.objects.get(name="Can change Verkaufsschicht"))
         referent.permissions.add(Permission.objects.get(name="Can delete Verkaufsschicht"))
         print("Erstelle Verkäufer")
-        verkaeufer, created = Group.objects.get_or_create(name="Verkäufer")
+        Group.objects.get_or_create(name="Verkäufer")

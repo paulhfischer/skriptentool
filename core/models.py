@@ -9,6 +9,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
 
+from SkriptenTool import config
 from SkriptenTool.storage import OverwriteStorage
 
 
@@ -21,7 +22,7 @@ def get_product(ean):
     elif Deposit.objects.filter(ean=ean).exists():
         return Deposit.objects.get(ean=ean)
     else:
-        raise Exception("Produkt mit der EAN " + ean + " wurde nicht gefunden!")
+        raise ObjectDoesNotExist("Produkt mit der EAN " + ean + " wurde nicht gefunden!")
 
 
 def get_type(ean):
@@ -36,8 +37,7 @@ def get_type(ean):
 
 
 def get_filename(instance, filename):
-    filename = instance.ean + ".pdf"
-    return os.path.join("media/skripten", filename)
+    return os.path.join(os.path.relpath(config.LECTURE_NOTES_DIR, config.BASE_DIR), instance.ean + ".pdf")
 
 
 def validate_number(value):
@@ -202,8 +202,8 @@ class LectureNote(models.Model):
               ("chamois", "Chamois"), ]
     PAPERSIZES = [("A4_portrait", "A4 (Hochformat)"), ("A4_landscape", "A4 (Querformat)"), ]
     SIDES = [("simplex", "Einseitig"), ("duplex", "Doppelseitig"), ]
-    SEMESTERS = [("S" + str(year), "Sommersemester " + str(year)) for year in range(2015, timezone.now().year)] \
-                + [("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in range(2015, timezone.now().year)]
+    SEMESTERS = [("S" + str(year), "Sommersemester " + str(year)) for year in range(2015, timezone.now().year)] + \
+                [("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in range(2015, timezone.now().year)]
 
     @classmethod
     def get_subject(cls, subject):
@@ -378,7 +378,7 @@ class Cart(models.Model):
         verbose_name = "Verkaufsvorgang"
         verbose_name_plural = "Verkaufsvorgänge"
 
-    vendor = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Verkäufer")
+    vendor = models.OneToOneField(User, on_delete=models.PROTECT, verbose_name="Verkäufer")
     time = models.DateTimeField(default=timezone.now, verbose_name="Erstellzeitpunkt")
 
     def is_empty(self):

@@ -6,6 +6,7 @@
 
         <script>
             $(document).ready(function () {
+
                 $(this).keydown(function (e) {
                     if (18 === e.keyCode) {
                         $("#id_ean_remove").focus();
@@ -19,109 +20,130 @@
                         e.preventDefault()
                     }
                 });
+
+                $('#id_ean_add').on(
+                    'input propertychange',
+                    event => $('#id_ean_remove').prop(
+                        'disabled',
+                        "" !== event.currentTarget.value
+                    )
+                );
+
+                $('#id_ean_remove').on(
+                    'input propertychange',
+                    event => $('#id_ean_add').prop(
+                        'disabled',
+                        "" !== event.currentTarget.value
+                    )
+                );
+
                 $('#id_ean_add').focus();
-                {% if add_deposit %}$('#addDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
-                {% if remove_deposit %}
-                    $('#removeDepositModal').modal({backdrop: 'static', keyboard: false});
-                    $('#removeDepositModal').on('shown.bs.modal', function () {
-                        $('#id_deposit').focus();
-                    });
+
+                {% if add_deposit_ean %}$('#addDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
+
+                {% if remove_deposit_ean %}
+                    $('#removeDepositModal').modal({backdrop: 'static', keyboard: false})
+                                            .on('shown.bs.modal', function () {
+                                                $('#id_deposit_number').focus();
+                                            });
                 {% endif %}
-                {% if remove_old_deposit %}$('#removeOldDepositModal').modal({backdrop: 'static', keyboard: false})
-                    ;{% endif %}
+
+                {% if remove_old_deposit_ean %}$('#removeOldDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
             });
         </script>
 
 
         <!-- PopUp für Kautionsscheinverkauf -->
-        <div class="modal fade" id="addDepositModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 class="modal-title">Kautionsschein benötigt!</h2>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-6">
-                                    <button type="submit" name="has_deposit"
-                                            value="{{ deposit_item }}|{{ add_deposit }}"
-                                            class="btn btn-dark btn-block">Vorhanden
-                                    </button>
+        {% if add_deposit_ean %}
+            <div class="modal fade" id="addDepositModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Kautionsschein benötigt!</h2>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button type="submit" name="has_deposit" value="{{ product_ean }}" class="btn btn-dark btn-block">Vorhanden</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit" name="add_deposit" value="{{ add_deposit_ean }}|{{ product_ean }}" class="btn btn-dark btn-block">
+                                            Hinzufügen
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <button type="submit" name="add_deposit"
-                                            value="{{ deposit_item }}|{{ add_deposit }}"
-                                            class="btn btn-dark btn-block">Hinzufügen
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
 
         <!-- PopUp für Kautionsscheinrücknahme -->
-        <div class="modal fade" id="removeDepositModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 class="modal-title">Kautionsscheinnummer eingeben</h2>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-6">
-                                    {{ form.deposit }}
+        {% if remove_deposit_ean %}
+            <div class="modal fade" id="removeDepositModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Kautionsscheinnummer eingeben</h2>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-6">
+                                        {{ form.deposit_number }}
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit" name="remove_deposit" value="{{ remove_deposit_ean }}" class="btn btn-dark btn-block">
+                                            Bestätigen
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <button type="submit" name="remove_deposit" value="{{ remove_deposit }}"
-                                            class="btn btn-dark btn-block">Bestätigen
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
 
         <!-- PopUp für Kautionsscheinrücknahme alter Scheine -->
-        <div class="modal fade" id="removeOldDepositModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 class="modal-title">Alter Kautionsschein oder falsche Nummer ({{ remove_old_deposit }})</h2>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-6">
-                                    <button type="submit"
-                                            class="btn btn-dark btn-block">Nicht erstatten
-                                    </button>
+        {% if remove_old_deposit_ean %}
+            <div class="modal fade" id="removeOldDepositModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Alter Kautionsschein oder falsche Nummer ({{ remove_old_deposit_number }})</h2>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-dark btn-block">Nicht erstatten</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit" name="remove_old_deposit"
+                                                value="{{ remove_old_deposit_ean }}|{{ remove_old_deposit_number }}"
+                                                class="btn btn-danger btn-block">
+                                            Erstatten
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <button type="submit" name="remove_old_deposit" value="{{ remove_old_deposit }}"
-                                            class="btn btn-danger btn-block">Erstatten
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
 
         <div class="row">
             <div class="col-3">
 
                 <!-- Buchungsformular -->
-                {% if own_cart and not last_balance.is_opening or own_cart and last_balance.counted %}
+                {% if can_order %}
                     <div class="card" style="margin-bottom: 2em;">
                         <div class="card-header"><h2>Buchen</h2></div>
                         <div class="card-body">
@@ -148,18 +170,7 @@
                 <!-- Kassenstand -->
                 <div class="card" style="margin-bottom: 2em;">
                     <div class="card-header"><h2>Kassenstand</h2></div>
-                    {% if last_balance.counted %}
-                        <div class="card-body">
-                            <div class="input-group mb-3">
-                                <!--suppress HtmlFormInputWithoutLabel -->
-                                <input type="number" value={{ balance }} class="form-control"
-                                       style="text-align: right;" readonly>
-                                <div class="input-group-append">
-                                    <span class="input-group-text">€</span>
-                                </div>
-                            </div>
-                        </div>
-                    {% else %}
+                    {% if can_count %}
                         <div class="card-body">
                             <form method="post">
                                 {% csrf_token %}
@@ -172,6 +183,15 @@
                                 <button type="submit" name="count" class="btn btn-dark btn-block">Bestätigen</button>
                             </form>
                         </div>
+                    {% else %}
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <input type="number" value={{ balance }} class="form-control" style="text-align: right;" readonly>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">€</span>
+                                </div>
+                            </div>
+                        </div>
                     {% endif %}
                 </div>
 
@@ -181,42 +201,26 @@
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
-
                             <!-- Meldungen -->
-                            {% if alien_cart %}
-                                <div class="alert alert-danger">
-                                    <strong>{{ alien_cart.vendor }}</strong> noch aktiv!
-                                </div>
+                            {% if not vendor and cart %}
+                                <div class="alert alert-danger"><strong>{{ cart.vendor }}</strong> noch aktiv!</div>
                             {% endif %}
-                            {% if own_cart and not own_cart.is_empty %}
-                                <div class="alert alert-warning">
-                                    Verkaufsvorgang läuft noch!
-                                </div>
-                            {% elif not last_balance.counted %}
-                                <div class="alert alert-warning">
-                                    Kasse nicht gezählt!
-                                </div>
+                            {% if can_next %}
+                                <div class="alert alert-warning">Verkaufsvorgang läuft noch!</div>
+                            {% endif %}
+                            {% if can_count %}
+                                <div class="alert alert-warning">Kasse nicht gezählt!</div>
                             {% endif %}
 
                             <!-- Buttons -->
-                            {% if own_cart and last_balance.counted and own_cart.is_empty %}
-                                <button type="submit" name="close_own" class="btn btn-dark btn-block"
-                                        value="{{ own_cart.vendor }}">Verkauf schließen
-                                </button>
+                            {% if can_close %}
+                                <button type="submit" name="close" class="btn btn-dark btn-block" value="{{ cart.vendor }}">Verkauf schließen</button>
                             {% endif %}
-                            {% if alien_cart and last_balance.counted and alien_cart.is_empty %}
-                                <button type="submit" name="close_alien" class="btn btn-dark btn-block"
-                                        value="{{ alien_cart.vendor }}">Verkauf schließen
-                                </button>
+                            {% if can_next and not vendor %}
+                                <button type="submit" name="next" class="btn btn-dark btn-block" value="{{ cart.vendor }}">Verkaufsvorgang beenden</button>
                             {% endif %}
-                            {% if alien_cart and not alien_cart.is_empty %}
-                                <button type="submit" name="next_alien" class="btn btn-dark btn-block"
-                                        value="{{ alien_cart.vendor }}">Verkaufsvorgang beenden
-                                </button>
-                            {% endif %}
-                            {% if not own_cart and not alien_cart and last_balance.counted %}
-                                <button type="submit" name="open" class="btn btn-success btn-block">Verkauf öffnen
-                                </button>
+                            {% if can_open %}
+                                <button type="submit" name="open" class="btn btn-dark btn-block">Verkauf öffnen</button>
                             {% endif %}
                         </form>
                     </div>
@@ -228,28 +232,25 @@
                 <div class="card">
                     <div class="card-header">
                         <h2 class="float-left">Aktueller Verkaufsvorgang</h2>
-                        {% if not own_cart.is_empty and own_cart %}
+                        {% if can_next and vendor %}
                             <form method="post" class="float-right" style="margin-top: 0.25rem;">
                                 {% csrf_token %}
-                                <button type="submit" name="next_own" class="btn btn-dark btn-block">Abschließen
-                                </button>
+                                <button type="submit" name="next" class="btn btn-dark btn-block" value="{{ user }}">Abschließen</button>
                             </form>
                         {% endif %}
                     </div>
-                    {% if own_cart %}
+                    {% if vendor %}
                         <div class="card-body">
                             {% if error %}
                                 <div class="alert alert-dismissible alert-danger">
-                                    <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i>
-                                    </button>
+                                    <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
                                     {{ error }}
                                 </div>
                             {% endif %}
-                            {% if new_deposit %}
+                            {% if new_deposit_number %}
                                 <div class="alert alert-dismissible alert-success">
-                                    <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i>
-                                    </button>
-                                    Kautionsscheinnummer: <strong>{{ new_deposit }}</strong>
+                                    <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
+                                    Kautionsscheinnummer: <strong>{{ new_deposit_number }}</strong>
                                 </div>
                             {% endif %}
                             <table class="table table-striped">
@@ -273,7 +274,7 @@
                                 {% endfor %}
                                 <tr>
                                     <th colspan="5"></th>
-                                    <th>{{ own_cart.total }} €</th>
+                                    <th>{{ cart.total }} €</th>
                                 </tr>
                             </table>
                         </div>

@@ -66,4 +66,4 @@ LOGOUT_REDIRECT_URL = 'core:catalogue'
 
 ADMINS = config.ADMINS
 
-MEDIA_URL = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = os.path.join(config.MEDIA_DIR, '/')
