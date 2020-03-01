@@ -5,56 +5,40 @@
     {% if user.is_authenticated and user|has_group:"Verkäufer" %}
 
         <script>
-            $(document).ready(function () {
+            $(window).on("load", () => {
+                const eanAdd = $("#id_ean_add");
+                const eanRemove = $("#id_ean_remove");
+                const toggleCode = 18;
 
-                $(this).keydown(function (e) {
-                    if (18 === e.keyCode) {
-                        $("#id_ean_remove").focus();
-                        e.preventDefault()
+                eanAdd.focus();
+                $(window).on("keyup", (event) => {
+                    if (toggleCode === event.keyCode) {
+                        eanAdd.focus();
+                        event.preventDefault();
                     }
                 });
-
-                $(this).keyup(function (e) {
-                    if (18 === e.keyCode) {
-                        $("#id_ean_add").focus();
-                        e.preventDefault()
+                $(window).on("keydown", (event) => {
+                    if (toggleCode === event.keyCode) {
+                        eanRemove.focus();
+                        event.preventDefault();
                     }
                 });
-
-                $('#id_ean_add').on(
-                    'input propertychange',
-                    event => $('#id_ean_remove').prop(
-                        'disabled',
-                        "" !== event.currentTarget.value
-                    )
-                );
-
-                $('#id_ean_remove').on(
-                    'input propertychange',
-                    event => $('#id_ean_add').prop(
-                        'disabled',
-                        "" !== event.currentTarget.value
-                    )
-                );
-
-                $('#id_ean_add').focus();
-
-                {% if add_deposit_ean %}$('#addDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
-
-                {% if remove_deposit_ean %}
-                    $('#removeDepositModal').modal({backdrop: 'static', keyboard: false})
-                                            .on('shown.bs.modal', function () {
-                                                $('#id_deposit_number').focus();
-                                            });
-                {% endif %}
-
-                {% if remove_old_deposit_ean %}$('#removeOldDepositModal').modal({backdrop: 'static', keyboard: false});{% endif %}
+                eanAdd.on("input propertychange", (event) => {
+                    eanRemove.prop("disabled", "" !== event.currentTarget.value);
+                });
+                eanRemove.on("input propertychange", (event) => {
+                    eanAdd.prop("disabled", "" !== event.currentTarget.value);
+                });
             });
         </script>
 
-
         <!-- PopUp für Kautionsscheinverkauf -->
         {% if add_deposit_ean %}
+            <script>
+                $(window).on("load", () => {
+                    $("#addDepositModal").modal({backdrop: "static", keyboard: false});
+                });
+            </script>
             <div class="modal fade" id="addDepositModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -83,6 +67,14 @@
 
         <!-- PopUp für Kautionsscheinrücknahme -->
         {% if remove_deposit_ean %}
+            <script>
+                $(window).on("load", () => {
+                    $("#removeDepositModal").modal({backdrop: "static", keyboard: false})
+                                            .on("shown.bs.modal", () => {
+                                                $("#id_deposit_number").focus();
+                                            });
+                });
+            </script>
             <div class="modal fade" id="removeDepositModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -111,6 +103,11 @@
 
         <!-- PopUp für Kautionsscheinrücknahme alter Scheine -->
         {% if remove_old_deposit_ean %}
+            <script>
+                $(window).on("load", () => {
+                    $("#removeOldDepositModal").modal({backdrop: "static", keyboard: false});
+                });
+            </script>
             <div class="modal fade" id="removeOldDepositModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
