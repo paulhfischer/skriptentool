@@ -9,7 +9,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
 
-from SkriptenTool import config
+from SkriptenTool import config, settings
 from SkriptenTool.storage import OverwriteStorage
 
 
@@ -37,7 +37,7 @@ def get_type(ean):
 
 
 def get_filename(instance, filename):
-    return os.path.join(os.path.relpath(config.LECTURE_NOTES_DIR, config.BASE_DIR), instance.ean + ".pdf")
+    return os.path.join(os.path.relpath(config.LECTURE_NOTES_DIR, settings.MEDIA_ROOT), instance.ean + ".pdf")
 
 
 def validate_number(value):

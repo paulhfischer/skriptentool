@@ -2,7 +2,7 @@ import os
 
 from SkriptenTool import config
 
-BASE_DIR = config.BASE_DIR
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = config.SECRET_KEY
 
@@ -41,7 +41,7 @@ TEMPLATES = [{
 
 WSGI_APPLICATION = 'SkriptenTool.wsgi.application'
 
-DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), }}
+DATABASES = config.DATABASES
 
 AUTH_PASSWORD_VALIDATORS = [{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
                             {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
@@ -58,7 +58,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = os.path.join(BASE_DIR, 'static/')
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 LOGIN_REDIRECT_URL = 'core:sale'
 
@@ -66,4 +68,18 @@ LOGOUT_REDIRECT_URL = 'core:catalogue'
 
 ADMINS = config.ADMINS
 
-MEDIA_URL = os.path.join(config.MEDIA_DIR, '/')
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SECURE = True
+
+SECURE_REFERRER_POLICY = 'origin'
+
+if config.SSL:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 60
+    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True

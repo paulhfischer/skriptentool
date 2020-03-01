@@ -5,4 +5,9 @@ from django.urls import include, path
 
 urlpatterns = [path('', include("core.urls")),
                path('', include("django.contrib.auth.urls")),
-               path('admin/', admin.site.urls), ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+               path('admin/', admin.site.urls), ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
+              + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler401 = 'django.views.defaults.page_not_found'
+handler403 = 'django.views.defaults.page_not_found'
+handler404 = 'django.views.defaults.page_not_found'
