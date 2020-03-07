@@ -3,8 +3,6 @@ from django.core.management import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Erstelle Gruppen mit entsprechenden Rechten"
-
     def handle(self, *args, **options):
         print("Erstelle Finanzer")
         finanzer, created = Group.objects.get_or_create(name="Finanzer")
@@ -14,6 +12,7 @@ class Command(BaseCommand):
         finanzer.permissions.add(Permission.objects.get(name="Can view Druckkontingent"))
         finanzer.permissions.add(Permission.objects.get(name="Can view Verkaufsschicht"))
         finanzer.permissions.add(Permission.objects.get(name="Can change Verkaufsschicht"))
+
         print("Erstelle Referent")
         referent, created = Group.objects.get_or_create(name="Referent")
         referent.permissions.add(Permission.objects.get(name="Can view Autor"))
@@ -37,5 +36,6 @@ class Command(BaseCommand):
         referent.permissions.add(Permission.objects.get(name="Can view Verkaufsschicht"))
         referent.permissions.add(Permission.objects.get(name="Can change Verkaufsschicht"))
         referent.permissions.add(Permission.objects.get(name="Can delete Verkaufsschicht"))
+
         print("Erstelle Verkäufer")
         Group.objects.get_or_create(name="Verkäufer")

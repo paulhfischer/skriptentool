@@ -5,8 +5,6 @@ from core.models import Balance
 
 
 class Command(BaseCommand):
-    help = "Setze Anfangskassenstand"
-
     def add_arguments(self, parser):
         parser.add_argument("balance", type=float)
 

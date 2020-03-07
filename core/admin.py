@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import FieldError
 
-from SkriptenTool import config
+from SkriptenTool import settings
 from core.models import Author, Deposit, DepositNote, LectureNote, PrintingQuota, Shift
 from core.templatetags.filters import has_group
 from core.utils.functions import get_pdf_page_count, tex_escape, xml_escape
@@ -23,7 +23,7 @@ def generate_cover(lecturenote):
     else:
         semester = LectureNote.get_semester(lecturenote.semester_start)
 
-    with open(config.COVER_TEMPLATE_FILE) as f:
+    with open(settings.COVER_TEMPLATE_FILE) as f:
         template = f.read()
 
     content = template.replace("_studygrants_", tex_escape(lecturenote.study_grants)) \
@@ -34,14 +34,15 @@ def generate_cover(lecturenote):
         .replace("_pages_", tex_escape(get_pdf_page_count(lecturenote.file.path))) \
         .replace("_ean_", tex_escape(lecturenote.ean))
 
-    with open(os.path.join(config.COVERS_DIR, lecturenote.ean + ".tex"), "w+") as f:
+    with open(os.path.join(settings.COVERS_DIR, lecturenote.ean + ".tex"), "w+") as f:
         f.write(content)
 
-    return subprocess.run(["core/utils/generate_cover.sh", lecturenote.ean, config.COVERS_DIR, config.LECTURE_NOTES_DIR, config.OUTPUT_DIR]).returncode == 0
+    return subprocess.run(["core/utils/generate_cover.sh", lecturenote.ean, settings.COVERS_DIR, settings.LECTURE_NOTES_DIR, settings.OUTPUT_DIR])\
+                     .returncode == 0
 
 
 def generate_order(lecturenote):
-    with open(config.ORDER_TEMPLATE_CONTENT_FILE) as f:
+    with open(settings.ORDER_TEMPLATE_CONTENT_FILE) as f:
         template = f.read()
 
     content = template.replace("_file_", xml_escape(lecturenote.ean + ".pdf")) \
@@ -53,18 +54,19 @@ def generate_order(lecturenote):
         .replace("_printnotes_", xml_escape(lecturenote.printnotes or "")) \
         .replace("_name_", xml_escape(""))
 
-    with open(os.path.join(config.ORDERS_DIR, lecturenote.ean + ".xfdf"), "w+") as f:
+    with open(os.path.join(settings.ORDERS_DIR, lecturenote.ean + ".xfdf"), "w+") as f:
         f.write(content)
 
-    return subprocess.run(["core/utils/generate_order.sh", lecturenote.ean, config.ORDERS_DIR, config.ORDER_TEMPLATE_FORM_FILE]).returncode == 0
+    return subprocess.run(["core/utils/generate_order.sh", lecturenote.ean, settings.ORDERS_DIR, settings.ORDER_TEMPLATE_FORM_FILE])\
+                     .returncode == 0
 
 
 def update_files(ean_old, ean_new):
     lecturenote = LectureNote.objects.get(ean=ean_new)
 
-    if subprocess.run(["core/utils/rename_files.sh", ean_old, ean_new, config.COVERS_DIR, config.OUTPUT_DIR, config.LECTURE_NOTES_DIR,
-                       config.ORDERS_DIR]).returncode == 0:
-        lecturenote.file = os.path.relpath(os.path.join(config.LECTURE_NOTES_DIR, ean_new + ".pdf"), config.BASE_DIR)
+    if subprocess.run(["core/utils/rename_files.sh", ean_old, ean_new, settings.COVERS_DIR, settings.OUTPUT_DIR, settings.LECTURE_NOTES_DIR,
+                       settings.ORDERS_DIR]).returncode == 0:
+        lecturenote.file = os.path.relpath(os.path.join(settings.LECTURE_NOTES_DIR, ean_new + ".pdf"), settings.BASE_DIR)
         lecturenote.save()
         return True
     else:
