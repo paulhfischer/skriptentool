@@ -62,7 +62,7 @@ def finance(request):
             response["Content-Disposition"] = "attatchment; filename='kassenbuch.csv'"
             writer = csv.writer(response)
             writer.writerow(["Zeitpunkt", "Preis", "Beschreibung"])
-            for foo in CashBookEntry.objects.filter(time__range=[start, end]).values_list("time", "amount", "detail"):
+            for foo in CashBookEntry.objects.filter(time__range=[start, end]).values_list("time", "detail", "amount"):
                 writer.writerow([foo[0].strftime("%Y-%m-%d %H:%M:%S"), foo[1], foo[2]])
             return response
 
