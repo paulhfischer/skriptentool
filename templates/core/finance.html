@@ -7,8 +7,8 @@
             <div class="card-header"><h2>Verwaltung</h2></div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-6" style="padding-right: 3rem;">
-                        <div class="input-group mb-3">
+                    <div class="col-lg-4">
+                        <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Kassenstand</span>
                             </div>
@@ -18,10 +18,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6" style="padding-left: 3rem;">
+                    <div class="col-lg-6 offset-lg-2">
                         <form method="post">
                             {% csrf_token %}
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Einlage / Entnahme</span>
                                 </div>
@@ -38,31 +38,43 @@
                 </div>
             </div>
         </div>
-        <div class="card" style="margin-top: 2em;">
+        <div class="card">
             <div class="card-header">
                 <h2>Kassenbuch</h2>
                 <form method="post" style="padding-top: 0.75rem;">
                     {% csrf_token %}
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Vom</span>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Vom</span>
+                                </div>
+                                {{ cashbook_form.start }}
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="border-left: none;">bis zum</span>
+                                </div>
+                                {{ cashbook_form.end }}
+                            </div>
                         </div>
-                        {{ cashbook_form.start }}
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" style="border-left: none;">bis zum</span>
+                        <div class="col-lg-4 offset-lg-2">
+                            <div class="row">
+                                <div class="col-6">
+                                    <button type="submit" name="refresh" class="btn btn-dark btn-block">
+                                        Aktualisieren
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" name="csv" class="btn btn-dark btn-block">
+                                        CSV-Export
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        {{ cashbook_form.end }}
-                        <button type="submit" name="refresh" class="btn btn-dark" style="margin-left: 4rem;">
-                            Aktualisieren
-                        </button>
-                        <button type="submit" name="csv" class="btn btn-dark" style="margin-left: 4rem;">
-                            CSV-Export
-                        </button>
                     </div>
                 </form>
             </div>
             <div class="card-body">
-                <table class="table table-xsm">
+                <table class="table table-xsm mb-0">
                     <tr>
                         <th>Zeitpunkt</th>
                         <th>Benutzername</th>
@@ -101,7 +113,6 @@
                         {% endif %}
                     {% endfor %}
                 </table>
-
             </div>
         </div>
     {% endif %}

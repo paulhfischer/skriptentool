@@ -5,12 +5,12 @@
     {% if user.is_authenticated and user|has_group:"Verkäufer" %}
         {{ tex }}
         <div class="row">
-            <div class="mx-auto col-6">
+            <div class="mx-auto col-lg-6">
                 <div class="card">
                     <div class="card-header"><h2>Deine Verkaufsschichten</h2></div>
                     <div class="card-body">
                         {% if shifts %}
-                            <table class="table table-xsm">
+                            <table class="table table-xsm mb-0">
                                 <tr>
                                     <th>Zeitraum</th>
                                     <th style="text-align: center;">Bestätigt</th>

@@ -27,7 +27,7 @@ OUTPUT_DIR = os.path.join(MEDIA_ROOT, "druck")
 ########
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = 'core:sale'
+LOGIN_REDIRECT_URL = 'core:catalogue'
 LOGOUT_REDIRECT_URL = 'core:catalogue'
 MEDIA_URL = '/media/'
 
@@ -91,7 +91,6 @@ TIME_ZONE = 'Europe/Berlin'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_REFERRER_POLICY = 'origin'
 if config.SSL:
@@ -99,3 +98,4 @@ if config.SSL:
     SECURE_HSTS_SECONDS = 60
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SESSION_COOKIE_SECURE = True

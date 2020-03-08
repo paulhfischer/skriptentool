@@ -137,11 +137,11 @@
         {% endif %}
 
         <div class="row">
-            <div class="col-3">
+            <div class="col-lg-3">
 
                 <!-- Buchungsformular -->
                 {% if can_order %}
-                    <div class="card" style="margin-bottom: 2em;">
+                    <div class="card">
                         <div class="card-header"><h2>Buchen</h2></div>
                         <div class="card-body">
                             <form method="post">
@@ -165,7 +165,7 @@
                 {% endif %}
 
                 <!-- Kassenstand -->
-                <div class="card" style="margin-bottom: 2em;">
+                <div class="card">
                     <div class="card-header"><h2>Kassenstand</h2></div>
                     {% if can_count %}
                         <div class="card-body">
@@ -225,7 +225,7 @@
             </div>
 
             <!-- Verkaufsvorgang -->
-            <div class="col-9">
+            <div class="col-lg-9">
                 <div class="card">
                     <div class="card-header">
                         <h2 class="float-left">Aktueller Verkaufsvorgang</h2>
@@ -250,7 +250,7 @@
                                     Kautionsscheinnummer: <strong>{{ new_deposit_number }}</strong>
                                 </div>
                             {% endif %}
-                            <table class="table table-striped">
+                            <table class="table table-striped mb-0">
                                 <tr>
                                     <th>EAN</th>
                                     <th>Name</th>
@@ -271,7 +271,7 @@
                                 {% endfor %}
                                 <tr>
                                     <th colspan="5"></th>
-                                    <th>{{ cart.total }} €</th>
+                                    <th style="text-align: right;">{{ cart.total }} €</th>
                                 </tr>
                             </table>
                         </div>

@@ -1,3 +1,7 @@
 .table-xsm th, .table-xsm td {
     padding: 0.15rem 0.75rem 0.15rem 0.75rem;
 }
+
+.card {
+    margin-bottom: 2em;
+}
