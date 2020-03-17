@@ -4,6 +4,7 @@
 __pycache__
 venv
 db.sqlite3
+SkriptenTool/config.py
 media/deckblätter/*
 !media/deckblätter/vorlage/
 media/skriptenaufträge/*

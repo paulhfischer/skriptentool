@@ -32,13 +32,26 @@ LOGOUT_REDIRECT_URL = 'core:catalogue'
 MEDIA_URL = '/media/'
 
 
+########
+# MAIL #
+########
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = config.SENDER_EMAIL
+SERVER_EMAIL = config.SENDER_EMAIL
+
+
 ############
 # SETTINGS #
 ############
 
 SECRET_KEY = config.SECRET_KEY
 DEBUG = config.DEBUG
-ALLOWED_HOSTS = config.ALLOWED_HOSTS
+ALLOWED_HOSTS = ['localhost'] + config.ALLOWED_HOSTS
 ADMINS = config.ADMINS
 INSTALLED_APPS = ['django.contrib.admin',
                   'django.contrib.auth',
