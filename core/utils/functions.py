@@ -2,6 +2,8 @@ import re
 import subprocess
 
 
+# return number of pages of pdf using pdfinfo
+# on error return "unbekannt"
 def get_pdf_page_count(path):
     output = subprocess.run(['pdfinfo', path], stdout=subprocess.PIPE).stdout.decode()
     for line in output.splitlines():
@@ -11,6 +13,7 @@ def get_pdf_page_count(path):
     return "unbekannt"
 
 
+# escape characters to prevent tex-injection
 def tex_escape(string):
     string = str(string)
     conv = {
@@ -31,6 +34,7 @@ def tex_escape(string):
     return regex.sub(lambda match: conv[match.group()], string)
 
 
+# escape characters to prevent xml-injection
 def xml_escape(string):
     conv = {
         "&": r"&amp;",

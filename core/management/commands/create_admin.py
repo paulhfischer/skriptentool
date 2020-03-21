@@ -9,5 +9,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         admin = User.objects.create_superuser(options["username"], "", options["password"])
+        # add user to all existing groups
         for group in Group.objects.all():
             group.user_set.add(admin)

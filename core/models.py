@@ -13,6 +13,8 @@ from SkriptenTool import settings
 from SkriptenTool.storage import OverwriteStorage
 
 
+# return model instance from ean
+# necessary as lecturenotes, printingquota and deposit are different models
 def get_product(ean):
     ean = str(ean)
     if LectureNote.objects.filter(ean=ean).exists():
@@ -25,6 +27,8 @@ def get_product(ean):
         raise ObjectDoesNotExist("Produkt mit der EAN " + ean + " wurde nicht gefunden!")
 
 
+# return model type from ean
+# necessary as lecturenotes, printingquota and deposit are different models
 def get_type(ean):
     if LectureNote.objects.filter(ean=ean).exists():
         return "lecturenote"
@@ -33,13 +37,15 @@ def get_type(ean):
     elif Deposit.objects.filter(ean=ean).exists():
         return "deposit"
     else:
-        raise Exception("Produkt mit der EAN " + ean + " wurde nicht gefunden!")
+        raise ObjectDoesNotExist("Produkt mit der EAN " + ean + " wurde nicht gefunden!")
 
 
+# return path to lecturenote-pdf, relative to media folder
 def get_filename(instance, filename):
     return os.path.join(os.path.relpath(settings.LECTURE_NOTES_DIR, settings.MEDIA_ROOT), instance.ean + ".pdf")
 
 
+# check if input is value for form validation
 def validate_number(value):
     if not value.isdigit():
         raise ValidationError(
@@ -48,6 +54,8 @@ def validate_number(value):
         )
 
 
+# check of input ean already exists for form validation
+# necessary as lecturenotes, printingquota and deposit are different models
 def validate_unique(obj, model, exclude):
     errors = {}
     try:
@@ -102,6 +110,7 @@ class Balance(models.Model):
         verbose_name = "Kassenstand"
         verbose_name_plural = "Kassenstände"
 
+    # set counted of latest model instance to true if counted amount is correct, add correction otherwise
     @classmethod
     def count_latest(cls, user, amount):
         latest = Balance.objects.latest("time")
@@ -169,6 +178,7 @@ class Deposit(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag in Euro")
     active = True
 
+    # overwrite validation function to check if ean is unique
     def clean_fields(self, exclude=None):
         validate_unique(self, Deposit, exclude)
 
@@ -181,7 +191,9 @@ class LectureNote(models.Model):
         verbose_name = "Skript"
         verbose_name_plural = "Skripten"
 
-    SUBJECTS = [("M", "Mathematik"), ("P", "Physik"), ("I", "Informatik"), ]
+    SUBJECTS = [("M", "Mathematik"),
+                ("P", "Physik"),
+                ("I", "Informatik")]
     COLORS = [("royalblau", "Royalblau"),
               ("eisblau", "Eisblau"),
               ("karibikblau", "Karibikblau"),
@@ -199,45 +211,53 @@ class LectureNote(models.Model):
               ("camel", "Camel"),
               ("hellgelb", "Hellgelb"),
               ("goldgelb", "Goldgelb"),
-              ("chamois", "Chamois"), ]
-    PAPERSIZES = [("A4_portrait", "A4 (Hochformat)"), ("A4_landscape", "A4 (Querformat)"), ]
-    SIDES = [("simplex", "Einseitig"), ("duplex", "Doppelseitig"), ]
-    SEMESTERS = [("S" + str(year), "Sommersemester " + str(year)) for year in range(2015, timezone.now().year)] + \
-                [("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in range(2015, timezone.now().year)]
+              ("chamois", "Chamois")]
+    PAPERSIZES = [("A4_portrait", "A4 (Hochformat)"),
+                  ("A4_landscape", "A4 (Querformat)")]
+    SIDES = [("simplex", "Einseitig"),
+             ("duplex", "Doppelseitig")]
+    # semesters have to be updated manually
+    SEMESTERS = [("W" + str(year), "Wintersemester " + str(year) + " / " + str(year + 1)) for year in range(2015, 2025)] + \
+                [("S" + str(year), "Sommersemester " + str(year)) for year in range(2016, 2025)]
 
+    # return displayname of subject
     @classmethod
     def get_subject(cls, subject):
         try:
-            return list(filter(lambda x: x[0] == subject, LectureNote.SUBJECTS))[0][1]
-        except IndexError:
+            return dict(cls.SUBJECTS)[subject]
+        except KeyError:
             return ""
 
+    # return displayname of color
     @classmethod
     def get_color(cls, color):
         try:
-            return list(filter(lambda x: x[0] == color, LectureNote.COLORS))[0][1]
-        except IndexError:
+            return dict(cls.COLORS)[color]
+        except KeyError:
             return ""
 
+    # return displayname of papersize
     @classmethod
     def get_papersize(cls, papersize):
         try:
-            return list(filter(lambda x: x[0] == papersize, LectureNote.PAPERSIZES))[0][1]
-        except IndexError:
+            return dict(cls.PAPERSIZES)[papersize]
+        except KeyError:
             return ""
 
+    # return displayname of sides
     @classmethod
     def get_sides(cls, sides):
         try:
-            return list(filter(lambda x: x[0] == sides, LectureNote.SIDES))[0][1]
-        except IndexError:
+            return dict(cls.SIDES)[sides]
+        except KeyError:
             return ""
 
+    # return displayname of semester
     @classmethod
     def get_semester(cls, semester):
         try:
-            return list(filter(lambda x: x[0] == semester, LectureNote.SEMESTERS))[0][1]
-        except IndexError:
+            return dict(cls.SEMESTERS)[semester]
+        except KeyError:
             return ""
 
     ean = models.CharField(max_length=20, verbose_name="EAN", validators=[validate_number])
@@ -255,12 +275,12 @@ class LectureNote(models.Model):
     papersize = models.CharField(max_length=20, choices=PAPERSIZES, null=True, blank=True, verbose_name="Papiergröße")
     sides = models.CharField(max_length=20, choices=SIDES, null=True, blank=True, verbose_name="Seitigkeit")
     printnotes = models.CharField(max_length=256, verbose_name="Kommentar für Druck", null=True, blank=True)
-    file = models.FileField(upload_to=get_filename, verbose_name="Datei", storage=OverwriteStorage(),
-                            validators=[FileExtensionValidator(allowed_extensions=["pdf"])])
+    file = models.FileField(upload_to=get_filename, verbose_name="Datei", storage=OverwriteStorage(), validators=[FileExtensionValidator(allowed_extensions=["pdf"])])
 
     def get_deposit(self):
         return self.deposit
 
+    # overwrite validation function to check if ean is unique
     def clean_fields(self, exclude=None):
         validate_unique(self, LectureNote, exclude)
 
@@ -281,11 +301,13 @@ class PrintingQuota(models.Model):
     pages = models.IntegerField(verbose_name="Seitenzahl")
     active = models.BooleanField(verbose_name="Steht zum Verkauf")
 
+    # overwrite validation function to check if ean is unique
     def clean_fields(self, exclude=None):
         validate_unique(self, PrintingQuota, exclude)
 
 
 class Shift(models.Model):
+    # generate displayname (depending on range or single-semester)
     def __str__(self):
         if self.time_end:
             return timezone.localtime(self.time_start).strftime("%d.%m.%Y") \
@@ -385,29 +407,35 @@ class Cart(models.Model):
         return not CartItem.objects.filter(cart=self).exists()
 
     def close(self, reason):
+        # add sale entry to cashbook for every item in cart
         for cart_item in CartItem.objects.filter(cart=self):
             for i in range(abs(cart_item.quantity)):
                 CashBookEntry().sale(self.vendor, cart_item.ean, copysign(cart_item.price_single(), cart_item.quantity))
 
+        # add entry to cashbook depending on next sale opened or sale closed
         if str(reason) == "sale" and self.total() != 0:
             Balance().add_temp(self.vendor, Balance.objects.latest("time").amount + self.total(), False)
         elif str(reason) == "closing":
             Balance().add_closing(self.vendor, Balance.objects.latest("time").amount + self.total())
             Shift.end_shift(self.vendor)
 
+        # remove cart
         self.delete()
 
     def add(self, ean):
         product = get_product(ean)
         if product:
             if product.active:
+                # increase quanity of cartitem if already exists, create new otherwise
                 try:
                     cart_item = CartItem.objects.get(ean=ean, cart=self)
+                    # delete item if quantity would be "0"
                     if cart_item.quantity == -1:
                         cart_item.delete()
                     else:
                         cart_item.quantity += 1
                         cart_item.save()
+                    # update stock if attribute exists
                     try:
                         product.stock -= 1
                         product.save()
@@ -416,6 +444,7 @@ class Cart(models.Model):
                 except ObjectDoesNotExist:
                     cart_item = CartItem(ean=ean, quantity=1, type=get_type(ean), cart=self)
                     cart_item.save()
+                    # update stock if attribute exists
                     try:
                         product.stock -= 1
                         product.save()
@@ -425,13 +454,16 @@ class Cart(models.Model):
     def remove(self, ean):
         product = get_product(ean)
         if product:
+            # decrease quanity of cartitem if already exists, create new otherwise
             try:
                 cart_item = CartItem.objects.get(ean=ean, cart=self)
+                # delete item if quantity would be "0"
                 if cart_item.quantity == 1:
                     cart_item.delete()
                 else:
                     cart_item.quantity -= 1
                     cart_item.save()
+                # update stock if attribute exists
                 try:
                     product.stock += 1
                     product.save()
@@ -440,20 +472,20 @@ class Cart(models.Model):
             except ObjectDoesNotExist:
                 cart_item = CartItem(ean=ean, quantity=-1, type=get_type(ean), cart=self)
                 cart_item.save()
+                # update stock if attribute exists
                 try:
                     product.stock += 1
                     product.save()
                 except AttributeError:
                     pass
 
+    # count total balance of cart (sum up price of all cart items)
     def total(self):
         total = 0
-        try:
+        if not self.is_empty():
             cart_items = CartItem.objects.filter(cart=self)
             for item in cart_items:
                 total += item.price_total()
-        except ObjectDoesNotExist:
-            pass
         return total
 
 
@@ -465,36 +497,24 @@ class CartItem(models.Model):
         verbose_name = "Artikel"
         verbose_name_plural = "Artikel"
 
-    TYPES = [("lecturenote", "Skript"), ("printingquota", "Druckkontingent"), ("deposit", "Kautionsschein"), ]
+    TYPES = [("lecturenote", "Skript"),
+             ("printingquota", "Druckkontingent"),
+             ("deposit", "Kautionsschein")]
 
     ean = models.CharField(max_length=20, verbose_name="EAN")
     type = models.CharField(max_length=256, choices=TYPES, null=True, verbose_name="Art")
     quantity = models.IntegerField(verbose_name="Anzahl")
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, verbose_name="Verkaufsvorgang")
 
     def price_single(self):
-        if self.type == "lecturenote":
-            return LectureNote.objects.get(ean=self.ean).price
-        elif self.type == "printingquota":
-            return PrintingQuota.objects.get(ean=self.ean).price
-        elif self.type == "deposit":
-            return Deposit.objects.get(ean=self.ean).price
+        return get_product(self.ean).price
 
     def name(self):
-        if self.type == "lecturenote":
-            return LectureNote.objects.get(ean=self.ean).name
-        elif self.type == "printingquota":
-            return PrintingQuota.objects.get(ean=self.ean).name()
-        elif self.type == "deposit":
-            return Deposit.objects.get(ean=self.ean).name
+        return get_product(self.ean).name
 
     def price_total(self):
-        if self.type == "lecturenote":
-            return LectureNote.objects.get(ean=self.ean).price * self.quantity
-        elif self.type == "printingquota":
-            return PrintingQuota.objects.get(ean=self.ean).price * self.quantity
-        elif self.type == "deposit":
-            return Deposit.objects.get(ean=self.ean).price * self.quantity
+        return self.price_single() * self.quantity
 
+    # return display name of instance type
     def type_str(self):
         return dict(self.TYPES)[self.type]

@@ -1,0 +1,23 @@
+{% if can_order %}
+    <div class="card">
+        <div class="card-header"><h2>Buchen</h2></div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">+</span>
+                    </div>
+                    {{ form.ean_add }}
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">-</span>
+                    </div>
+                    {{ form.ean_remove }}
+                </div>
+                <button type="submit" name="order" class="btn btn-dark btn-block">Buchen</button>
+            </form>
+        </div>
+    </div>
+{% endif %}

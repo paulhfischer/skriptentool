@@ -1,11 +1,14 @@
+/* add extra small table styling */
 .table-xsm th, .table-xsm td {
     padding: 0.15rem 0.75rem 0.15rem 0.75rem;
 }
 
 .card {
+    /* add spacing between cards and footer */
     margin-bottom: 2em;
 }
 
 body {
+    /* add padding for footer */
     padding-bottom: 54px;
 }

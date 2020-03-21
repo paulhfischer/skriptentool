@@ -1,0 +1,53 @@
+<div class="col-lg-9">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="float-left">Aktueller Verkaufsvorgang</h2>
+            {% if can_next and vendor %}
+                <form method="post" class="float-right" style="margin-top: 0.25rem;">
+                    {% csrf_token %}
+                    <button type="submit" name="next" class="btn btn-dark btn-block" value="{{ user }}">Abschließen</button>
+                </form>
+            {% endif %}
+        </div>
+        {% if vendor %}
+            <div class="card-body">
+                {% if error %}
+                    <div class="alert alert-dismissible alert-danger">
+                        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
+                        {{ error }}
+                    </div>
+                {% endif %}
+                {% if new_deposit_number %}
+                    <div class="alert alert-dismissible alert-success">
+                        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
+                        Kautionsscheinnummer: <strong>{{ new_deposit_number }}</strong>
+                    </div>
+                {% endif %}
+                <table class="table table-striped mb-0">
+                    <tr>
+                        <th>EAN</th>
+                        <th>Name</th>
+                        <th>Kategorie</th>
+                        <th style="text-align: right;">Preis</th>
+                        <th style="text-align: center;">Anzahl</th>
+                        <th style="text-align: right;">Summe</th>
+                    </tr>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.ean }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.type_str }}</td>
+                            <td style="text-align: right;">{{ item.price_single }} €</td>
+                            <td style="text-align: center;">{{ item.quantity }}</td>
+                            <td style="text-align: right;">{{ item.price_total }} €</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <th colspan="5"></th>
+                        <th style="text-align: right;">{{ cart.total }} €</th>
+                    </tr>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>

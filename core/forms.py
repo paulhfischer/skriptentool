@@ -2,17 +2,25 @@ from django import forms
 
 
 class SaleForm(forms.Form):
-    ean_add = forms.CharField(label="Artikel hinzufügen", required=False,
+    ean_add = forms.CharField(label="Artikel hinzufügen",
+                              required=False,
                               widget=forms.TextInput(attrs={"class": "form-control", "style": "text-align: left;"}))
-    ean_remove = forms.CharField(label="Artikel entfernen", required=False,
+    ean_remove = forms.CharField(label="Artikel entfernen",
+                                 required=False,
                                  widget=forms.TextInput(attrs={"class": "form-control", "style": "text-align: left;"}))
-    balance = forms.DecimalField(max_digits=6, decimal_places=2, required=False,
+    balance = forms.DecimalField(max_digits=6, decimal_places=2,
+                                 required=False,
                                  widget=forms.NumberInput(attrs={"class": "form-control", "style": "text-align: right;"}))
-    deposit_number = forms.CharField(required=False, widget=forms.TextInput(attrs={"class": "form-control"}))
+    deposit_number = forms.CharField(required=False,
+                                     widget=forms.TextInput(attrs={"class": "form-control"}))
 
 
 class CashbookForm(forms.Form):
-    start = forms.DateField(required=False, widget=forms.DateInput(attrs={"class": "form-control"}))
-    end = forms.DateField(required=False, widget=forms.DateInput(attrs={"class": "form-control"}))
-    update = forms.DecimalField(max_digits=6, decimal_places=2, required=False,
+    start = forms.DateField(required=False,
+                            widget=forms.DateInput(attrs={"class": "form-control"}))
+    end = forms.DateField(required=False,
+                          widget=forms.DateInput(attrs={"class": "form-control"}))
+    update = forms.DecimalField(max_digits=6,
+                                decimal_places=2,
+                                required=False,
                                 widget=forms.NumberInput(attrs={"class": "form-control", "style": "text-align: right;"}))
