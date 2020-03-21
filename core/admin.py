@@ -2,6 +2,7 @@ import os
 import subprocess
 
 from django.contrib import admin
+from django.contrib.admin import DateFieldListFilter
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import FieldError
 
@@ -179,7 +180,7 @@ class ShiftAdmin(admin.ModelAdmin):
 
     list_display = ["time_start", "time_end", "vendor", "valid", "payout"]
     list_display_links = ["time_start"]
-    list_filter = ["vendor", "valid"]
+    list_filter = ["vendor", "valid", ("time_start", DateFieldListFilter)]
 
     search_fields = []
 
