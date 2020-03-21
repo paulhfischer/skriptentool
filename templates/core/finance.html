@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load filters %}
 
+{% block title %}Kassenbuch | SkriptenTool{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated and user|has_group:"Finanzer" %}
         <div class="card">
@@ -81,34 +83,34 @@
                         <th style="text-align: right;">Kassenstand</th>
                         <th>Beschreibung</th>
                     </tr>
-                    {% for foo in cashbook %}
-                        {% if foo.3 == "Kassenbeginn" or foo.3 == "Kassenschluss" or foo.3 == "Zwischenstand" %}
+                    {% for cash_book_entry in cashbook %}
+                        {% if cash_book_entry.3 == "Kassenbeginn" or cash_book_entry.3 == "Kassenschluss" or cash_book_entry.3 == "Zwischenstand" %}
                             <tr class="table-secondary">
-                                <th>{{ foo.0 }}</th>
-                                <th>{{ foo.1|username_from_id }}</th>
-                                <th style="text-align: right;">{{ foo.2 }} €</th>
-                                <th>{{ foo.3 }}</th>
+                                <th>{{ cash_book_entry.0 }}</th>
+                                <th>{{ cash_book_entry.1|username_from_id }}</th>
+                                <th style="text-align: right;">{{ cash_book_entry.2 }} €</th>
+                                <th>{{ cash_book_entry.3 }}</th>
                             </tr>
-                        {% elif foo.3 == "Korrektur" %}
+                        {% elif cash_book_entry.3 == "Korrektur" %}
                             <tr class="table-danger">
-                                <td>{{ foo.0 }}</td>
-                                <td>{{ foo.1|username_from_id }}</td>
-                                <td style="text-align: right;">{{ foo.2 }} €</td>
-                                <td>{{ foo.3 }}</td>
+                                <td>{{ cash_book_entry.0 }}</td>
+                                <td>{{ cash_book_entry.1|username_from_id }}</td>
+                                <td style="text-align: right;">{{ cash_book_entry.2 }} €</td>
+                                <td>{{ cash_book_entry.3 }}</td>
                             </tr>
-                        {% elif foo.3 == "Einlage" or foo.3 == "Entnahme" %}
+                        {% elif cash_book_entry.3 == "Einlage" or cash_book_entry.3 == "Entnahme" %}
                             <tr class="table-success">
-                                <td>{{ foo.0 }}</td>
-                                <td>{{ foo.1|username_from_id }}</td>
-                                <td style="text-align: right;">{{ foo.2 }} €</td>
-                                <td>{{ foo.3 }}</td>
+                                <td>{{ cash_book_entry.0 }}</td>
+                                <td>{{ cash_book_entry.1|username_from_id }}</td>
+                                <td style="text-align: right;">{{ cash_book_entry.2 }} €</td>
+                                <td>{{ cash_book_entry.3 }}</td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td>{{ foo.0 }}</td>
-                                <td>{{ foo.1|username_from_id }}</td>
-                                <td style="text-align: right;">{{ foo.2 }} €</td>
-                                <td>{{ foo.3 }}</td>
+                                <td>{{ cash_book_entry.0 }}</td>
+                                <td>{{ cash_book_entry.1|username_from_id }}</td>
+                                <td style="text-align: right;">{{ cash_book_entry.2 }} €</td>
+                                <td>{{ cash_book_entry.3 }}</td>
                             </tr>
                         {% endif %}
                     {% endfor %}

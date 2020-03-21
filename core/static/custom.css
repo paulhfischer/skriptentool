@@ -5,3 +5,7 @@
 .card {
     margin-bottom: 2em;
 }
+
+body {
+    padding-bottom: 54px;
+}

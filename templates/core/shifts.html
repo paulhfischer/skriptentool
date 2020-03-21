@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load filters %}
 
+{% block title %}Verkaufschichten | SkriptenTool{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated and user|has_group:"Verkäufer" %}
         {{ tex }}
@@ -14,7 +16,7 @@
                                 <tr>
                                     <th>Zeitraum</th>
                                     <th style="text-align: center;">Bestätigt</th>
-                                    <th style="text-align: center;">Ausbezahlt</th>
+                                    <th style="text-align: center;">Getänke</th>
                                 </tr>
                                 {% for shift in shifts %}
                                     <tr>

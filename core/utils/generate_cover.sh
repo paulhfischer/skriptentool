@@ -13,10 +13,10 @@ die() {
 pushd "$covers_dir" &>/dev/null ||
   die "pushd failed"
 
-latexmk -pdf "${ean}.tex" &>/dev/null ||
+latexmk --no-shell-escape -pdf "${ean}.tex" &>/dev/null ||
   die "latexmk pdf-generation failed"
 
-latexmk -pdf -c "${ean}.tex" &>/dev/null ||
+latexmk --no-shell-escape -c -pdf -c "${ean}.tex" &>/dev/null ||
   die "latexmk cleanup failed"
 
 popd &>/dev/null ||

@@ -1,6 +1,38 @@
 {% extends "base.html" %}
 {% load filters %}
 
+{% block title %}Verkauf | SkriptenTool{% endblock %}
+
+{% block head %}
+    <script>
+        $(window).on("load", () => {
+            const eanAdd = $("#id_ean_add");
+            const eanRemove = $("#id_ean_remove");
+            const toggleCode = 18;
+
+            eanAdd.focus();
+            $(window).on("keyup", (event) => {
+                if (toggleCode === event.keyCode) {
+                    eanAdd.focus();
+                    event.preventDefault();
+                }
+            });
+            $(window).on("keydown", (event) => {
+                if (toggleCode === event.keyCode) {
+                    eanRemove.focus();
+                    event.preventDefault();
+                }
+            });
+            eanAdd.on("input propertychange", (event) => {
+                eanRemove.prop("disabled", "" !== event.currentTarget.value);
+            });
+            eanRemove.on("input propertychange", (event) => {
+                eanAdd.prop("disabled", "" !== event.currentTarget.value);
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
     {% if user.is_authenticated and user|has_group:"Verkäufer" %}
 
@@ -259,14 +291,14 @@
                                     <th style="text-align: center;">Anzahl</th>
                                     <th style="text-align: right;">Summe</th>
                                 </tr>
-                                {% for foo in items %}
+                                {% for item in items %}
                                     <tr>
-                                        <td>{{ foo.ean }}</td>
-                                        <td>{{ foo.name }}</td>
-                                        <td>{{ foo.type_str }}</td>
-                                        <td style="text-align: right;">{{ foo.price_single }} €</td>
-                                        <td style="text-align: center;">{{ foo.quantity }}</td>
-                                        <td style="text-align: right;">{{ foo.price_total }} €</td>
+                                        <td>{{ item.ean }}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.type_str }}</td>
+                                        <td style="text-align: right;">{{ item.price_single }} €</td>
+                                        <td style="text-align: center;">{{ item.quantity }}</td>
+                                        <td style="text-align: right;">{{ item.price_total }} €</td>
                                     </tr>
                                 {% endfor %}
                                 <tr>
