@@ -201,6 +201,17 @@ class DepositNoteAdmin(admin.ModelAdmin):
     ordering = ["-number"]
 
 
+class LectureNoteInline(admin.StackedInline):
+    model = LectureNote
+    extra = 0
+    max_num = 0
+    can_delete = False
+    show_change_link = True
+
+    fields = [("subject", "active")]
+    readonly_fields = ["ean", "name", "subject", "active"]
+
+
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     fields = ["name", "mail"]
@@ -214,3 +225,5 @@ class AuthorAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
     ordering = ["name"]
+
+    inlines = [LectureNoteInline]
