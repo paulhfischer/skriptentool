@@ -3,6 +3,7 @@
 .idea
 __pycache__
 venv
+static
 db.sqlite3
 SkriptenTool/config.py
 media/deckblätter/*
