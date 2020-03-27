@@ -17,7 +17,7 @@ until [[ $initial_balance =~ $regex_balance ]]; do echo 'Balance has to be a two
 python3 -m venv ./venv
 source ./venv/bin/activate
 pip install --upgrade pip
-pip install Django
+pip install -r requirements.txt
 
 # create config
 cat <<EOF >./SkriptenTool/config.py

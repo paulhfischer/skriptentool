@@ -2,6 +2,7 @@ import os
 
 from SkriptenTool import config
 
+
 ###############
 # DIRECTORIES #
 ###############
@@ -26,6 +27,7 @@ OUTPUT_DIR = os.path.join(MEDIA_ROOT, "druck")
 # URLS #
 ########
 
+ROOT_URLCONF = 'SkriptenTool.urls'
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'core:catalogue'
 LOGOUT_REDIRECT_URL = 'core:catalogue'
@@ -67,7 +69,6 @@ MIDDLEWARE = ['django.middleware.security.SecurityMiddleware',
               'django.contrib.auth.middleware.AuthenticationMiddleware',
               'django.contrib.messages.middleware.MessageMiddleware',
               'django.middleware.clickjacking.XFrameOptionsMiddleware', ]
-ROOT_URLCONF = 'SkriptenTool.urls'
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'DIRS': [os.path.join(BASE_DIR, 'templates')],

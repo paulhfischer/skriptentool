@@ -10,5 +10,10 @@
 
 body {
     /* add padding for footer */
-    padding-bottom: 54px;
+    padding-bottom: 38px;
+}
+
+footer {
+    /* small footer */
+    padding: 0 !important;
 }
