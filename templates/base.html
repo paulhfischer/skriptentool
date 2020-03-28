@@ -20,6 +20,8 @@
     <script type="text/javascript" src="{% static "fontawesome.js" %}"></script>
 
     {% block head %}{% endblock %}
+    {% block extrastyle %}{% endblock %}
+    {% block extrahead %}{% endblock %}
 
     <title>{% block title %}{% endblock %}</title>
 </head>
@@ -38,25 +40,25 @@
                     <a class="nav-link {% if request.path == catalogue_url %}active{% endif %}"
                        href="{{ catalogue_url }}">Katalog</a>
                 </li>
-                {% if user|has_group:"Verkäufer" %}
+                {% if user.is_vendor %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == sale_url %}active{% endif %}"
                            href="{{ sale_url }}">Verkauf</a>
                     </li>
                 {% endif %}
-                {% if user|has_group:"Verkäufer" %}
+                {% if user.is_vendor %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == shifts_url %}active{% endif %}"
                            href="{{ shifts_url }}">Verkaufsschichten</a>
                     </li>
                 {% endif %}
-                {% if user|has_group:"Finanzer" %}
+                {% if user.is_financier %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == finance_url %}active{% endif %}"
                            href="{{ finance_url }}">Kassenbuch</a>
                     </li>
                 {% endif %}
-                {% if user|has_group:"Referent" or user|has_group:"Finanzer" %}
+                {% if user.is_referent or user.is_financier %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "admin:index" %}">Verwaltung</a>
                     </li>
@@ -73,8 +75,7 @@
     </div>
 </nav>
 <div class="container" style="margin-top: 2em;">
-    {% block content %}
-    {% endblock %}
+    {% block content %}{% endblock %}
 </div>
 <footer class="navbar navbar-expand navbar-dark bg-dark fixed-bottom">
     <div class="container">

@@ -1,97 +1,14 @@
-import csv
-from datetime import datetime, timedelta
-from itertools import chain
-
-from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import render
 from django.utils import timezone
 
-from core.forms import CashbookForm, SaleForm
-from core.models import Balance, Cart, CartItem, CashBookEntry, DepositNote, LectureNote, Shift, get_product, get_type
-from core.templatetags.filters import has_group
-
-
-def catalogue(request):
-    # return all active lecturenotes for each subject in alphabetical order
-    context = {
-        "mathematics_list": LectureNote.objects.filter(subject="M", active=True).order_by("name"),
-        "physics_list": LectureNote.objects.filter(subject="P", active=True).order_by("name"),
-        "informatics_list": LectureNote.objects.filter(subject="I", active=True).order_by("name"),
-    }
-    return render(request, "core/catalogue.html", context)
-
-
-def shifts(request):
-    if request.user.is_authenticated and has_group(request.user, "Verkäufer"):
-        # return all shifts of user ordered by time
-        context = {
-            "shifts": Shift.objects.filter(vendor=request.user).order_by("-time_start")
-        }
-        return render(request, "core/shifts.html", context)
-    else:
-        raise Http404
-
-
-def finance(request):
-    if request.user.is_authenticated and has_group(request.user, "Finanzer"):
-        start = timezone.make_aware(datetime.fromisoformat((datetime.today().date() - timedelta(weeks=1)).strftime("%Y-%m-%d")))
-        end = timezone.make_aware(datetime.fromisoformat(datetime.today().date().strftime("%Y-%m-%d")) + timedelta(days=1))
-
-        form = CashbookForm(request.POST)
-
-        action_refresh = "refresh" in request.POST and form.is_valid()
-        action_change = "change" in request.POST and form.is_valid()
-        action_csv = "csv" in request.POST and form.is_valid()
-
-        # "Aktualisieren"- or "CSV-Export"-button triggered
-        # read input fields of date range
-        if action_refresh or action_csv:
-            start = timezone.make_aware(datetime.fromisoformat(form.cleaned_data["start"].strftime("%Y-%m-%d")))
-            end = timezone.make_aware(datetime.fromisoformat(form.cleaned_data["end"].strftime("%Y-%m-%d")) + timedelta(days=1))
-
-        # "Buchen"-button triggered
-        if action_change:
-            update = form.cleaned_data["update"]
-
-            # update balance depending on action is deposit or withdrawal
-            if update > 0:
-                CashBookEntry.deposit(request.user, update)
-                Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
-            elif update < 0:
-                CashBookEntry.withdrawal(request.user, update)
-                Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
-
-        # "CSV-Export"-button triggered
-        if action_csv:
-            response = HttpResponse(content_type="text/csv")
-            response["Content-Disposition"] = "attatchment; filename='kassenbuch.csv'"
-            # create csv-file
-            writer = csv.writer(response)
-            writer.writerow(["Zeitpunkt", "Preis", "Beschreibung"])
-            for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end]).values_list("time", "detail", "amount"):
-                writer.writerow([cash_book_entry[0].strftime("%Y-%m-%d %H:%M:%S"), cash_book_entry[1], cash_book_entry[2]])
-            return response
-
-        context = {
-            # prepopulated values for time range
-            "cashbook_form": CashbookForm(initial={"start": start, "end": end - timedelta(days=1)}),
-            # cashbook entries in selected time range
-            "cashbook": sorted(list(chain(CashBookEntry.objects.filter(time__range=[start, end]).values_list("time", "user", "amount", "detail"),
-                                          Balance.objects.filter(time__range=[start, end]).values_list("time", "user", "amount", "type"))),
-                               key=lambda x: x[0], reverse=True),
-            # current balance
-            "balance": str(Balance.objects.latest("time").amount),
-        }
-
-        return render(request, "core/finance.html", context)
-    else:
-        raise Http404
+from core.forms import SaleForm
+from core.models import Balance, Cart, CartItem, DepositNote, Shift, User, get_product, get_type
 
 
 def sale(request):
-    if request.user.is_authenticated and has_group(request.user, "Verkäufer"):
+    if request.user.is_authenticated and request.user.is_vendor:
         form = SaleForm(request.POST)
 
         # get current cart, return false otherwise (needed for permissions logic)
@@ -231,14 +148,14 @@ def sale(request):
                 else:
                     error = "Dieser Kautionsschein darf noch nicht erstattet werden!"
             # start deposit refund of old depositnote if user is "Referent"
-            elif has_group(request.user, "Referent"):
+            elif request.user.is_referent:
                 remove_old_deposit_number = deposit_number
                 remove_old_deposit_ean = deposit_ean
             else:
                 error = "Der Kautionsschein " + deposit_number + " kann nur von Referenten erstattet werden!"
 
         # depositnote not in system should be refunded
-        elif can_order and action_remove_old_deposit and has_group(request.user, "Referent"):
+        elif can_order and action_remove_old_deposit and request.user.is_referent:
             deposit_number = request.POST["remove_old_deposit"].split("|")[1]
             deposit_ean = request.POST["remove_old_deposit"].split("|")[0]
             DepositNote(number=deposit_number,

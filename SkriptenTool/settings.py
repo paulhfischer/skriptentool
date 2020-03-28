@@ -113,3 +113,10 @@ if config.SSL:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+
+####################
+# AUTHENTIFICATION #
+####################
+
+AUTH_USER_MODEL = 'core.User'

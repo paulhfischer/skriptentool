@@ -34,7 +34,7 @@
 {% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated and user|has_group:"Verkäufer" %}
+    {% if user.is_authenticated and user.is_vendor %}
         <!-- Pop-ups -->
         {% include "core/sale/popups.html" %}
         <div class="row">

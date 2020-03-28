@@ -2,8 +2,10 @@ import os
 from decimal import Decimal
 from math import copysign
 
-from django.contrib.auth.models import User
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.mail import send_mail
 from django.core.validators import FileExtensionValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
@@ -11,6 +13,81 @@ from django.utils.translation import gettext_lazy
 
 from SkriptenTool import settings
 from SkriptenTool.storage import OverwriteStorage
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def create_user(self, username, email, first_name, last_name, password, vendor=False, financier=False, referent=False, admin=False):
+        user = self.model(username=username, email=email, first_name=first_name, last_name=last_name, vendor=vendor, financier=financier, referent=referent, admin=admin)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, first_name, last_name, password):
+        self.create_user(username, email, first_name, last_name, password, True, True, True, True)
+
+
+class User(AbstractBaseUser):
+    class Meta:
+        verbose_name = "Benutzer"
+        verbose_name_plural = "Benutzer"
+
+    username = models.CharField(max_length=256, unique=True, validators=[UnicodeUsernameValidator], verbose_name="Benutzername")
+    email = models.EmailField(verbose_name="E-Mail-Adresse")
+    first_name = models.CharField(max_length=256, verbose_name="Vorname")
+    last_name = models.CharField(max_length=256, verbose_name="Nachname")
+    vendor = models.BooleanField(default=False, verbose_name="Verkäufer")
+    referent = models.BooleanField(default=False, verbose_name="Referent")
+    financier = models.BooleanField(default=False, verbose_name="Finanzer")
+    admin = models.BooleanField(default=False, verbose_name="Admin")
+
+    objects = UserManager()
+
+    EMAIL_FIELD = "email"
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email", "first_name", "last_name"]
+
+    def clean(self):
+        super().clean()
+        self.email = self.__class__.objects.normalize_email(self.email)
+
+    def get_full_name(self):
+        return self.first_name + " " + self.last_name
+
+    get_full_name.short_description = "Name"
+
+    def get_short_name(self):
+        return self.first_name
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    @property
+    def is_staff(self):
+        return self.financier or self.referent or self.admin
+
+    @property
+    def is_vendor(self):
+        return self.vendor or self.admin
+
+    @property
+    def is_referent(self):
+        return self.referent or self.admin
+
+    @property
+    def is_financier(self):
+        return self.financier or self.admin
+
+    @property
+    def is_admin(self):
+        return self.admin
+
+    def has_module_perms(self, app_label):
+        return True
+
+    def has_perm(self, perm, obj=None):
+        return False
 
 
 # return model instance from ean
@@ -96,7 +173,7 @@ class CashBookEntry(models.Model):
     def sale(cls, user, ean, amount):
         cls(user=user, detail="Artikel-EAN: " + ean, amount=amount).save()
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Benutzer")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name="Benutzer")
     time = models.DateTimeField(default=timezone.now, verbose_name="Zeitpunkt")
     detail = models.CharField(max_length=20, verbose_name="Details")
     amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Betrag in Euro")
@@ -143,7 +220,7 @@ class Balance(models.Model):
         cls(user=user, amount=amount, counted=True, type="Kassenschluss").save()
         Balance.objects.filter(type="Zwischenstand").delete()
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Benutzer")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name="Benutzer")
     time = models.DateTimeField(default=timezone.now, verbose_name="Zeitpunkt")
     amount = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Kassenstand in Euro")
     counted = models.BooleanField(verbose_name="Gezählt")
@@ -335,7 +412,7 @@ class Shift(models.Model):
 
     time_start = models.DateTimeField(verbose_name="Verkaufsstart")
     time_end = models.DateTimeField(blank=True, null=True, verbose_name="Verkaufsende")
-    vendor = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Verkäufer")
+    vendor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name="Verkäufer")
     valid = models.BooleanField(verbose_name="Überprüft")
     payout = models.BooleanField(verbose_name="Bezahlt")
 
@@ -383,9 +460,9 @@ class DepositNote(models.Model):
     number = models.CharField(max_length=20, verbose_name="Kautionsscheinnummer")
     price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Kautionsbetrag in Euro")
     sold_time = models.DateTimeField(blank=True, null=True, verbose_name="Verkaufszeitpunkt")
-    sold_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="sold_by", verbose_name="Verkauft von")
+    sold_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, blank=True, null=True, related_name="sold_by", verbose_name="Verkauft von")
     refunded_time = models.DateTimeField(blank=True, null=True, verbose_name="Rückgabezeitpunkt")
-    refunded_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True, related_name="refunded_by", verbose_name="Zurückgegeben von")
+    refunded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, blank=True, null=True, related_name="refunded_by", verbose_name="Zurückgegeben von")
     refundable = models.BooleanField(verbose_name="Erstattbar")
 
     def is_refunded(self):
@@ -400,7 +477,7 @@ class Cart(models.Model):
         verbose_name = "Verkaufsvorgang"
         verbose_name_plural = "Verkaufsvorgänge"
 
-    vendor = models.OneToOneField(User, on_delete=models.PROTECT, verbose_name="Verkäufer")
+    vendor = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name="Verkäufer")
     time = models.DateTimeField(default=timezone.now, verbose_name="Erstellzeitpunkt")
 
     def is_empty(self):

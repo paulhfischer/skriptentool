@@ -6,7 +6,7 @@ app_name = "core"
 
 urlpatterns = [
     path('', views.catalogue, name="catalogue"),
-    path('verkauf/', views.sale, name="sale"),
-    path('finanz/', views.finance, name="finance"),
-    path('schichten/', views.shifts, name="shifts"),
+    path('sale/', views.sale, name="sale"),
+    path('finance/', views.finance, name="finance"),
+    path('shifts/', views.shifts, name="shifts"),
 ]

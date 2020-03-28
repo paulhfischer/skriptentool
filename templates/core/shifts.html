@@ -4,7 +4,7 @@
 {% block title %}Verkaufschichten | SkriptenTool{% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated and user|has_group:"Verkäufer" %}
+    {% if user.is_authenticated and user.is_vendor %}
         {{ tex }}
         <div class="row">
             <div class="mx-auto col-lg-6">
