@@ -32,7 +32,7 @@ DATABASE_PASSWORD = ''
 EOF
 
 # initialize project
-python manage.py migrate
-python manage.py create_groups
-python manage.py create_admin "${username_django_admin}" "${password_django_admin}"
-python manage.py initial_balance "${initial_balance}"
+./manage.py migrate
+./manage.py create_groups
+./manage.py create_admin "${username_django_admin}" "${password_django_admin}"
+./manage.py initial_balance "${initial_balance}" "${username_django_admin}"

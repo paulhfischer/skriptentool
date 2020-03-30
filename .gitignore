@@ -14,3 +14,5 @@ media/skripten/*
 !media/skripten/.gitkeep
 media/druck/*
 !media/druck/.gitkeep
+core/static/theme/node_modules
+core/static/theme/package-lock.json

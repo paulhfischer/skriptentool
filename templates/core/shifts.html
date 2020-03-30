@@ -1,44 +1,45 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load filters %}
 
-{% block title %}Verkaufschichten | SkriptenTool{% endblock %}
+{% block title %}Verkaufschichten{% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated and user.is_vendor %}
-        {{ tex }}
-        <div class="row">
-            <div class="mx-auto col-lg-6">
-                <div class="card">
-                    <div class="card-header"><h2>Deine Verkaufsschichten</h2></div>
-                    <div class="card-body">
-                        {% if shifts %}
-                            <table class="table table-xsm mb-0">
-                                <tr>
-                                    <th>Zeitraum</th>
-                                    <th style="text-align: center;">Bestätigt</th>
-                                    <th style="text-align: center;">Getänke</th>
-                                </tr>
-                                {% for shift in shifts %}
-                                    <tr>
-                                        <td>{{ shift }}</td>
-                                        <td style="text-align: center;">{% if shift.valid %}
-                                            <i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}
-                                        </td>
-                                        <td style="text-align: center;">{% if shift.payout %}
-                                            <i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
+    <div class="row">
+        <div class="mx-auto col-lg-6">
+            <div class="card">
+                <h2 class="card-header">Deine Verkaufsschichten</h2>
+                <div class="card-body">
+                    {% if shifts %}
+                        <table class="table table-xsm mb-0">
+                            <thead>
+                            <tr>
+                                <th>Zeitraum</th>
+                                <th class="text-center">Bestätigt</th>
+                                <th class="text-center">Getänke</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             {% for shift in shifts %}
-
+                                <tr>
+                                    <td>{{ shift }}</td>
+                                    <td class="text-center">{% if shift.valid %}
+                                        <i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}
+                                    </td>
+                                    <td class="text-center">{% if shift.payout %}
+                                        <i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}
+                                    </td>
+                                </tr>
                             {% endfor %}
-                        {% else %}
-                            Du hattest noch keine Verkaufsschichten.
-                        {% endif %}
-                    </div>
+                            </tbody>
+                        </table>
+                        {% for shift in shifts %}
+
+                        {% endfor %}
+                    {% else %}
+                        Du hattest noch keine Verkaufsschichten.
+                    {% endif %}
                 </div>
             </div>
         </div>
-    {% endif %}
+    </div>
 {% endblock %}

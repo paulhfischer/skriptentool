@@ -5,11 +5,11 @@ from core.models import Shift
 
 
 def shifts(request):
-    if request.user.is_authenticated and request.user.is_vendor:
+    if request.user.is_authenticated and request.user.vendor:
         # return all shifts of user ordered by time
         context = {
-            "shifts": Shift.objects.filter(vendor=request.user).order_by("-time_start")
+            'shifts': Shift.objects.filter(vendor=request.user).order_by('-time_start')
         }
-        return render(request, "core/shifts.html", context)
+        return render(request, 'core/shifts.html', context)
     else:
         raise Http404

@@ -21,3 +21,9 @@ def username_from_id(uid):
 @register.filter(name="is_string")
 def is_string(var):
     return isinstance(var, str)
+
+
+# check if variable is tuple
+@register.filter(name="is_tuple")
+def is_tuple(var):
+    return isinstance(var, tuple)
