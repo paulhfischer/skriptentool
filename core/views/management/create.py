@@ -83,9 +83,11 @@ class CreateModelView(CreateView):
     def get_success_url(self):
         return reverse('core:management_list', args=[self.kwargs['model']])
 
+    def get_form_class(self):
+        return get_form(get_model(self.kwargs.get('model')), self.request.user)
+
     def get(self, request, *args, **kwargs):
         self.model = get_model(kwargs['model'])
-        self.form_class = get_form(self.model, request.user)
 
         if is_allowed(request.user, self.model, 'create'):
             return super().get(self, request, *args, **kwargs)

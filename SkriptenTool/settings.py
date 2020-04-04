@@ -91,8 +91,8 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'skriptentool',
-            'USER': 'django',
-            'PASSWORD': '',
+            'USER': 'skriptentool',
+            'PASSWORD': config.DATABASE_PASSWORD,
             'HOST': 'localhost',
             'PORT': '',
         }}

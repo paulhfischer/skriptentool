@@ -1,5 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
-from django.forms import BaseFormSet, CheckboxInput, EmailInput, FileInput, NumberInput, PasswordInput, Select, TextInput, URLInput
+from django.forms import BaseFormSet, CheckboxInput, EmailInput, FileInput, NumberInput, PasswordInput, Select, TextInput, URLInput, DateTimeField
+from django.utils.datetime_safe import strftime
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -100,6 +101,12 @@ def field_renderer(field, style='default'):
     # add class to disable checkbox
     disabled_css = ' disabled' if isinstance(widget, CheckboxInput) and field.field.disabled else ''
 
+    # small inputs if tabular
+    if style == 'tabular':
+        small = ' custom-select-sm' if isinstance(widget, Select) else ' form-control-sm'
+    else:
+        small = ''
+
     # modify widget
     if isinstance(widget, CheckboxInput):
         widget.attrs['class'] = 'custom-control-input'
@@ -108,10 +115,10 @@ def field_renderer(field, style='default'):
         widget.attrs['class'] = 'custom-file-input'
 
     elif isinstance(widget, Select):
-        widget.attrs['class'] = 'custom-select{}{}'.format(border, validation)
+        widget.attrs['class'] = 'custom-select {}{}{}'.format(small, border, validation)
 
     else:
-        widget.attrs['class'] = 'form-control{}{}{}'.format(border, align_right, validation)
+        widget.attrs['class'] = 'form-control {}{}{}{}'.format(small, border, align_right, validation)
 
         # set placeholder if field is not disabled
         if not field.field.disabled:

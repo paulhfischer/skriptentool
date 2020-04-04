@@ -1,3 +1,4 @@
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.forms import BaseModelFormSet, ModelForm, modelformset_factory
 from django.http import Http404
 from django.shortcuts import render
@@ -75,7 +76,22 @@ class ListModelView(View):
 
         if is_allowed(request.user, model, 'list'):
             context = get_context(request.user, model)
-            context['formset'] = get_formset(request.user, model)()
+            formset = get_formset(request.user, model)()
+
+            # TODO: implement option to filter query
+            query = formset.get_queryset()
+            try:
+                objects = Paginator(query, 100).page(request.GET.get('page', 1))
+            except PageNotAnInteger:
+                objects = Paginator(query, 100).page(1)
+            except EmptyPage:
+                objects = Paginator(query, 100).page(1)
+
+            query = query.filter(pk__in=[obj.pk for obj in objects])
+            context['objects'] = objects
+            # TODO: implement option to filter query
+
+            context['formset'] = get_formset(request.user, model)(queryset=query)
 
             return render(request, 'core/management/list_model.html', context)
         else:

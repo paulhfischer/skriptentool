@@ -74,11 +74,13 @@ class UpdateModelView(UpdateView):
     def get_success_url(self):
         return reverse('core:management_list', args=[self.kwargs['model']])
 
+    def get_form_class(self):
+        return get_form(self.request.user, get_model(self.kwargs['model']))
+
     def get(self, request, *args, **kwargs):
         self.model = get_model(kwargs['model'])
 
         if is_allowed(request.user, self.model, 'update'):
-            setattr(self, 'form_class', get_form(request.user, self.model))
             return super().get(self, request, *args, **kwargs)
         else:
             raise Http404

@@ -29,8 +29,7 @@ def finance(request):
             (datetime.today().date() - timedelta(weeks=1)).strftime('%Y-%m-%d'))
         )
         end = timezone.make_aware(datetime.fromisoformat(datetime.today().date().strftime('%Y-%m-%d'))
-                                  + timedelta(days=1)
-        )
+                                  + timedelta(days=1))
 
         form = CashbookForm(request.POST)
 
@@ -63,7 +62,7 @@ def finance(request):
             response['Content-Disposition'] = 'attatchment; filename="kassenbuch.csv"'
             # create csv-file
             writer = csv.writer(response)
-            writer.writerow(['Zeitpunkt', 'Preis', 'Beschreibung'])
+            writer.writerow(['Zeitpunkt', 'Beschreibung', 'Preis'])
             for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end])\
                                                         .values_list('time', 'detail', 'amount'):
                 writer.writerow([

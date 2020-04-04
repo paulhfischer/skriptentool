@@ -13,18 +13,18 @@ class DepositNote(models.Model):
 
     number = models.CharField(
         max_length=20,
-        verbose_name='Kautionsscheinnummer'
+        verbose_name='Kautionsscheinnummer',
     )
 
     price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        verbose_name='Kautionsbetrag in Euro'
+        verbose_name='Kautionsbetrag in Euro',
     )
 
     sold_time = models.DateTimeField(
         blank=True, null=True,
-        verbose_name='Verkaufszeitpunkt'
+        verbose_name='Verkaufszeitpunkt',
     )
 
     sold_by = models.ForeignKey(
@@ -32,12 +32,12 @@ class DepositNote(models.Model):
         on_delete=models.PROTECT,
         blank=True, null=True,
         related_name='sold_by',
-        verbose_name='Verkauft von'
+        verbose_name='Verkauft von',
     )
 
     refunded_time = models.DateTimeField(
         blank=True, null=True,
-        verbose_name='Rückgabezeitpunkt'
+        verbose_name='Rückgabezeitpunkt',
     )
 
     refunded_by = models.ForeignKey(
@@ -45,12 +45,12 @@ class DepositNote(models.Model):
         on_delete=models.PROTECT,
         blank=True, null=True,
         related_name='refunded_by',
-        verbose_name='Zurückgegeben von'
+        verbose_name='Zurückgegeben von',
     )
 
     refundable = models.BooleanField(
         default=False,
-        verbose_name='Erstattbar'
+        verbose_name='Erstattbar',
     )
 
     def __str__(self):

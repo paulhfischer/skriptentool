@@ -142,3 +142,14 @@ td, th {
     border-top-width: 0;
   }
 }
+
+// fix padding for small inputs in tables
+td, th {
+  input.form-control {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  select.custom-select {
+    padding-left: 0.75rem;
+  }
+}
