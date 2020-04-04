@@ -1,0 +1,30 @@
+{% if can_order %}
+<div class="card spacer-b">
+    <h2 class="card-header">Buchen</h2>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-plus fa-xs"></i></span>
+                </div>
+                {{ form.ean_add }}
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-minus fa-xs"></i></span>
+                </div>
+                {{ form.ean_remove }}
+            </div>
+            <button
+                type="submit"
+                name="order"
+                class="btn btn-primary btn-block"
+            >
+                Buchen
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %}

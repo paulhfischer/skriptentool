@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="row">
+    <div class="mx-auto col-lg-5">
+        <div class="card">
+            <h2 class="card-header">Anmelden</h2>
+            <form
+                method="post"
+                class="list-group list-group-flush"
+            >
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <formset class="list-group-item">
+                    {% bootstrap_nonfielderrors form %}
+                </formset>
+                {% endif %}
+                <formset class="list-group-item">
+                    {% bootstrap_listfield form.username %}
+                    {% bootstrap_listfield form.password %}
+                </formset>
+                <formset class="list-group-item">
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-block"
+                    >
+                        Login
+                    </button>
+                </formset>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

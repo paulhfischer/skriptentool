@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load filters %}
+
+{% block title %}Verkaufschichten{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="mx-auto col-lg-6">
+        <div class="card">
+            <h2 class="card-header">Deine Verkaufsschichten</h2>
+            <div class="card-body">
+                {% if shifts %}
+                <table class="table table-xsm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Zeitraum</th>
+                            <th class="text-center">Bestätigt</th>
+                            <th class="text-center">Getänke</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shift in shifts %}
+                        <tr>
+                            <td>{{ shift }}</td>
+                            <td class="text-center">
+                                {% if shift.valid %}
+                                <i class="fa fa-check"></i>
+                                {% else %}
+                                <i class="fa fa-times"></i>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if shift.payout %}
+                                <i class="fa fa-check"></i>
+                                {% else %}
+                                <i class="fa fa-times"></i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% for shift in shifts %}
+
+                {% endfor %}
+                {% else %}
+                Du hattest noch keine Verkaufsschichten.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

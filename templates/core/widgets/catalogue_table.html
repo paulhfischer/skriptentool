@@ -1,0 +1,24 @@
+{% if lecturenotes %}
+<table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
+    <tr>
+        <th>Skriptenname</th>
+        <th class="text-right">Preis</th>
+        <th class="text-right">Verfügbarkeit</th>
+    </tr>
+    {% for lecturenote in lecturenotes %}
+    <tr>
+        <td>{{ lecturenote.name }}</td>
+        <td class="text-right">{{ lecturenote.price }} €</td>
+        <td class="text-right">
+            {% if lecturenote.stock > 0 %}
+            {{ lecturenote.stock }} Exemplare
+            {% else %}
+            Ausverkauft
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+Derzeit sind keine {{ subject }}-Skripte verfügbar.
+{% endif %}

@@ -1,0 +1,48 @@
+{
+    "name": "skriptentool",
+    "version": "1.0.0",
+    "private": true,
+    "author": {
+        "name": "Paul Fischer",
+        "email": "paul.fischer@mailbox.org"
+    },
+    "scripts": {
+        "build:core": "webpack --mode production --config core.config.js",
+        "watch:core": "webpack --watch --mode development --config core.config.js"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead"
+    ],
+    "dependencies": {
+        "autoprefixer": "^10.0.1",
+        "bootstrap": "^4.5.3",
+        "css-loader": "^5.0.0",
+        "cssnano": "^4.1.10",
+        "extract-loader": "^5.1.0",
+        "file-loader": "^6.2.0",
+        "jquery": "^3.5.1",
+        "popper.js": "^1.16.1",
+        "postcss": "^8.1.4",
+        "postcss-loader": "^4.0.4",
+        "sass": "^1.27.0",
+        "sass-loader": "^10.0.4",
+        "webpack": "^5.3.0",
+        "webpack-cli": "^4.1.0",
+        "webpack-remove-empty-scripts": "^0.6.3"
+    },
+    "devDependencies": {
+        "eslint": "^7.12.1",
+        "eslint-config-airbnb-base": "^14.2.0",
+        "eslint-config-prettier": "^6.15.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jsx-a11y": "^6.4.1",
+        "eslint-plugin-prettier": "^3.1.4",
+        "js-beautify": "^1.13.0",
+        "prettier": "^2.1.2",
+        "stylelint": "^8.4.0",
+        "stylelint-config-airbnb": "^0.0.0",
+        "stylelint-order": "^0.7.0",
+        "stylelint-scss": "^1.5.2"
+    }
+}

@@ -1,0 +1,63 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=15mm,dvips,a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{german,eurosym}
+\usepackage{ifthen}
+\input{vorlage/barcode.tex}
+
+\newboolean{studygrants}
+\setboolean{studygrants}{_studygrants_}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\ifstudygrants
+    \begin{flushright}
+    \includegraphics[width=3cm]{vorlage/studygrants.pdf}
+    \end{flushright}
+\fi
+
+\begin{center}\sffamily
+
+\huge _author_
+
+\vfill
+
+\Huge \textbf{_title_}\\
+
+\vfill
+
+\LARGE _semester_
+
+\vfill
+
+\ifstudygrants
+\Huge Schutzgebühr \\
+\else
+\Huge Preis \\
+\fi
+
+\Huge _price_ \euro
+
+\vfill
+_pages_ Seiten
+
+\vfill
+\includegraphics[width=7cm]{vorlage/logo.pdf}
+
+\vfill
+\large
+herausgegeben von der \\
+Fachschaft Mathematik/Physik/Informatik \\
+Raum MI 00.06.039 \\
+Boltzmannstraße 3 \\
+85748 Garching
+
+\vfill
+\,\hfill\codetext{_ean_}\hfill\,
+\vfill
+\end{center}
+\end{document}

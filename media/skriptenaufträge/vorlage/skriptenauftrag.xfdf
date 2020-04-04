@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xfdf xmlns="http://ns.adobe.com/xfdf/" xml:space="preserve">
+    <f href="skriptenauftrag.pdf"/>
+    <fields>
+        <field name="amount"><value>_amount_</value></field>
+        <field name="color"><value>_color_</value></field>
+        <field name="file"><value>_file_</value></field>
+        <field name="name"><value>_name_</value></field>
+        <field name="papersize"><value>_papersize_</value></field>
+        <field name="printnotes"><value>_printnotes_</value></field>
+        <field name="sides"><value>_sides_</value></field>
+        <field name="subject"><value>_subject_</value></field>
+    </fields>
+    <ids original="EE9187FF4198E45EE6F56F29484E8903" modified="43134C17C91F48E9AED6B681BB82908F"/>
+</xfdf>

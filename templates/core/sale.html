@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load filters %}
+
+{% block title %}Verkauf{% endblock %}
+
+{% block extrascript %}
+<script>
+    $(window).on('load', () => {
+        const eanAdd = $('#id_ean_add');
+        const eanRemove = $('#id_ean_remove');
+        const toggleCode = 18;
+
+        eanAdd.focus();
+        $(window).on('keyup', (event) => {
+            if (toggleCode === event.keyCode) {
+                eanAdd.focus();
+                event.preventDefault();
+            }
+        });
+        $(window).on('keydown', (event) => {
+            if (toggleCode === event.keyCode) {
+                eanRemove.focus();
+                event.preventDefault();
+            }
+        });
+        eanAdd.on('input propertychange', (event) => {
+            eanRemove.prop('disabled', '' !== event.currentTarget.value);
+        });
+        eanRemove.on('input propertychange', (event) => {
+            eanAdd.prop('disabled', '' !== event.currentTarget.value);
+        });
+    });
+
+</script>
+{% endblock %}
+
+{% block content %}
+{# Pop-ups #}
+{% include 'core/sale/popups.html' %}
+<div class="row">
+    <div class="col-lg-3">
+        {# Buchungsformular #}
+        {% include 'core/sale/order.html' %}
+        {# Kassenstand #}
+        {% include 'core/sale/balance.html' %}
+        {# Verkauf steuern #}
+        {% include 'core/sale/manage.html' %}
+    </div>
+    {# Verkaufsvorgang #}
+    {% include 'core/sale/sale_process.html' %}
+</div>
+{% endblock %}

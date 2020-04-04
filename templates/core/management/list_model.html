@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block title %}Verwaltung{% endblock %}
+
+{% block content %}
+<form
+    method="post"
+    class="card"
+>
+    {% csrf_token %}
+
+    {{ formset.management_form }}
+
+    <h2 class="card-header">
+        {{ verbose_name_plural }} anzeigen
+
+        <div class="btn-toolbar float-right">
+            {% if can_create %}
+            <div class="btn-group my-auto ml-3">
+                <a
+                    href="{{ create_url }}"
+                    class="btn btn-primary btn-block"
+                    role="button"
+                >
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+            {% endif %}
+            {% if can_update and editable_fields and formset.total_form_count %}
+            <div class="btn-group my-auto ml-3">
+                <button
+                    class="btn btn-success btn-block"
+                    type="submit"
+                    name="save"
+                >
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </h2>
+    <div class="card-body table-responsive">
+        {% bootstrap_formseterrors formset verbose_name_plural %}
+        {% if formset.total_form_count %}
+        <table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
+            <caption class="pb-0">
+                {{ formset.total_form_count }}
+                {% if formset.total_form_count == 1 %}
+                {{ verbose_name }}
+                {% else %}
+                {{ verbose_name_plural }}
+                {% endif %}
+            </caption>
+
+            <thead>
+                <tr>
+                    {% for field in formset.0 %}
+                    {% if field.field.widget.input_type != 'hidden' %}
+                    <th class="{% if field.field.widget.input_type == 'checkbox' %}text-center{% elif field.field.widget.input_type == 'number' %}text-right{% endif %} {% if field.field.disabled %}font-weight-normal{% endif %}">
+                        {{ field.label }}
+                    </th>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if can_update or can_delete %}
+                    <th
+                        class="text-center"
+                        style="width: 5.5rem !important;"
+                    >
+                        Aktionen
+                    </th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for form in formset %}
+                <tr>
+                    {% for field in form %}
+                    {% bootstrap_tablefield field %}
+                    {% endfor %}
+
+                    {% if can_update or can_delete %}
+                    <td
+                        class="align-middle text-center"
+                        style="width: 5.5rem !important;"
+                    >
+                        {% if can_update %}
+                        <a
+                            class="text-primary"
+                            href="{% url 'core:management_update' model_name form.id.value %}"
+                        >
+                            <i class="fas fa-pen"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if can_delete %}
+                        <a
+                            class="text-danger"
+                            href="{% url 'core:management_delete' model_name form.id.value %}"
+                        >
+                            <i class="fas fa-trash{% if can_delete and can_update %} ml-2{% endif %}"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        Es wurden keine {{ verbose_name_plural }} gefunden.
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

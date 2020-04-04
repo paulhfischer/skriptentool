@@ -1,0 +1,53 @@
+// Bootswatch
+// Cosmo 4.3.1
+
+// Colors
+$white: #ffffff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #868e96 !default;
+$gray-700: #495057 !default;
+$gray-800: #373a3c !default;
+$gray-900: #212529 !default;
+$black: #000000 !default;
+
+$blue: #1f5081 !default;
+$purple: #5f5980 !default;
+$red: #f44336 !default;
+$yellow: #ffb30f !default;
+$green: #3e935f !default;
+$teal: #20c997 !default;
+$cyan: #4c262d !default;
+
+$primary: $blue !default;
+$secondary: $gray-800 !default;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $yellow !default;
+$danger: $red !default;
+$light: $gray-100 !default;
+$dark: $gray-800 !default;
+
+// Options
+$enable-rounded: false !default;
+
+// Body
+$body-color: #373a3c !default;
+
+// Fonts
+$font-family-sans-serif: "Segoe UI", "Source Sans Pro", Calibri, Candara, Arial, sans-serif !default;
+$font-size-base: .9375rem !default;
+$headings-font-weight: 300 !default;
+
+// Navbar
+$navbar-dark-hover-color: rgba(#fff, 1) !default;
+$navbar-light-hover-color: rgba(#000, .9) !default;
+
+// Alerts
+$alert-border-width: 0 !default;
+
+// Progress bars
+$progress-height: .5rem !default;

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Katalog{% endblock %}
+
+{% block content %}
+<div class="card spacer-b">
+    <h2 class="card-header">Mathematik</h2>
+    <div class="card-body table-responsive">
+        {{ mathematics_list }}
+    </div>
+</div>
+<div class="card spacer-b">
+    <h2 class="card-header">Physik</h2>
+    <div class="card-body table-responsive">
+        {{ physics_list }}
+    </div>
+</div>
+<div class="card">
+    <h2 class="card-header">Informatik</h2>
+    <div class="card-body table-responsive">
+        {{ informatics_list }}
+    </div>
+</div>
+{% endblock %}

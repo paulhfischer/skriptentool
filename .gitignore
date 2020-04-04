@@ -1,0 +1,14 @@
+.git
+.DS_Store
+__pycache__
+node_modules
+db.sqlite3
+skriptentool/config.py
+media/deckblätter/*
+!media/deckblätter/vorlage/
+media/skriptenaufträge/*
+!media/skriptenaufträge/vorlage/
+media/skripten/*
+!media/skripten/.gitkeep
+media/druck/*
+!media/druck/.gitkeep

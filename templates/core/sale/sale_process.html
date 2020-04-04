@@ -1,0 +1,83 @@
+<div class="col-lg-9">
+    <div class="card">
+        <h2 class="card-header{% if not can_order %} border-bottom-0{% endif %}">
+            Aktueller Verkaufsvorgang
+            {% if can_next and vendor %}
+            <form
+                method="post"
+                class="float-right my-auto"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    name="next"
+                    class="btn btn-primary btn-block"
+                    value="{{ user }}"
+                >
+                    Abschließen
+                </button>
+            </form>
+            {% endif %}
+        </h2>
+        {% if can_order %}
+        <div class="card-body table-responsive">
+            {% if error %}
+            <div class="alert alert-dismissible alert-danger">
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="alert"
+                >
+                    <i class="fa fa-times"></i>
+                </button>
+                {{ error }}
+            </div>
+            {% endif %}
+
+            {% if new_deposit_number %}
+            <div class="alert alert-dismissible alert-success">
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="alert"
+                >
+                    <i class="fa fa-times"></i>
+                </button>
+                Kautionsscheinnummer: <strong>{{ new_deposit_number }}</strong>
+            </div>
+            {% endif %}
+            <table class="table mb-0 table-striped table-fixed text-nowrap">
+                <thead>
+                    <tr>
+                        <th>EAN</th>
+                        <th>Name</th>
+                        <th>Kategorie</th>
+                        <th class="text-right">Preis</th>
+                        <th class="text-center">Anzahl</th>
+                        <th class="text-right">Summe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.ean }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.get_type_display }}</td>
+                        <td class="text-right">{{ item.price_single }} €</td>
+                        <td class="text-right">{{ item.quantity }}</td>
+                        <td class="text-right">{{ item.price_total }} €</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="5"></th>
+                        <th class="text-right">{{ cart.total }} €</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>

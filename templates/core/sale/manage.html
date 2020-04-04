@@ -1,0 +1,50 @@
+<div class="card spacer-b">
+    <h2 class="card-header">Verkauf</h2>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            {# Meldungen #}
+            {% if not vendor and cart %}
+            <div class="alert alert-danger mb-0"><strong>{{ cart.vendor }}</strong> noch aktiv!</div>
+            {% endif %}
+            {% if can_next %}
+            <div class="alert alert-warning mb-0">Verkaufsvorgang läuft noch!</div>
+            {% endif %}
+            {% if can_count %}
+            <div class="alert alert-warning mb-0">Kasse nicht gezählt!</div>
+            {% endif %}
+
+            {# Buttons #}
+            {% if can_close %}
+            <button
+                type="submit"
+                name="close"
+                class="btn btn-primary btn-block"
+                value="{{ cart.vendor }}"
+            >
+                Verkauf schließen
+            </button>
+            {% endif %}
+            {% if can_next and not vendor %}
+            <button
+                type="submit"
+                name="next"
+                class="btn btn-primary btn-block"
+                value="{{ cart.vendor }}"
+            >
+                Verkaufsvorgang beenden
+            </button>
+            {% endif %}
+            {% if can_open %}
+            <button
+                type="submit"
+                name="open"
+                class="btn btn-primary btn-block"
+            >
+                Verkauf öffnen
+            </button>
+            {% endif %}
+        </form>
+    </div>
+</div>

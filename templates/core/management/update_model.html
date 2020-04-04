@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block title %}Verwaltung{% endblock %}
+
+{% block extrascript %}
+<script>
+    // update label of file-upload-field after file has been selected
+    $(window).on('load', () => {
+        const fileField = $('input[type="file"]');
+
+        fileField.on('change', (event) => {
+            const fileName = event.target.files[0].name;
+            const fileLabel = $('label.custom-file-label[for=' + event.target.id + ']');
+            fileLabel.text(fileName);
+        });
+    });
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="mx-auto col-lg-7">
+        <div class="card">
+            <h2 class="card-header">
+                {{ verbose_name }}{% if mode == 'create' %} hinzufügen{% elif mode == 'update' %} bearbeiten{% endif %}
+            </h2>
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                class="list-group list-group-flush"
+            >
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <formset class="list-group-item">
+                    {% bootstrap_nonfielderrors form %}
+                </formset>
+                {% endif %}
+
+                {% for fieldset in fieldsets %}
+                <formset
+                    class="list-group-item"
+                    {% if not fieldset.legend %}style="margin-top: 1rem;"
+                    {% endif %}
+                >
+                    {% if fieldset.legend %}
+                    <legend>{{ fieldset.legend }}</legend>
+                    {% endif %}
+
+                    {% for field in fieldset.fields %}
+                    {% for form_field in form %}
+                    {% if form_field.name == field %}
+                    {% bootstrap_horizontalfield form_field %}
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                </formset>
+                {% endfor %}
+
+                <formset class="list-group-item">
+                    <div class="row">
+                        <div class="col-2">
+                            <a
+                                href="{{ abort_url }}"
+                                class="btn btn-primary btn-block"
+                                role="button"
+                            >
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-6">
+                            <button
+                                class="btn btn-success btn-block"
+                                type="submit"
+                            >
+                                <i class="fas fa-save"></i>
+                            </button>
+                        </div>
+                        {% if delete_url %}
+                        <div class="col-1"></div>
+                        <div class="col-2">
+                            <a
+                                href="{{ delete_url }}"
+                                class="btn btn-danger btn-block"
+                                role="button"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </formset>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

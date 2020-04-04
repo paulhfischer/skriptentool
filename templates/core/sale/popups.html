@@ -1,0 +1,167 @@
+{% if add_deposit_ean %}
+{# PopUp für Kautionsscheinverkauf #}
+<script>
+    $(window).on('load', () => {
+        $('#addDepositModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
+
+</script>
+<div
+    class="modal fade"
+    id="addDepositModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Kautionsschein benötigt!</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="has_deposit"
+                                value="{{ product_ean }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                Vorhanden
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="add_deposit"
+                                value="{{ add_deposit_ean }}|{{ product_ean }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                Hinzufügen
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if remove_deposit_ean %}
+{# PopUp für Kautionsscheinrücknahme #}
+<script>
+    $(window).on('load', () => {
+        $('#removeDepositModal').modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+            .on('shown.bs.modal', () => {
+                $('#id_deposit_number').focus();
+            });
+    });
+
+</script>
+<div
+    class="modal fade"
+    id="removeDepositModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Kautionsscheinnummer eingeben</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form.deposit_number }}
+                        </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="remove_deposit"
+                                value="{{ remove_deposit_ean }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                Bestätigen
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if remove_old_deposit_ean %}
+{# PopUp für Kautionsscheinrücknahme alter Scheine #}
+<script>
+    $(window).on('load', () => {
+        $('#removeOldDepositModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
+
+</script>
+<div
+    class="modal fade"
+    id="removeOldDepositModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Alter Kautionsschein oder falsche Nummer ({{ remove_old_deposit_number }})</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-block"
+                            >
+                                Nicht erstatten
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="remove_old_deposit"
+                                value="{{ remove_old_deposit_ean }}|{{ remove_old_deposit_number }}"
+                                class="btn btn-danger btn-block"
+                            >
+                                Erstatten
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

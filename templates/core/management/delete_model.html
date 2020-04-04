@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Verwaltung{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="mx-auto col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>{{ verbose_name }} löschen</h2>
+            </div>
+            <form
+                method="post"
+                class="list-group list-group-flush"
+            >
+                {% csrf_token %}
+
+                {% if error %}
+                <formset class="list-group-item text-center">
+                    <div class="alert alert-dismissible alert-danger mb-0">
+                        <strong>{{ object }}</strong> kann nicht gelöscht werden, da das Objekt noch mit anderen Objekten verknüpft ist!
+                    </div>
+                </formset>
+                <formset class="list-group-item">
+                    <div class="row">
+                        <div class="col-5 mx-auto">
+                            <a
+                                href="{{ abort_url }}"
+                                class="btn btn-primary btn-block"
+                                role="button"
+                            >
+                                <i class="fas fa-trash-restore mr-2"></i>Abbrechen
+                            </a>
+                        </div>
+                    </div>
+                </formset>
+                {% else %}
+                <formset class="list-group-item text-center">
+                    Soll <strong>{{ object }}</strong> wirklich gelöscht werden?
+                </formset>
+                <formset class="list-group-item">
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-5">
+                            <button
+                                class="btn btn-danger btn-block"
+                                type="submit"
+                            >
+                                <i class="fas fa-trash mr-2"></i>Löschen
+                            </button>
+                        </div>
+                        <div class="col-5">
+                            <a
+                                href="{{ abort_url }}"
+                                class="btn btn-primary btn-block"
+                                role="button"
+                            >
+                                <i class="fas fa-trash-restore mr-2"></i>Abbrechen
+                            </a>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+                </formset>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

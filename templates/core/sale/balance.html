@@ -1,0 +1,38 @@
+<div class="card spacer-b">
+    <h2 class="card-header">Kassenstand</h2>
+    {% if can_count %}
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="input-group mb-3">
+                {{ form.balance }}
+                <div class="input-group-append">
+                    <span class="input-group-text">€</span>
+                </div>
+            </div>
+            <button
+                type="submit"
+                name="count"
+                class="btn btn-primary btn-block"
+            >
+                Bestätigen
+            </button>
+        </form>
+    </div>
+    {% else %}
+    <div class="card-body">
+        <div class="input-group mb-3">
+            <input
+                type="number"
+                value="{{ balance }}"
+                class="form-control text-right"
+                readonly
+            >
+            <div class="input-group-append">
+                <span class="input-group-text">€</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
