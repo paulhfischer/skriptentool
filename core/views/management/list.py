@@ -26,6 +26,7 @@ def get_context(user, model):
         "can_delete": is_allowed(user, model, "delete"),
         "can_create": is_allowed(user, model, "create"),
         "editable_fields": len(get_columns(user, model)) != len(get_disabled_columns(user, model)),
+        "ordering": model._meta.ordering,
     }
 
 

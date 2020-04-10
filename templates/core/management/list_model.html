@@ -3,6 +3,98 @@
 
 {% block title %}Verwaltung{% endblock %}
 
+{% block extrascript %}
+<script>
+    // return value of cell
+    function cellValue(cell) {
+        // get input in cell
+        if (cell.find(' input').length) {
+            const input = cell.find(' input');
+            // parse value depending on input-type
+            switch (input.attr('type')) {
+                case 'checkbox':
+                    return (input.is(':checked') + 0).toString();
+
+                case 'datetime-local':
+                    if (input.val()) {
+                        // separate datetime
+                        const date = input.val().split(' ')[0].split('.');
+                        const time = input.val().split(' ')[1].split(':');
+
+                        // create datetime
+                        const datetime = Date.parse(date[2] + '-' + date[1] + '-' + date[0] +
+                            'T' +
+                            (time[0] || '00') + ':' + (time[1] || '00') + ':' + (time[2] || '00'));
+
+                        return datetime.toString();
+                    } else {
+                        // empty cell
+                        return '0';
+                    }
+
+                    default:
+                        return input.val()
+            }
+        } else if (cell.find(' select').length) {
+            return cell.find(' select').val();
+        } else {
+            return '0';
+        }
+    }
+
+    $(window).on('load', () => {
+        const sortButton = $('.sortable');
+
+        sortButton.on('click', (event) => {
+            const target = $(event.target);
+            const tableBody = target.parent().parent().parent().find('tbody');
+            const index = target.parent().children().index(target);
+
+            // throw error if multiple table-bodies are found
+            if (tableBody.length == 1) {
+                const tableRows = tableBody.find('tr');
+
+                if (target.hasClass('asc')) {
+                    // reset icons for all other buttons
+                    target.parent().find('.sortable').removeClass('asc desc');
+                    target.parent().find('.sortable').addClass('unsorted');
+
+                    // add icon to button
+                    target.removeClass('unsorted');
+                    target.addClass('desc');
+
+                    order = 'desc';
+                } else {
+                    // reset icons for all other buttons
+                    target.parent().find('.sortable').removeClass('asc desc');
+                    target.parent().find('.sortable').addClass('unsorted');
+
+                    // add icon to button
+                    target.removeClass('unsorted');
+                    target.addClass('asc');
+
+                    order = 'asc';
+                }
+
+                tableRows.sort((a, b) => {
+                    a = cellValue($(a).find('td').eq(index));
+                    b = cellValue($(b).find('td').eq(index));
+
+                    if (order == 'desc') {
+                        return b.localeCompare(a);
+                    } else {
+                        return a.localeCompare(b);
+                    }
+                }).appendTo(tableBody)
+            } else {
+                alert('Fehler beim Sortieren der Tabelle!');
+            }
+        });
+    });
+
+</script>
+{% endblock %}
+
 {% block content %}
 <form
     method="post"
@@ -57,7 +149,7 @@
                 <tr>
                     {% for field in formset.0 %}
                     {% if field.field.widget.input_type != 'hidden' %}
-                    <th class="{% if field.field.widget.input_type == 'checkbox' %}text-center{% elif field.field.widget.input_type == 'number' %}text-right{% endif %} {% if field.field.disabled %}font-weight-normal{% endif %}">
+                    <th class="sortable{% if '-'|add:field.name in ordering %} desc{% elif field.name in ordering %} asc{% else %} unsorted{% endif %}{% if field.field.disabled %} font-weight-normal{% endif %}">
                         {{ field.label }}
                     </th>
                     {% endif %}

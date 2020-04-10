@@ -182,3 +182,40 @@ a:hover {
 .custom-file-label {
     white-space: nowrap;
 }
+
+// sortable table
+th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 1.75rem; // width of svg + default padding
+    text-align: left !important;
+    user-select: none;
+
+    // vertically center svg
+    svg {
+        top: 50%;
+        bottom: 50%;
+        transform: translateY(-50%);
+        right: 0;
+        position: absolute;
+        width: 1rem !important;
+    }
+
+    &.unsorted::after {
+        display: none;
+        font-family: "Font Awesome 5 Duotone";
+        content: "\f0dc";
+    }
+
+    &.asc::after {
+        display: none;
+        font-family: "Font Awesome 5 Duotone";
+        content: "\f0de";
+    }
+
+    &.desc::after {
+        display: none;
+        font-family: "Font Awesome 5 Duotone";
+        content: "\f0dd";
+    }
+}
