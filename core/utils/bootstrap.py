@@ -1,6 +1,5 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import BaseFormSet, CheckboxInput, EmailInput, FileInput, NumberInput, PasswordInput, Select, TextInput, URLInput, DateTimeField
-from django.utils.datetime_safe import strftime
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -123,6 +122,10 @@ def field_renderer(field, style='default'):
         # set placeholder if field is not disabled
         if not field.field.disabled:
             widget.attrs['placeholder'] = widget.attrs.get('placeholder', text_value(field.label))
+
+    # modify input-types
+    if isinstance(field.field, DateTimeField):
+        setattr(widget, 'input_type', 'datetime-local')
 
     # generate html for field
     input_html = field.as_widget(attrs=widget.attrs)
