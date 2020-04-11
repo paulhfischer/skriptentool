@@ -155,44 +155,45 @@ td, th {
   }
 }
 
+// remove underlining of links
+a:hover {
+  text-decoration: none;
+}
+
 // sortable table
-table {
-  thead {
-    tr:first-child {
-      th.sortable {
-        cursor: pointer;
-        position: relative;
-        padding-right: 1.75rem; // width of svg + default padding
-        text-align: left !important;
 
-        // vertically center svg
-        svg {
-          top: 50%;
-          bottom: 50%;
-          transform: translateY(-50%);
-          right: 0;
-          position: absolute;
-          width: 1rem !important;
-        }
+th.sortable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 1.75rem; // width of svg + default padding
+  text-align: left !important;
+  user-select: none;
 
-        &.unsorted::after {
-          display: none;
-          font-family: "Font Awesome 5 Duotone";
-          content: "\f0dc";
-        }
+  // vertically center svg
+  svg {
+    top: 50%;
+    bottom: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    position: absolute;
+    width: 1rem !important;
+  }
 
-        &.asc::after {
-          display: none;
-          font-family: "Font Awesome 5 Duotone";
-          content: "\f0de";
-        }
+  &.unsorted::after {
+    display: none;
+    font-family: "Font Awesome 5 Duotone";
+    content: "\f0dc";
+  }
 
-        &.desc::after {
-          display: none;
-          font-family: "Font Awesome 5 Duotone";
-          content: "\f0dd";
-        }
-      }
-    }
+  &.asc::after {
+    display: none;
+    font-family: "Font Awesome 5 Duotone";
+    content: "\f0de";
+  }
+
+  &.desc::after {
+    display: none;
+    font-family: "Font Awesome 5 Duotone";
+    content: "\f0dd";
   }
 }
