@@ -5,6 +5,80 @@
 
 {% block extrascript %}
 <script>
+    function getDropdown(select) {
+        // dropdown-items from options
+        let options = [];
+        $(select).find('option').each(() => {
+            options.push('<a class="dropdown-item" data-value="' + $(this).val() + '">' + $(this).text() + '</a>');
+        });
+
+        // search-field if more than 5 options
+        let search = [];
+        if ($(select).find('option').length > 5) {
+            search = [
+                '<div class="dropdown-header pt-0 pb-0">',
+                '<div class="input-group">',
+                '<div class="input-group-prepend">',
+                '<div class="input-group-text"><i class="fas fa-search"></i></div>',
+                '</div>',
+                '<input class="form-control form-control-sm" id="search-' + select.id + '" type="text" placeholder="Suchen">',
+                '</div>',
+                '</div>',
+                '<div class="dropdown-divider"></div>'
+            ]
+        }
+
+        // dropdown-menu with options and search-field
+        const dropdown = [
+            '<div class="dropdown">',
+            '<div class="custom-select" id="dropdown-' + select.id + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+            $(select).find('option:selected').text(),
+            '</div>',
+            '<div class="dropdown-menu w-100" aria-labelledby="dropdown-' + select.id + '">',
+            search.join('\n'),
+            '<div style="max-height: 10rem; overflow-y: scroll;">',
+            options.join('\n'),
+            '</div>',
+            '</div>',
+            '</div>'
+        ].join('\n');
+
+        return dropdown
+    }
+
+    // custom select-fields with search option
+    $(window).on('load', () => {
+        // hide default select-fields
+        $('.custom-select').hide();
+
+        // add custom select-field
+        $('.custom-select').after(() => {
+            return getDropdown(this);
+        });
+
+        // focus input on dropdown
+        $('.custom-select').on('click', (event) => {
+            setTimeout(() => {
+                $(event.target).parent().find('.dropdown-menu input').focus();
+            });
+        });
+
+        // toggle items on search
+        $('[id^="search-"]').on('keyup', (event) => {
+            const value = $(this).val().toLowerCase();
+
+            $(this).parent().parent().parent().find('.dropdown-item').filter(() => {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        // select option on select
+        $('.dropdown-item').on('click', () => {
+            $('#' + $(this).parent().parent().attr('aria-labelledby').replace('dropdown-', '')).val($(this).data('value'));
+            $(this).parent().parent().parent().find('.custom-select').text($(this).text());
+        });
+    });
+
     // update label of file-upload-field after file has been selected
     $(window).on('load', () => {
         const fileField = $('input[type="file"]');
