@@ -19,7 +19,8 @@ def get_context(user, model):
         'can_update'         : is_allowed(user, model, 'update'),
         'can_delete'         : is_allowed(user, model, 'delete'),
         'can_create'         : is_allowed(user, model, 'create'),
-        'editable_fields'    : not len(get_columns(user, model)) == len(get_disabled_columns(user, model))
+        'editable_fields'    : not len(get_columns(user, model)) == len(get_disabled_columns(user, model)),
+        'ordering'           : model._meta.ordering,
     }
 
 
@@ -70,6 +71,20 @@ def get_formset(user, form_model):
     return modelformset_factory(form_model, ListModelForm, extra=0, formset=ListModelFormSet)
 
 
+def get_pagination(formset, request):
+    query = formset.get_queryset()
+    paginator = Paginator(query, 25)
+
+    try:
+        page = paginator.page(request.GET.get('page', 1))
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(1)
+
+    return query.filter(pk__in=[obj.pk for obj in page]), page
+
+
 class ListModelView(View):
     def get(self, request, model):
         model = get_model(model)
@@ -78,19 +93,9 @@ class ListModelView(View):
             context = get_context(request.user, model)
             formset = get_formset(request.user, model)()
 
-            # TODO: implement option to filter query
-            query = formset.get_queryset()
-            try:
-                objects = Paginator(query, 100).page(request.GET.get('page', 1))
-            except PageNotAnInteger:
-                objects = Paginator(query, 100).page(1)
-            except EmptyPage:
-                objects = Paginator(query, 100).page(1)
+            query, page = get_pagination(formset, request)
 
-            query = query.filter(pk__in=[obj.pk for obj in objects])
-            context['objects'] = objects
-            # TODO: implement option to filter query
-
+            context['page'] = page
             context['formset'] = get_formset(request.user, model)(queryset=query)
 
             return render(request, 'core/management/list_model.html', context)
@@ -108,9 +113,6 @@ class ListModelView(View):
                 if formset.is_valid():
                     formset.save()
                 context['formset'] = formset
-            elif 'filter' in request.POST:
-                # TODO: implement option to filter query
-                pass
             else:
                 formset = get_formset(request.user, model)()
                 context['formset'] = formset
