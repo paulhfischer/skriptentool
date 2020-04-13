@@ -9,14 +9,22 @@
         // dropdown-items from options
         let options = [];
         $(select).find('option').each(() => {
-            options.push('<a class="dropdown-item" data-value="' + $(this).val() + '">' + $(this).text() + '</a>');
+            if ($(this).is(':selected')) {
+                options.push(
+                    '<a class="dropdown-item active" data-value="' + $(this).val() + '">' + $(this).text() + '</a>'
+                );
+            } else {
+                options.push(
+                    '<a class="dropdown-item" data-value="' + $(this).val() + '">' + $(this).text() + '</a>'
+                );
+            }
         });
 
         // search-field if more than 5 options
         let search = [];
         if ($(select).find('option').length > 5) {
             search = [
-                '<div class="dropdown-header pt-0 pb-0">',
+                '<div class="dropdown-header">',
                 '<div class="input-group">',
                 '<div class="input-group-prepend">',
                 '<div class="input-group-text"><i class="fas fa-search"></i></div>',
@@ -30,13 +38,13 @@
 
         // dropdown-menu with options and search-field
         const dropdown = [
-            '<div class="dropdown">',
-            '<div class="custom-select" id="dropdown-' + select.id + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">',
+            '<div class="dropdown dropdown-select">',
+            '<div class="custom-select" id="dropdown-' + select.id + '" data-toggle="dropdown" data-flip="false" aria-haspopup="true" aria-expanded="false">',
             $(select).find('option:selected').text(),
             '</div>',
-            '<div class="dropdown-menu w-100" aria-labelledby="dropdown-' + select.id + '">',
+            '<div class="dropdown-menu" aria-labelledby="dropdown-' + select.id + '">',
             search.join('\n'),
-            '<div style="max-height: 10rem; overflow-y: scroll;">',
+            '<div class="dropdown-options">',
             options.join('\n'),
             '</div>',
             '</div>',
@@ -48,34 +56,47 @@
 
     // custom select-fields with search option
     $(window).on('load', () => {
+        const originalSelects = $('.custom-select');
+
         // hide default select-fields
-        $('.custom-select').hide();
+        originalSelects.hide();
 
         // add custom select-field
-        $('.custom-select').after(() => {
+        originalSelects.after(() => {
             return getDropdown(this);
         });
 
+        const customSelects = $('.dropdown-select');
+        const customOptions = $('.dropdown-options > .dropdown-item');
+
         // focus input on dropdown
-        $('.custom-select').on('click', (event) => {
-            setTimeout(() => {
-                $(event.target).parent().find('.dropdown-menu input').focus();
-            });
+        customSelects.on('shown.bs.dropdown', (event) => {
+            $(event.target).parent().find('.dropdown-menu input').focus();
         });
 
         // toggle items on search
-        $('[id^="search-"]').on('keyup', (event) => {
+        $('[id^="search-"]').on('keyup', () => {
             const value = $(this).val().toLowerCase();
+            const inputID = $(this).attr('id').replace('search-', '');
+            const options = customSelects.find('[aria-labelledby="dropdown-' + inputID + '"] > .dropdown-options > .dropdown-item');
 
-            $(this).parent().parent().parent().find('.dropdown-item').filter(() => {
+            options.filter(() => {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
 
-        // select option on select
-        $('.dropdown-item').on('click', () => {
-            $('#' + $(this).parent().parent().attr('aria-labelledby').replace('dropdown-', '')).val($(this).data('value'));
-            $(this).parent().parent().parent().find('.custom-select').text($(this).text());
+        // update on select
+        customOptions.on('click', () => {
+            const selectedOption = $(this);
+            const value = selectedOption.data('value');
+            const displayValue = selectedOption.text();
+            const inputID = selectedOption.parent().parent().attr('aria-labelledby').replace('dropdown-', '');
+
+            selectedOption.parent().find('.dropdown-item').removeClass('active');
+            selectedOption.addClass('active');
+
+            originalSelects.filter('#' + inputID).val(value);
+            customSelects.find('#dropdown-' + inputID).text(displayValue);
         });
     });
 
