@@ -484,7 +484,7 @@ class PrintingQuota(models.Model):
 
     def clean_fields(self, exclude=None):
         # overwrite validation function to check if ean is unique across all products
-        ean_unique(self, LectureNote, exclude)
+        ean_unique(self, PrintingQuota, exclude)
 
     @property
     def name(self):
