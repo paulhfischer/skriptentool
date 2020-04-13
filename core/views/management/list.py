@@ -112,10 +112,13 @@ class ListModelView(View):
                 formset = get_formset(request.user, model)(request.POST)
                 if formset.is_valid():
                     formset.save()
-                context['formset'] = formset
             else:
                 formset = get_formset(request.user, model)()
-                context['formset'] = formset
+
+            query, page = get_pagination(formset, request)
+
+            context['page'] = page
+            context['formset'] = get_formset(request.user, model)(queryset=query)
 
             return render(request, 'core/management/list_model.html', context)
         else:

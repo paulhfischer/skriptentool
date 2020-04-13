@@ -4,18 +4,18 @@
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
-                <div class="input-group mb-3">
+                <div class="input-group">
                     {{ form.balance }}
                     <div class="input-group-append">
                         <span class="input-group-text">€</span>
                     </div>
                 </div>
-                <button type="submit" name="count" class="btn btn-primary btn-block">Bestätigen</button>
+                <button type="submit" name="count" class="btn btn-primary btn-block mt-3">Bestätigen</button>
             </form>
         </div>
     {% else %}
         <div class="card-body">
-            <div class="input-group mb-3">
+            <div class="input-group">
                 <input type="number" value="{{ balance }}" class="form-control text-right" readonly>
                 <div class="input-group-append">
                     <span class="input-group-text">€</span>

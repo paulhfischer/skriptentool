@@ -81,6 +81,19 @@ label {
   }
 }
 
+// top-spacer
+.spacer-t {
+  margin-top: $spacer;
+}
+
+@each $breakpoint, $container-max-width in $container-max-widths {
+  @include media-breakpoint-down($breakpoint) {
+    .spacer-t-#{$breakpoint} {
+      margin-top: $spacer;
+    }
+  }
+}
+
 // table with vertical borders only
 .table-bordered-vertical th,
 .table-bordered-vertical td {
@@ -106,6 +119,10 @@ td > select {
 :focus {
   outline: none !important;
   box-shadow: none !important;
+
+  &[readonly] {
+    border-color: $input-border-color;
+  }
 }
 
 // make inputs transparent in table
@@ -120,7 +137,7 @@ td, th {
   cursor: pointer;
 }
 
-.custom-file-input:disabled, .custom-control-label:disabled, .custom-select:disabled, .disabled {
+.custom-file-input:disabled, .custom-control-label:disabled, .custom-select:disabled, .disabled, .input-group-text {
   cursor: default !important;
 }
 
@@ -221,7 +238,13 @@ th.sortable {
       .dropdown-item {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
+        cursor: pointer;
       }
     }
   }
+}
+
+// disable text-wrapping for input-value
+.custom-file-label {
+  white-space: nowrap;
 }
