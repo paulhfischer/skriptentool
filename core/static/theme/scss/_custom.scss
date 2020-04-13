@@ -197,3 +197,31 @@ th.sortable {
     content: "\f0dd";
   }
 }
+
+// dropdown-select
+.dropdown-select {
+  .custom-select {
+    user-select: none;
+  }
+
+  .dropdown-divider {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .dropdown-menu {
+    min-width: 100%;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+
+    .dropdown-options {
+      max-height: 8rem;
+      overflow-y: scroll;
+
+      .dropdown-item {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+      }
+    }
+  }
+}
