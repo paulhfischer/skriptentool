@@ -86,6 +86,20 @@ label {
     }
 }
 
+// top-spacer
+.spacer-t {
+    margin-top: $spacer;
+}
+
+@each $breakpoint, $container-max-width in $container-max-widths {
+    @include media-breakpoint-down($breakpoint) {
+
+        .spacer-t-#{$breakpoint} {
+            margin-top: $spacer;
+        }
+    }
+}
+
 // table with vertical borders only
 .table-bordered-vertical th,
 .table-bordered-vertical td {
@@ -111,6 +125,10 @@ td > select {
 :focus {
     outline: none !important;
     box-shadow: none !important;
+
+    &[readonly] {
+        border-color: $input-border-color;
+    }
 }
 
 // make inputs transparent in table
@@ -133,7 +151,8 @@ th {
 .custom-file-input:disabled,
 .custom-control-label:disabled,
 .custom-select:disabled,
-.disabled {
+.disabled,
+.input-group-text {
     cursor: default !important;
 }
 
