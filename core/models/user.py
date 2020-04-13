@@ -130,7 +130,7 @@ class User(AbstractBaseUser):
 
     permissions = {
         'list'  : {'is_referent': '__all__'},
-        'create': {'is_admin': '__all__'},
+        'create': {},
         'update': {'is_referent' : ['vendor', 'referent'],
                    'is_financier': ['financier'],
                    'is_admin'    : ['admin']},
