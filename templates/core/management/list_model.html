@@ -137,11 +137,49 @@
         {% if formset.total_form_count %}
         <table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
             <caption class="pb-0">
-                {{ formset.total_form_count }}
-                {% if formset.total_form_count == 1 %}
-                {{ verbose_name }}
+                {% if page.start_index == page.end_index %}
+                {{ verbose_name }} {{ page.start_index }} von {{ page.paginator.count }}
                 {% else %}
-                {{ verbose_name_plural }}
+                {{ verbose_name }} {{ page.start_index }} bis {{ page.end_index }} von {{ page.paginator.count }}
+                {% endif %}
+                {% if page.paginator.num_pages != 1 %}
+                <ul class="pagination pagination-sm float-right mb-0">
+                    {% if page.has_previous %}
+                    <li class="page-item">
+                        <a
+                            class="page-link"
+                            href="?page={{ page.previous_page_number }}"
+                        >
+                            <i class="fas fa-caret-left"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link">
+                            <i class="fas fa-caret-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <a class="page-link">{{ page.number }}</a>
+                    </li>
+                    {% if page.has_next %}
+                    <li class="page-item">
+                        <a
+                            class="page-link"
+                            href="?page={{ page.next_page_number }}"
+                        >
+                            <i class="fas fa-caret-right"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link">
+                            <i class="fas fa-caret-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
                 {% endif %}
             </caption>
 
