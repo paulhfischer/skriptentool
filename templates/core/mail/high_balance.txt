@@ -1,0 +1,6 @@
+Hallo,
+
+der letzte Verkauf wurde mit einem Kassenstand von {{ balance }} € geschlossen!
+
+Liebe Grüße,
+Euer Skriptentool

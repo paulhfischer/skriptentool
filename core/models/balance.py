@@ -1,8 +1,12 @@
+from django.core.mail import send_mail
 from django.db import models
+from django.template.loader import render_to_string
 from django.utils import timezone
 
 from core.models import CashBookEntry
 from core.models import User
+from skriptentool import config
+from skriptentool import settings
 
 
 class Balance(models.Model):
@@ -96,3 +100,12 @@ class Balance(models.Model):
     def add_closing(cls, user, amount):
         Balance(user=user, amount=amount, counted=True, type="closing").save()
         Balance.objects.filter(type="temporary").delete()
+
+        # send email if balance is too high
+        if amount >= 1000:
+            send_mail(
+                subject="[Skriptentool] Hoher Kassenstand",
+                message=render_to_string("core/mail/high_balance.txt", {"balance": amount}),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=config.FINANCE_EMAILS,
+            )

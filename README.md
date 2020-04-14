@@ -12,6 +12,7 @@ SSL = # Boolean, die angibt, ob das Tool über SSL erreicht werden soll (andere 
 ALLOWED_HOSTS = # Liste der FQDNs, über die das Tool erreicht werden soll (https://docs.djangoproject.com/en/2.2/ref/settings/#allowed-hosts)
 ADMINS = # Liste mit Personen, die E-Mail Benachrichtigungen bei Fehlern erhalten sollen (https://docs.djangoproject.com/en/2.2/ref/settings/#admins)
 SENDER_EMAIL = # E-Mail Adresse, über die das Tool Benachrichtigungen versendet (https://docs.djangoproject.com/en/2.2/ref/settings/#default-from-email)
+FINANCE_EMAILS = # Liste mit E-Mail Adressen, die Benachrichtigungen erhalten sollen, die Finanzer betreffen
 DATABASE_PASSWORD = # Datenbankpasswort (Benutzername: skriptentool) (https://docs.djangoproject.com/en/2.2/ref/settings/#password)
 ```
 
