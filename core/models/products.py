@@ -73,8 +73,10 @@ def generate_cover(lecturenote):
                 settings.LECTURE_NOTES_DIR,
                 settings.OUTPUT_DIR,
             ],
-        ).returncode
-        == 0
+            capture_output=True,
+        )
+        .stderr.decode("utf-8")
+        .splitlines()
     )
 
 
@@ -107,37 +109,37 @@ def generate_order(lecturenote):
                 settings.ORDERS_DIR,
                 settings.ORDER_TEMPLATE_FORM_FILE,
             ],
-        ).returncode
-        == 0
+            capture_output=True,
+        )
+        .stderr.decode("utf-8")
+        .splitlines()
     )
 
 
-def update_files(ean_old, ean_new):
-    lecturenote = LectureNote.objects.get(ean=ean_new)
+def update_files(ean_old, ean_new, lecturenote):
+    process = subprocess.run(  # nosec
+        [
+            "core/utils/rename_files.sh",
+            ean_old,
+            ean_new,
+            settings.COVERS_DIR,
+            settings.OUTPUT_DIR,
+            settings.LECTURE_NOTES_DIR,
+            settings.ORDERS_DIR,
+        ],
+        capture_output=True,
+    )
 
-    # return true and change path in model if rename successfull, return false otherwise
-    if (
-        subprocess.run(  # nosec
-            [
-                "core/utils/rename_files.sh",
-                ean_old,
-                ean_new,
-                settings.COVERS_DIR,
-                settings.OUTPUT_DIR,
-                settings.LECTURE_NOTES_DIR,
-                settings.ORDERS_DIR,
-            ],
-        ).returncode
-        == 0
-    ):
+    # change path in model if rename successfull
+    if process.returncode == 0:
         lecturenote.file = os.path.relpath(
             os.path.join(settings.LECTURE_NOTES_DIR, f"{ean_new}.pdf"),
-            settings.BASE_DIR,
+            settings.MEDIA_ROOT,
         )
-        lecturenote.save()
-        return True
-    else:
-        return False
+        super(LectureNote, lecturenote).save()
+
+    # return errors
+    return process.stderr.decode("utf-8").splitlines()
 
 
 # return path to lecturenote-pdf, relative to media folder
@@ -399,39 +401,40 @@ class LectureNote(models.Model):
         super(LectureNote, self).save(force_insert, force_update, using, update_fields)
 
         # rename files if ean has changed and model not newly created
-        if (
-            update
-            and "ean" in self.changed_fields()
-            and not update_files(getattr(self, "__original_ean"), self.ean)
-        ):
-            raise ValidationError("Umbennenung der Skripten fehlgeschlagen!")
+        if update and "ean" in self.changed_fields():
+            errors = update_files(getattr(self, "__original_ean"), self.ean, self)
+            if errors:
+                raise ValidationError(errors)
 
         # generate new cover if value printed on cover has changed
-        if (
-            any(
-                item
-                in [
-                    "study_grants",
-                    "author",
-                    "name",
-                    "semester_start",
-                    "semester_end",
-                    "price",
-                    "file",
-                    "ean",
-                ]
-                for item in self.changed_fields()
-            )
-            and not generate_cover(self)
+        if any(
+            item
+            in [
+                "study_grants",
+                "author",
+                "name",
+                "semester_start",
+                "semester_end",
+                "price",
+                "file",
+                "ean",
+            ]
+            for item in self.changed_fields()
         ):
-            raise ValidationError("Generierung des Deckblatts fehlgeschlagen!")
+
+            errors = generate_cover(self)
+            if errors:
+                raise ValidationError(errors)
 
         # generate new order if value printed on order has changed
         if any(
             item in ["ean", "color", "papersize", "sides", "subject", "printnotes"]
             for item in self.changed_fields()
-        ) and not generate_order(self):
-            raise ValidationError("Generierung des Skriptenauftrags fehlgeschlagen!")
+        ):
+
+            errors = generate_order(self)
+            if errors:
+                raise ValidationError(errors)
 
     def clean_fields(self, exclude=None):
         # overwrite validation function to check if ean is unique accros all products
