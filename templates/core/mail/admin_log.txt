@@ -1,0 +1,10 @@
+Hallo,
+
+es wurde folgende Änderung von {{ username }} vorgenommen:
+
+Objektklasse: {{ class }}
+Objekt: {{ object }}
+{% if message %}Änderungsmeldung: {{ message }}{% endif %}
+
+Liebe Grüße,
+Euer Skriptentool
