@@ -38,7 +38,10 @@ MEDIA_URL = '/media/'
 # MAIL #
 ########
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+if config.LOCAL:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
