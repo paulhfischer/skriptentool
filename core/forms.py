@@ -30,17 +30,27 @@ class SaleForm(forms.Form):
 class CashbookForm(forms.Form):
     start = forms.DateField(
         required=False,
-        widget=forms.DateInput(attrs={'class': 'form-control'})
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'placeholder': 'TT.MM.JJJJ'})
     )
 
     end = forms.DateField(
         required=False,
-        widget=forms.DateInput(attrs={'class': 'form-control'})
+        widget=forms.DateInput(attrs={'class': 'form-control',
+                                      'placeholder': 'TT.MM.JJJJ'})
     )
 
     update = forms.DecimalField(
         max_digits=6,
         decimal_places=2,
         required=False,
-        widget=forms.NumberInput(attrs={'class': 'form-control text-right'})
+        widget=forms.NumberInput(attrs={'class': 'form-control text-right',
+                                        'placeholder': 'Betrag'})
+    )
+
+    comment = forms.CharField(
+        max_length=40,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': 'Optionaler Kommentar'})
     )
