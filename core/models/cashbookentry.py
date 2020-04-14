@@ -22,7 +22,7 @@ class CashBookEntry(models.Model):
     )
 
     detail = models.CharField(
-        max_length=20,
+        max_length=256,
         verbose_name="Details",
     )
 
@@ -40,12 +40,18 @@ class CashBookEntry(models.Model):
         CashBookEntry(user=user, detail="Korrektur", amount=amount).save()
 
     @classmethod
-    def withdrawal(cls, user, amount):
-        CashBookEntry(user=user, detail="Entnahme", amount=amount).save()
+    def withdrawal(cls, user, amount, comment):
+        if comment:
+            CashBookEntry(user=user, detail=f"Entnahme ({comment})", amount=amount).save()
+        else:
+            CashBookEntry(user=user, detail="Entnahme", amount=amount).save()
 
     @classmethod
-    def deposit(cls, user, amount):
-        CashBookEntry(user=user, detail="Einlage", amount=amount).save()
+    def deposit(cls, user, amount, comment):
+        if comment:
+            CashBookEntry(user=user, detail=f"Einlage ({comment})", amount=amount).save()
+        else:
+            CashBookEntry(user=user, detail="Einlage", amount=amount).save()
 
     @classmethod
     def sale(cls, user, ean, amount):

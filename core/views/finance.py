@@ -74,13 +74,14 @@ def finance(request):
     # 'Buchen'-button triggered
     if action_change:
         update = form.cleaned_data["update"]
+        comment = form.cleaned_data["comment"]
 
         # update balance depending on action is deposit or withdrawal
         if update > 0:
-            CashBookEntry.deposit(request.user, update)
+            CashBookEntry.deposit(request.user, update, comment)
             Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
         elif update < 0:
-            CashBookEntry.withdrawal(request.user, update)
+            CashBookEntry.withdrawal(request.user, update, comment)
             Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
 
     # 'CSV-Export'-button triggered

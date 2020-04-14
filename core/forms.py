@@ -75,3 +75,14 @@ class CashbookForm(forms.Form):
             },
         ),
     )
+
+    comment = forms.CharField(
+        max_length=40,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Optionaler Kommentar",
+            },
+        ),
+    )

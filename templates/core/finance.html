@@ -5,50 +5,55 @@
 
 {% block content %}
 <div class="card spacer-b">
-    <div class="card-header">
-        <h2>Verwaltung</h2>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-lg-4 spacer-b-md">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Kassenstand</span>
-                    </div>
-                    <input
-                        type="number"
-                        value="{{ balance }}"
-                        class="form-control text-right"
-                        readonly
-                    >
-                    <div class="input-group-append">
-                        <span class="input-group-text">€</span>
-                    </div>
-                </div>
+    <h2 class="card-header">
+        Verwaltung
+        <div class="input-group w-auto float-lg-right spacer-t-md">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Kassenstand</span>
             </div>
-            <div class="col-lg-6 offset-lg-2">
-                <form method="post">
-                    {% csrf_token %}
-
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Einlage / Entnahme</span>
-                        </div>
-                        {{ cashbook_form.update }}
-                        <div class="input-group-append">
-                            <span class="input-group-text">€</span>
-                        </div>
-                        <button
-                            type="submit"
-                            name="change"
-                            class="btn btn-primary ml-4"
-                        >
-                            Buchen
-                        </button>
-                    </div>
-                </form>
+            <input
+                type="number"
+                value="{{ balance }}"
+                class="form-control text-right"
+                readonly
+            >
+            <div class="input-group-append">
+                <span class="input-group-text">€</span>
             </div>
         </div>
+    </h2>
+    <div class="card-body">
+        <form
+            method="post"
+            class="row"
+        >
+            {% csrf_token %}
+
+            <div class="input-group col-lg-5 spacer-b-md">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Einlage / Entnahme</span>
+                </div>
+                {{ cashbook_form.update }}
+                <div class="input-group-append">
+                    <span class="input-group-text">€</span>
+                </div>
+            </div>
+            <div class="input-group col-lg-5 spacer-b-md">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Kommentar</span>
+                </div>
+                {{ cashbook_form.comment }}
+            </div>
+            <div class="input-group col-lg-2">
+                <button
+                    type="submit"
+                    name="change"
+                    class="btn btn-block btn-primary"
+                >
+                    Buchen
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 <div class="card">
@@ -118,7 +123,7 @@
                 <td class="text-right">{{ cash_book_entry.2 }} €</td>
                 <td>{{ cash_book_entry.3 }}</td>
             </tr>
-            {% elif cash_book_entry.3 == 'Einlage' or cash_book_entry.3 == 'Entnahme' %}
+            {% elif 'Einlage' in cash_book_entry.3 or 'Entnahme' in cash_book_entry.3 %}
             <tr class="table-success">
                 <td>{{ cash_book_entry.0 }}</td>
                 <td>{{ cash_book_entry.1|username_from_id }}</td>
