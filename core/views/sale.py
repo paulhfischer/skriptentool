@@ -79,10 +79,9 @@ def sale(request):
                     # prevent sale of deposit
                     if product_type == 'deposit':
                         error = 'Kautionsscheine können nur mit Skript verkauft werden.'
-                        return
 
                     # check if article is available for sale
-                    if product.active:
+                    elif product.active:
                         # check if article needs deposit
                         try:
                             add_deposit_ean = product.deposit.ean
