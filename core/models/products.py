@@ -10,7 +10,7 @@ from django.db import models
 from SkriptenTool import settings
 from SkriptenTool.storage import OverwriteStorage
 from core.models import Author
-from core.utils.functions import get_pdf_page_count, tex_escape, xml_escape
+from core.utils.functions import get_pdf_page_count, get_semesters, tex_escape, xml_escape
 
 
 # return model instance from ean
@@ -218,10 +218,7 @@ class LectureNote(models.Model):
     ]
 
     # IMPORTANT: semesters have to be updated manually
-    SEMESTERS = [('W' + str(year),
-                  'Wintersemester ' + str(year) + ' / ' + str(year + 1)) for year in range(2015, 2025)] + \
-                [('S' + str(year),
-                  'Sommersemester ' + str(year)) for year in range(2016, 2025)]
+    SEMESTERS = get_semesters('W2015', 'S2025')
 
     ean = models.CharField(
         max_length=20,

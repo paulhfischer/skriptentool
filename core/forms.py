@@ -54,3 +54,14 @@ class CashbookForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control',
                                       'placeholder': 'Optionaler Kommentar'})
     )
+
+
+class ShiftsForm(forms.Form):
+    def __init__(self, choices, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['semester'].choices = choices
+
+    semester = forms.ChoiceField(
+        required=False,
+        widget=forms.Select(attrs={'class': 'custom-select'})
+    )
