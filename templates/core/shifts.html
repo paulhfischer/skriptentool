@@ -1,13 +1,34 @@
 {% extends 'base.html' %}
-{% load filters %}
+{% load filters bootstrap %}
 
 {% block title %}Verkaufschichten{% endblock %}
 
+{% block extrascript %}
+<script>
+    $(window).on('load', () => {
+        $('#{{ form.semester.id_for_label }}').on('change', () => {
+            $(this).parent().submit()
+        });
+    });
+
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="row">
-    <div class="mx-auto col-lg-6">
+    <div class="mx-auto col-lg-8">
         <div class="card">
-            <h2 class="card-header">Deine Verkaufsschichten</h2>
+            <h2 class="card-header">
+                Deine Verkaufsschichten
+                <form
+                    method="post"
+                    enctype="multipart/form-data"
+                    class="float-lg-right d-flex spacer-t-md"
+                >
+                    {% csrf_token %}
+                    {{ form.semester }}
+                </form>
+            </h2>
             <div class="card-body">
                 {% if shifts %}
                 <table class="table table-xsm mb-0">

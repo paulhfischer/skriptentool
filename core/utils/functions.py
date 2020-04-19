@@ -66,3 +66,37 @@ def get_model(model_name):
         return AppConfig.get_model(apps.get_app_config("core"), model_name)
     except LookupError:
         raise Http404
+
+
+# get choices for all semesters in range
+def get_semesters(start, end):
+    year_start = int(start[1:])
+    year_end = int(end[1:])
+
+    choices = []
+
+    # add summerterm
+    if start.startswith("S"):
+        choices.append((f"S{int(start[1:])}", f"Sommersemester {int(start[1:])}"))
+
+    # add choices in range
+    for year in range(year_start, year_end):
+        choices.extend(
+            [
+                (f"W{year}", f"Wintersemester {year} / {year + 1}"),
+                (f"S{year + 1}", f"Sommersemester {year + 1}"),
+            ],
+        )
+
+    # add winterterm
+    if end.startswith("W"):
+        choices.append(
+            (
+                f"W{int(end[1:])}",
+                f"Wintersemester {int(end[1:])} / {int(end[1:]) + 1}",
+            ),
+        )
+
+    choices.reverse()
+
+    return choices

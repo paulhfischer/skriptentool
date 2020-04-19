@@ -11,6 +11,7 @@ from django.db import models
 
 from core.models import Author
 from core.utils.functions import get_pdf_page_count
+from core.utils.functions import get_semesters
 from core.utils.functions import tex_escape
 from core.utils.functions import xml_escape
 from skriptentool import settings
@@ -268,9 +269,7 @@ class LectureNote(models.Model):
     ]
 
     # IMPORTANT: semesters have to be updated manually
-    SEMESTERS = [
-        (f"W{year}", f"Wintersemester {year} / {year + 1}") for year in range(2015, 2025)
-    ] + [(f"S{year}", f"Sommersemester {year}") for year in range(2016, 2025)]
+    SEMESTERS = get_semesters("W2015", "S2025")
 
     ean = models.CharField(
         max_length=20,
