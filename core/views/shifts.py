@@ -10,13 +10,16 @@ from core.utils.functions import get_semesters
 
 
 def semester_choices(user):
-    # get users first shift
-    first = Shift.objects.filter(vendor=user).order_by("time_start").first()
+    try:
+        # get users first shift
+        first = Shift.objects.filter(vendor=user).order_by("time_start").first().time_start
+    except AttributeError:
+        first = timezone.now()
 
-    if first.time_start.month in range(4, 10):
-        start = f"S{first.time_start.year}"
+    if first.month in range(4, 10):
+        start = f"S{first.year}"
     else:
-        start = f"W{first.time_start.year - 1}"
+        start = f"W{first.year - 1}"
 
     if timezone.now().month in range(4, 10):
         end = f"S{timezone.now().year}"
