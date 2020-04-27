@@ -3,7 +3,6 @@ from django import forms
 
 class SaleForm(forms.Form):
     ean_add = forms.CharField(
-        label="Artikel hinzufügen",
         required=False,
         widget=forms.TextInput(
             attrs={
@@ -13,7 +12,6 @@ class SaleForm(forms.Form):
     )
 
     ean_remove = forms.CharField(
-        label="Artikel entfernen",
         required=False,
         widget=forms.TextInput(
             attrs={
@@ -71,7 +69,6 @@ class CashbookForm(forms.Form):
         widget=forms.NumberInput(
             attrs={
                 "class": "form-control text-right",
-                "placeholder": "Betrag",
             },
         ),
     )
