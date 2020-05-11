@@ -1,7 +1,8 @@
 import os
 
-from SkriptenTool import config
+from django.utils.translation import gettext_noop
 
+from SkriptenTool import config
 
 ###############
 # DIRECTORIES #
@@ -22,7 +23,6 @@ ORDER_TEMPLATE_FORM_FILE = os.path.join(ORDERS_DIR, 'vorlage/skriptenauftrag.pdf
 
 OUTPUT_DIR = os.path.join(MEDIA_ROOT, 'druck')
 
-
 ########
 # URLS #
 ########
@@ -32,7 +32,6 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'core:catalogue'
 LOGOUT_REDIRECT_URL = 'core:catalogue'
 MEDIA_URL = '/media/'
-
 
 ########
 # MAIL #
@@ -49,7 +48,6 @@ EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = config.SENDER_EMAIL
 SERVER_EMAIL = config.SENDER_EMAIL
 
-
 ############
 # SETTINGS #
 ############
@@ -58,56 +56,62 @@ SECRET_KEY = config.SECRET_KEY
 DEBUG = config.DEBUG
 ALLOWED_HOSTS = ['localhost'] + config.ALLOWED_HOSTS
 ADMINS = config.ADMINS
-INSTALLED_APPS = ['django.contrib.admin',
-                  'django.contrib.auth',
-                  'django.contrib.contenttypes',
-                  'django.contrib.sessions',
-                  'django.contrib.messages',
-                  'django.contrib.staticfiles',
-                  'core.apps.CoreConfig']
-MIDDLEWARE = ['django.middleware.security.SecurityMiddleware',
-              'django.contrib.sessions.middleware.SessionMiddleware',
-              'django.middleware.common.CommonMiddleware',
-              'django.middleware.csrf.CsrfViewMiddleware',
-              'django.contrib.auth.middleware.AuthenticationMiddleware',
-              'django.contrib.messages.middleware.MessageMiddleware',
-              'django.middleware.clickjacking.XFrameOptionsMiddleware']
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'core.apps.CoreConfig',
+]
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 TEMPLATES = [{
-    'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [os.path.join(BASE_DIR, 'templates')],
+    'BACKEND' : 'django.template.backends.django.DjangoTemplates',
+    'DIRS'    : [os.path.join(BASE_DIR, 'templates')],
     'APP_DIRS': True,
-    'OPTIONS': {
-        'context_processors': ['django.template.context_processors.debug',
-                               'django.template.context_processors.request',
-                               'django.contrib.auth.context_processors.auth',
-                               'django.contrib.messages.context_processors.messages'],
-    }, }, ]
+    'OPTIONS' : {
+        'context_processors': [
+            'django.template.context_processors.debug',
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
+        ],
+    },
+}, ]
 WSGI_APPLICATION = 'SkriptenTool.wsgi.application'
 if config.LOCAL:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }}
+            'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'skriptentool',
-            'USER': 'skriptentool',
+            'ENGINE'  : 'django.db.backends.postgresql_psycopg2',
+            'NAME'    : 'skriptentool',
+            'USER'    : 'skriptentool',
             'PASSWORD': config.DATABASE_PASSWORD,
-            'HOST': 'localhost',
-            'PORT': '',
-        }}
-AUTH_PASSWORD_VALIDATORS = [{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
-                            {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
-                            {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
-                            {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', }]
-LANGUAGE_CODE = 'de'
-TIME_ZONE = 'Europe/Berlin'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
+            'HOST'    : 'localhost',
+            'PORT'    : '',
+        }
+    }
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
+]
 SECURE_REFERRER_POLICY = 'origin'
 if config.SSL:
     SECURE_SSL_REDIRECT = True
@@ -117,6 +121,21 @@ if config.SSL:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
+###############
+# TRANSLATION #
+###############
+
+LANGUAGES = [
+    ('de', gettext_noop('German')),
+    ('en', gettext_noop('English')),
+]
+LANGUAGE_CODE = 'de'
+TIME_ZONE = 'Europe/Berlin'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale/')]
+MIDDLEWARE += ['django.middleware.locale.LocaleMiddleware']
 
 ####################
 # AUTHENTIFICATION #

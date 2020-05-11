@@ -5,6 +5,8 @@ from itertools import chain
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
 
 from core.forms import CashbookForm
 from core.models import Balance, CashBookEntry
@@ -20,7 +22,10 @@ def get_balances(start, end):
 
 
 def get_cashbookentries(start, end):
-    return CashBookEntry.objects.filter(time__range=[start, end]).values_list('time', 'user', 'amount', 'detail')
+    values = []
+    for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end]):
+        values.append((cash_book_entry.time, cash_book_entry.user.pk, cash_book_entry.amount, cash_book_entry.text))
+    return values
 
 
 def finance(request):
@@ -60,16 +65,15 @@ def finance(request):
         # 'CSV-Export'-button triggered
         if action_csv:
             response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attatchment; filename="kassenbuch.csv"'
+            response['Content-Disposition'] = format_lazy('attatchment; filename="{}.csv"', _('cashbook'))
             # create csv-file
             writer = csv.writer(response)
-            writer.writerow(['Zeitpunkt', 'Beschreibung', 'Preis'])
-            for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end])\
-                                                        .values_list('time', 'detail', 'amount'):
+            writer.writerow([_('time'), _('description'), _('price (in €)')])
+            for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end]):
                 writer.writerow([
-                    cash_book_entry[0].strftime('%Y-%m-%d %H:%M:%S'),
-                    cash_book_entry[1],
-                    cash_book_entry[2],
+                    cash_book_entry.time.strftime('%Y-%m-%d %H:%M:%S'),
+                    cash_book_entry.text,
+                    cash_book_entry.amount,
                 ])
             return response
 
@@ -77,10 +81,10 @@ def finance(request):
             # prepopulated values for time range
             'cashbook_form': CashbookForm(initial={'start': start, 'end': end - timedelta(days=1)}),
             # cashbook entries in selected time range
-            'cashbook': sorted(list(chain(get_cashbookentries(start, end), get_balances(start, end))),
-                               key=lambda x: x[0], reverse=True),
+            'cashbook'     : sorted(list(chain(get_cashbookentries(start, end), get_balances(start, end))),
+                                    key=lambda x: x[0], reverse=True),
             # current balance
-            'balance': str(Balance.objects.latest('time').amount),
+            'balance'      : str(Balance.objects.latest('time').amount),
         }
 
         return render(request, 'core/finance.html', context)

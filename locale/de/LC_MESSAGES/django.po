@@ -1,0 +1,899 @@
+# This file is distributed under the same license as the SkriptenTool package.
+# Paul Fischer <paul.fischer@tum.de>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: SkriptenTool\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-15 11:01+0200\n"
+"PO-Revision-Date: 2020-04-25 08:00+0200\n"
+"Last-Translator: Paul Fischer <paul.fischer@tum.de>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: SkriptenTool/settings.py:129
+msgid "German"
+msgstr "Deutsch"
+
+#: SkriptenTool/settings.py:130
+msgid "English"
+msgstr "Englisch"
+
+#: core/admin.py:19 core/admin.py:29 core/admin.py:39
+msgid "Changes in admin interface"
+msgstr "Änderungen im Admin-Interface"
+
+#: core/forms.py:35 core/forms.py:41
+msgid "YYYY-MM-DD"
+msgstr "TT.MM.JJJJ"
+
+#: core/forms.py:55
+msgid "optional comment"
+msgstr "optionaler Kommentar"
+
+#: core/models/author.py:7 core/models/products.py:267
+msgid "author"
+msgstr "Autor"
+
+#: core/models/author.py:8 templates/base.html:74
+msgid "authors"
+msgstr "Autoren"
+
+#: core/models/author.py:13
+msgid "name"
+msgstr "Name"
+
+#: core/models/author.py:18 core/models/user.py:55
+msgid "mail"
+msgstr "E-Mail-Adresse"
+
+#: core/models/balance.py:15 templates/core/finance.html:13
+#: templates/core/finance.html:87 templates/core/sale/balance.html:4
+msgid "balance"
+msgstr "Kassenstand"
+
+#: core/models/balance.py:16
+msgid "balances"
+msgstr "Kassenstände"
+
+#: core/models/balance.py:25
+msgid "initial"
+msgstr "Ersteinlage"
+
+#: core/models/balance.py:26 templates/core/finance.html:91
+msgid "opening"
+msgstr "Kassenöffnung"
+
+#: core/models/balance.py:27 templates/core/finance.html:92
+msgid "closing"
+msgstr "Kassenschluss"
+
+#: core/models/balance.py:28 templates/core/finance.html:93
+msgid "temporary"
+msgstr "Zwischenstand"
+
+#: core/models/balance.py:34 core/models/user.py:34
+msgid "user"
+msgstr "Benutzer"
+
+#: core/models/balance.py:39 core/models/cashbookentry.py:39
+#: core/views/finance.py:71 templates/core/finance.html:85
+msgid "time"
+msgstr "Zeitpunkt"
+
+#: core/models/balance.py:45 core/models/cashbookentry.py:57
+msgid "amount (in €)"
+msgstr "Betrag (in €)"
+
+#: core/models/balance.py:50
+msgid "counted"
+msgstr "gezählt"
+
+#: core/models/balance.py:56 core/models/cart.py:155
+#: core/models/cashbookentry.py:45 templates/core/sale/sale_process.html:37
+msgid "type"
+msgstr "Art"
+
+#: core/models/balance.py:108
+msgid "high balance"
+msgstr "hoher Kassenstand"
+
+#: core/models/cart.py:13 core/models/cart.py:165
+#: templates/core/sale/sale_process.html:6
+msgid "cart"
+msgstr "Verkaufsvorgang"
+
+#: core/models/cart.py:14
+msgid "carts"
+msgstr "Verkaufsvorgänge"
+
+#: core/models/cart.py:23 core/models/shift.py:28 core/models/user.py:70
+msgid "vendor"
+msgstr "Verkäufer"
+
+#: core/models/cart.py:28
+msgid "time of creation"
+msgstr "Erstellzeitpunkt"
+
+#: core/models/cart.py:37
+msgid "There can only be one sale at a time."
+msgstr "Es darf nur ein Verkauf gleichzeitig stattfinden."
+
+#: core/models/cart.py:132
+msgid "item"
+msgstr "Artikel"
+
+#: core/models/cart.py:133
+msgid "items"
+msgstr "Artikel"
+
+#: core/models/cart.py:142 core/models/products.py:191
+msgid "lecture note"
+msgstr "Skript"
+
+#: core/models/cart.py:143 core/models/products.py:392
+msgid "printing quota"
+msgstr "Druckkontingent"
+
+#: core/models/cart.py:144 core/models/cashbookentry.py:27
+#: core/models/cashbookentry.py:70 core/models/products.py:151
+#: core/models/products.py:291 templates/core/finance.html:26
+#: templates/core/finance.html:95
+msgid "deposit"
+msgstr "Kaution"
+
+#: core/models/cart.py:149 core/models/cashbookentry.py:72
+#: core/models/products.py:159 core/models/products.py:238
+#: core/models/products.py:399 templates/core/sale/sale_process.html:35
+msgid "EAN"
+msgstr "EAN"
+
+#: core/models/cart.py:159
+msgid "quantity"
+msgstr "Anzahl"
+
+#: core/models/cashbookentry.py:15
+msgid "cash book entry"
+msgstr "Kassenbucheintrag"
+
+#: core/models/cashbookentry.py:16
+msgid "cash book entries"
+msgstr "Kassenbucheinträge"
+
+#: core/models/cashbookentry.py:25 core/models/cashbookentry.py:66
+#: templates/core/finance.html:94
+msgid "correction"
+msgstr "Korrektur"
+
+#: core/models/cashbookentry.py:26 core/models/cashbookentry.py:68
+#: templates/core/finance.html:26 templates/core/finance.html:96
+msgid "withdrawal"
+msgstr "Entnahme"
+
+#: core/models/cashbookentry.py:28 core/utils/management.py:35
+#: templates/base.html:57 templates/core/sale.html:5
+msgid "sale"
+msgstr "Verkauf"
+
+#: core/models/cashbookentry.py:34
+msgid "creator"
+msgstr "Ersteller"
+
+#: core/models/cashbookentry.py:51
+msgid "detail"
+msgstr "Details"
+
+#: core/models/cashbookentry.py:81
+msgid "High balance"
+msgstr "Hoher Kassenstand"
+
+#: core/models/depositnote.py:11
+msgid "deposit note"
+msgstr "Kautionsschein"
+
+#: core/models/depositnote.py:12 templates/base.html:75
+msgid "deposit notes"
+msgstr "Kautionsscheine"
+
+#: core/models/depositnote.py:17
+msgid "number"
+msgstr "Nummer"
+
+#: core/models/depositnote.py:23
+msgid "deposit (in €)"
+msgstr "Kaution (in €)"
+
+#: core/models/depositnote.py:28
+msgid "time of sale"
+msgstr "Verkaufszeitpunkt"
+
+#: core/models/depositnote.py:36
+msgid "sold by"
+msgstr "Verkauft von"
+
+#: core/models/depositnote.py:41
+msgid "return time"
+msgstr "Rückgabezeitpunkt"
+
+#: core/models/depositnote.py:49
+msgid "refunded by"
+msgstr "Erstattet von"
+
+#: core/models/depositnote.py:54
+msgid "refundable"
+msgstr "erstattbar"
+
+#: core/models/products.py:28
+#, python-format
+msgid "There is no article matching the EAN %(ean)s."
+msgstr "Es konnte kein Artikel mit der EAN %(ean)s gefunden werden."
+
+#: core/models/products.py:43
+#, python-format
+msgid "%(semester_start)s until %(semester_end)s"
+msgstr "%(semester_start)s bis %(semester_end)s"
+
+#: core/models/products.py:128
+msgid "EANs may only contain numbers."
+msgstr "EANs dürfen nur aus Zahlen bestehen."
+
+#: core/models/products.py:143
+msgid "An article with this EAN already exists."
+msgstr "Ein Artikel mit dieser EAN existiert bereits."
+
+#: core/models/products.py:152 templates/base.html:78
+msgid "deposits"
+msgstr "Kautionen"
+
+#: core/models/products.py:165 core/models/products.py:243
+#: templates/core/sale/sale_process.html:36
+msgid "designation"
+msgstr "Bezeichnung"
+
+#: core/models/products.py:171
+msgid "deposit amount (in €)"
+msgstr "Kautionsbetrag (in €)"
+
+#: core/models/products.py:192 templates/base.html:73
+msgid "lecture notes"
+msgstr "Skripten"
+
+#: core/models/products.py:196 core/views/catalogue.py:21
+#: templates/core/catalogue.html:9
+msgid "mathematics"
+msgstr "Mathematik"
+
+#: core/models/products.py:197 core/views/catalogue.py:24
+#: templates/core/catalogue.html:15
+msgid "physics"
+msgstr "Physik"
+
+#: core/models/products.py:198 core/views/catalogue.py:27
+#: templates/core/catalogue.html:21
+msgid "informatics"
+msgstr "Informatik"
+
+#: core/models/products.py:202
+msgid "royal blue"
+msgstr "royalblau"
+
+#: core/models/products.py:203
+msgid "ice blue"
+msgstr "eisblau"
+
+#: core/models/products.py:204
+msgid "caribbean blue"
+msgstr "karibikblau"
+
+#: core/models/products.py:205
+msgid "sea green"
+msgstr "seegrün"
+
+#: core/models/products.py:206
+msgid "grass green"
+msgstr "grasgrün"
+
+#: core/models/products.py:207
+msgid "may green"
+msgstr "maigrün"
+
+#: core/models/products.py:208
+msgid "grey"
+msgstr "grau"
+
+#: core/models/products.py:209
+msgid "fuchsia"
+msgstr "fuchsia"
+
+#: core/models/products.py:210
+msgid "purple"
+msgstr "lila"
+
+#: core/models/products.py:211
+msgid "violet"
+msgstr "violett"
+
+#: core/models/products.py:212
+msgid "brick red"
+msgstr "ziegelrot"
+
+#: core/models/products.py:213
+msgid "pink"
+msgstr "rosa"
+
+#: core/models/products.py:214
+msgid "salmon"
+msgstr "lachsfarben"
+
+#: core/models/products.py:215
+msgid "orange"
+msgstr "orange"
+
+#: core/models/products.py:216
+msgid "camel"
+msgstr "camel"
+
+#: core/models/products.py:217
+msgid "light yellow"
+msgstr "hellgelb"
+
+#: core/models/products.py:218
+msgid "golden yellow"
+msgstr "goldgelb"
+
+#: core/models/products.py:219
+msgid "chamois"
+msgstr "chamois"
+
+#: core/models/products.py:223
+msgid "A4 (portrait)"
+msgstr "A4 (Hochformat)"
+
+#: core/models/products.py:224
+msgid "A4 (landscape)"
+msgstr "A4 (Querformat)"
+
+#: core/models/products.py:228
+msgid "one-sided"
+msgstr "einseitig"
+
+#: core/models/products.py:229
+msgid "two-sided"
+msgstr "doppelseitig"
+
+#: core/models/products.py:249
+msgid "subject"
+msgstr "Studienfach"
+
+#: core/models/products.py:256 core/models/products.py:405
+#: core/views/finance.py:71 templates/core/sale/sale_process.html:38
+msgid "price (in €)"
+msgstr "Preis (in €)"
+
+#: core/models/products.py:260
+msgid "study grants"
+msgstr "Studienzuschüsse"
+
+#: core/models/products.py:273
+msgid "semester (start)"
+msgstr "Semester (von)"
+
+#: core/models/products.py:280
+msgid "semester (end)"
+msgstr "Semester (bis)"
+
+#: core/models/products.py:284 core/models/products.py:413
+msgid "for sale"
+msgstr "steht zum Verkauf"
+
+#: core/models/products.py:296
+msgid "stock"
+msgstr "Bestand"
+
+#: core/models/products.py:303
+msgid "color of cover"
+msgstr "Deckblattfarbe"
+
+#: core/models/products.py:310
+msgid "papersize"
+msgstr "Papiergröße"
+
+#: core/models/products.py:317
+msgid "sides"
+msgstr "Seitigkeit"
+
+#: core/models/products.py:323
+msgid "notes for printing"
+msgstr "Anmerkungen für den Druck"
+
+#: core/models/products.py:330
+msgid "PDF file"
+msgstr "PDF-Datei"
+
+#: core/models/products.py:393 templates/base.html:77
+msgid "printing quotas"
+msgstr "Druckkontingente"
+
+#: core/models/products.py:409
+msgid "number of pages"
+msgstr "Seitenzahl"
+
+#: core/models/products.py:425
+#, python-format
+msgid "%(num)d pages"
+msgstr "%(num)d Seiten"
+
+#: core/models/shift.py:11
+msgid "sales shift"
+msgstr "Verkaufsschicht"
+
+#: core/models/shift.py:12
+msgid "sales shifts"
+msgstr "Verkaufsschichten"
+
+#: core/models/shift.py:17
+msgid "start time"
+msgstr "Beginn"
+
+#: core/models/shift.py:22
+msgid "end time"
+msgstr "Ende"
+
+#: core/models/shift.py:33 templates/core/shifts.html:36
+msgid "reviewed"
+msgstr "überprüft"
+
+#: core/models/shift.py:38 templates/core/shifts.html:37
+msgid "beverages"
+msgstr "Getränke"
+
+#: core/models/shift.py:44
+#, python-format
+msgid "%(date)s (%(time_start)s until %(time_end)s)"
+msgstr "%(date)s (%(time_start)s bis %(time_end)s)"
+
+#: core/models/shift.py:51
+#, python-format
+msgid "%(date)s (%(time_start)s until now)"
+msgstr "%(date)s (%(time_start)s bis jetzt)"
+
+#: core/models/user.py:35 templates/base.html:88
+msgid "users"
+msgstr "Benutzer"
+
+#: core/models/user.py:49
+msgid "Local usernames have to start with \"@\" and may only contain letters."
+msgstr ""
+"Lokale Benutzernamen müssen mit \"@\" beginnen und dürfen nur Buchstaben "
+"enthalten."
+
+#: core/models/user.py:51 templates/core/finance.html:86
+msgid "username"
+msgstr "Benutzername"
+
+#: core/models/user.py:60
+msgid "first name"
+msgstr "Vorname"
+
+#: core/models/user.py:65
+msgid "last name"
+msgstr "Nachname"
+
+#: core/models/user.py:75
+msgid "referent"
+msgstr "Referent"
+
+#: core/models/user.py:80
+msgid "financier"
+msgstr "Finanzer"
+
+#: core/models/user.py:85
+msgid "admin"
+msgstr "Administrator"
+
+#: core/utils/bootstrap.py:45
+msgid "Please correct the marked fields."
+msgstr "Bitte die markierten Felder korrigieren."
+
+#: core/utils/bootstrap.py:49
+#, python-format
+msgid "%(model_name)s successfully saved."
+msgstr "%(model_name)s erfolgreich gespeichert."
+
+#: core/utils/bootstrap.py:52
+msgid "Nothing saved, as no changes have been made."
+msgstr "Nichts gespeichert, da keine Änderungen vorgenommen wurden."
+
+#: core/utils/functions.py:75 core/utils/functions.py:82
+msgid "summer term"
+msgstr "Sommersemester"
+
+#: core/utils/functions.py:81 core/utils/functions.py:89
+msgid "winter term"
+msgstr "Wintersemester"
+
+#: core/utils/management.py:10
+msgid "properties"
+msgstr "Eigenschaften"
+
+#: core/utils/management.py:12
+msgid "print settings"
+msgstr "Druckeinstellungen"
+
+#: core/utils/management.py:37
+msgctxt "noun"
+msgid "refund"
+msgstr "Erstattung"
+
+#: core/utils/management.py:58
+msgid "user data"
+msgstr "Benutzerdaten"
+
+#: core/utils/management.py:60
+msgid "permissions"
+msgstr "Berechtigungen"
+
+#: core/views/finance.py:68 templates/base.html:84
+#: templates/core/finance.html:5 templates/core/finance.html:49
+msgid "cashbook"
+msgstr "Kassenbuch"
+
+#: core/views/finance.py:71 templates/core/finance.html:88
+msgid "description"
+msgstr "Beschreibung"
+
+#: core/views/management/create.py:39
+msgid "password"
+msgstr "Passwort"
+
+#: core/views/management/create.py:44
+msgid "repeat password"
+msgstr "Passwort wiederholen"
+
+#: core/views/management/create.py:52
+msgid "The passwords don't match."
+msgstr "Die Passwörter stimmen nicht überein."
+
+#: core/views/sale.py:86
+msgid "Deposit notes can only be sold with a lecture note."
+msgstr "Kautionsscheine können nur mit Skript verkauft werden."
+
+#: core/views/sale.py:97
+msgid "This item isn't for sale."
+msgstr "Dieser Artikel steht nicht zum Verkauf."
+
+#: core/views/sale.py:99 core/views/sale.py:114
+msgid "This item doesn't exist."
+msgstr "Dieser Artikel existiert nicht."
+
+#: core/views/sale.py:146
+#, python-format
+msgid "The deposit note %(num)s has alredy been refunded."
+msgstr "Der Kautionsschein %(num)s wurde bereits erstattet."
+
+#: core/views/sale.py:151
+msgid "This deposit note mustn't be refunded yet."
+msgstr "Dieser Kautionsschein darf noch nicht erstattet werden."
+
+#: core/views/sale.py:157
+#, python-format
+msgid "The deposit note %(num)s can only be refunded by a referent."
+msgstr ""
+"Der Kautionsschein %(num)s darf nur von einem Referenten erstattet werden."
+
+#: templates/base.html:51 templates/core/catalogue.html:4
+msgid "catalogue"
+msgstr "Katalog"
+
+#: templates/base.html:62 templates/base.html:76 templates/core/shifts.html:6
+msgid "shifts"
+msgstr "Verkaufsschichten"
+
+#: templates/base.html:69 templates/core/finance.html:10
+#: templates/core/management/delete_model.html:4
+#: templates/core/management/list_model.html:5
+#: templates/core/management/update_model.html:6
+msgid "management"
+msgstr "Verwaltung"
+
+#: templates/base.html:99
+#, python-format
+msgid "Log out %(username)s"
+msgstr "%(username)s abmelden"
+
+#: templates/base.html:102 templates/registration/login.html:5
+#: templates/registration/login.html:11 templates/registration/login.html:24
+msgid "log in"
+msgstr "anmelden"
+
+#: templates/base.html:132
+msgid "imprint"
+msgstr "Impressum"
+
+#: templates/base.html:135
+msgid "privacy policy"
+msgstr "Datenschutz"
+
+#: templates/base.html:138
+msgid "about"
+msgstr "über diese Software"
+
+#: templates/core/finance.html:35
+msgid "comment"
+msgstr "Kommentar"
+
+#: templates/core/finance.html:41
+msgid "book"
+msgstr "buchen"
+
+#: templates/core/finance.html:56
+msgid "from"
+msgstr "vom"
+
+#: templates/core/finance.html:60
+msgid "until"
+msgstr "bis zum"
+
+#: templates/core/finance.html:69
+msgid "refresh"
+msgstr "aktualisieren"
+
+#: templates/core/finance.html:74
+msgid "export CSV"
+msgstr "CSV exportieren"
+
+#: templates/core/mail/admin_log.txt:1
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"the following changes have been performed by %(username)s:\n"
+"\n"
+"Model: %(class)s\n"
+"Object: %(object)s\n"
+"Changelog: %(message)s\n"
+"\n"
+"Regards,\n"
+"Your SkriptenTool"
+msgstr ""
+"Hallo,\n"
+"\n"
+"es wurden folgende Änderungen von %(username)s vorgenommen:\n"
+"\n"
+"Objektklasse: %(class)s\n"
+"Objekt: %(object)s\n"
+"Änderungsmeldung: %(message)s\n"
+"\n"
+"Liebe Grüße,\n"
+"Euer SkriptenTool"
+
+#: templates/core/mail/correction.txt:1
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"at the last count by %(user)s, there has been a deviation of %(amount)s €!\n"
+"\n"
+"Regards,\n"
+"Your SkriptenTool"
+msgstr ""
+"Hallo,\n"
+"\n"
+"bei der letzten Zählung von %(user)s gab es eine Abweichung von %(amount)s "
+"€!\n"
+"\n"
+"Liebe Grüße,\n"
+"Euer SkriptenTool"
+
+#: templates/core/mail/high_balance.txt:1
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"the last sale has been closed with a balance of %(balance)s €!\n"
+"\n"
+"Regards,\n"
+"Your SkriptenTool"
+msgstr ""
+"Hallo,\n"
+"\n"
+"der letzte Verkauf wurde mit einem Kassenstand von %(balance)s € "
+"geschlossen!\n"
+"\n"
+"Liebe Grüße,\n"
+"Euer SkriptenTool"
+
+#: templates/core/management/delete_model.html:10
+#, python-format
+msgid "Delete %(verbose_name)s"
+msgstr "%(verbose_name)s löschen"
+
+#: templates/core/management/delete_model.html:16
+#, python-format
+msgid ""
+"<strong>%(object)s</strong> can't be deleted, as the object is linked to "
+"other objects!"
+msgstr ""
+"<strong>%(object)s</strong> kann nicht gelöscht werden, da das Objekt noch "
+"mit anderen Objekten verknüpft ist!"
+
+#: templates/core/management/delete_model.html:25
+#: templates/core/management/delete_model.html:46
+msgid "abort"
+msgstr "abbrechen"
+
+#: templates/core/management/delete_model.html:32
+#, python-format
+msgid "Are you sure you want to delete <strong>%(object)s</strong>?"
+msgstr "Soll <strong>%(object)s</strong> wirklich gelöscht werden?"
+
+#: templates/core/management/delete_model.html:41
+msgid "delete"
+msgstr "löschen"
+
+#: templates/core/management/list_model.html:100
+msgid "An error occured while sorting the table!"
+msgstr "Fehler beim Sortieren der Tabelle!"
+
+#: templates/core/management/list_model.html:113
+#, python-format
+msgid "Show %(verbose_name_plural)s"
+msgstr "%(verbose_name_plural)s anzeigen"
+
+#: templates/core/management/list_model.html:138
+#, python-format
+msgid "%(start)s of %(count)s"
+msgstr "%(start)s von %(count)s"
+
+#: templates/core/management/list_model.html:142
+#, python-format
+msgid "%(start)s to %(end)s of %(count)s"
+msgstr "%(start)s bis %(end)s von %(count)s"
+
+#: templates/core/management/list_model.html:179
+msgid "actions"
+msgstr "Aktionen"
+
+#: templates/core/management/list_model.html:211
+#, python-format
+msgid "No %(verbose_name_plural)s found."
+msgstr "Keine %(verbose_name_plural)s gefunden."
+
+#: templates/core/management/update_model.html:9 templates/core/shifts.html:9
+msgid "search"
+msgstr "suchen"
+
+#: templates/core/management/update_model.html:30
+#, python-format
+msgid "Add %(verbose_name)s"
+msgstr "%(verbose_name)s hinzufügen"
+
+#: templates/core/management/update_model.html:32
+#, python-format
+msgid "Edit %(verbose_name)s"
+msgstr "%(verbose_name)s bearbeiten"
+
+#: templates/core/sale/balance.html:16 templates/core/sale/popups.html:61
+msgid "confirm"
+msgstr "bestätigen"
+
+#: templates/core/sale/manage.html:4
+msgid "manage sale"
+msgstr "Verkauf steuern"
+
+#: templates/core/sale/manage.html:11
+#, python-format
+msgid "<strong>%(vendor)s</strong> is still active"
+msgstr "<strong>%(vendor)s</strong> ist noch aktiv"
+
+#: templates/core/sale/manage.html:16
+msgid "Sale process still running"
+msgstr "Verkaufsvorgang läuft noch"
+
+#: templates/core/sale/manage.html:20
+msgid "Register isn't counted"
+msgstr "Kasse ist nicht gezählt"
+
+#: templates/core/sale/manage.html:26
+msgid "end sale"
+msgstr "Verkauf schließen"
+
+#: templates/core/sale/manage.html:31
+msgid "close cart"
+msgstr "abschließen"
+
+#: templates/core/sale/manage.html:35
+msgid "open sale"
+msgstr "Verkauf öffnen"
+
+#: templates/core/sale/order.html:4 templates/core/sale/order.html:20
+msgid "order"
+msgstr "buchen"
+
+#: templates/core/sale/popups.html:14
+msgid "Deposit note required!"
+msgstr "Kautionsschein benötigt!"
+
+#: templates/core/sale/popups.html:21
+msgid "existent"
+msgstr "vorhanden"
+
+#: templates/core/sale/popups.html:25
+msgid "add new"
+msgstr "hinzufügen"
+
+#: templates/core/sale/popups.html:50
+msgid "Enter number of deposit note"
+msgstr "Kautionsscheinnummer eingeben"
+
+#: templates/core/sale/popups.html:84
+#, python-format
+msgid "Old deposit note or wrong number (%(remove_old_deposit_number)s)"
+msgstr ""
+"Alter Kautionsschein oder falsche Nummer (%(remove_old_deposit_number)s)"
+
+#: templates/core/sale/popups.html:93
+msgid "don't refund"
+msgstr "nicht erstatten"
+
+#: templates/core/sale/popups.html:100
+msgid "refund"
+msgstr "erstatten"
+
+#: templates/core/sale/sale_process.html:11
+msgid "close"
+msgstr "abschließen"
+
+#: templates/core/sale/sale_process.html:27
+#, python-format
+msgid "Number of new deposit note: <strong>%(number)s</strong>"
+msgstr "Neue Kautionsscheinnummer: <strong>%(number)s</strong>"
+
+#: templates/core/sale/sale_process.html:39
+msgid "amount"
+msgstr "Anzahl"
+
+#: templates/core/sale/sale_process.html:40
+msgid "total"
+msgstr "Summe"
+
+#: templates/core/shifts.html:24
+msgid "Your shifts"
+msgstr "Deine Verkaufsschichten"
+
+#: templates/core/shifts.html:35
+msgid "Time"
+msgstr ""
+
+#: templates/core/shifts.html:55
+msgid "You hadn't had any shifts yet."
+msgstr "Du hattest bisher noch keine Verkaufsschichten."
+
+#: templates/core/widgets/catalogue_table.html:6
+msgid "title"
+msgstr "Titel"
+
+#: templates/core/widgets/catalogue_table.html:7
+msgid "price"
+msgstr "Preis"
+
+#: templates/core/widgets/catalogue_table.html:8
+msgid "availability"
+msgstr "Verfügbarkeit"
+
+#: templates/core/widgets/catalogue_table.html:16
+#, python-format
+msgid "%(stock)s copies"
+msgstr "%(stock)s Exemplare"
+
+#: templates/core/widgets/catalogue_table.html:18
+msgid "sold out"
+msgstr "ausverkauft"
+
+#: templates/core/widgets/catalogue_table.html:25
+#, python-format
+msgid "There are currently no lecture notes for %(subject)s available."
+msgstr "Derzeit sind keine %(subject)s-Skripte verfügbar"

@@ -91,12 +91,13 @@ class ListModelView(View):
 
         if is_allowed(request.user, model, 'list'):
             context = get_context(request.user, model)
-            formset = get_formset(request.user, model)()
 
-            query, page = get_pagination(formset, request)
+            query, page = get_pagination(get_formset(request.user, model)(), request)
+
+            formset = get_formset(request.user, model)(queryset=query)
 
             context['page'] = page
-            context['formset'] = get_formset(request.user, model)(queryset=query)
+            context['formset'] = formset
 
             return render(request, 'core/management/list_model.html', context)
         else:
@@ -108,17 +109,17 @@ class ListModelView(View):
         if is_allowed(request.user, model, 'list'):
             context = get_context(request.user, model)
 
+            query, page = get_pagination(get_formset(request.user, model)(), request)
+
             if 'save' in request.POST:
-                formset = get_formset(request.user, model)(request.POST)
+                formset = get_formset(request.user, model)(request.POST, queryset=query)
                 if formset.is_valid():
                     formset.save()
             else:
-                formset = get_formset(request.user, model)()
-
-            query, page = get_pagination(formset, request)
+                formset = get_formset(request.user, model)(queryset=query)
 
             context['page'] = page
-            context['formset'] = get_formset(request.user, model)(queryset=query)
+            context['formset'] = formset
 
             return render(request, 'core/management/list_model.html', context)
         else:

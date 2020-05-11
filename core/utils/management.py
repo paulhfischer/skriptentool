@@ -1,3 +1,5 @@
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
+
 from core.models import Author, Deposit, DepositNote, LectureNote, PrintingQuota, Shift, User
 
 SETTINGS = {
@@ -5,9 +7,9 @@ SETTINGS = {
         'fieldsets': [
             {'legend': None,
              'fields': ['ean', 'stock', 'active']},
-            {'legend': 'Eigenschaften',
+            {'legend': _('properties'),
              'fields': ['name', 'subject', 'price', 'study_grants', 'author', 'semester_start', 'semester_end', 'deposit']},
-            {'legend': 'Druckeinstellungen',
+            {'legend': _('print settings'),
              'fields': ['color', 'papersize', 'sides', 'printnotes', 'file']}
         ],
         'columns': ['ean', 'name', 'subject', 'active', 'stock', 'printnotes']
@@ -30,9 +32,9 @@ SETTINGS = {
         'fieldsets': [
             {'legend': None,
              'fields': ['number', 'price']},
-            {'legend': 'Verkauf',
+            {'legend': _('sale'),
              'fields': ['sold_time', 'sold_by']},
-            {'legend': 'Erstattung',
+            {'legend': pgettext_lazy('noun', 'refund'),
              'fields': ['refunded_time', 'refunded_by', 'refundable']}
         ],
         'columns': ['number', 'price', 'sold_time', 'refunded_time', 'refundable']
@@ -53,9 +55,9 @@ SETTINGS = {
     },
     User: {
         'fieldsets': [
-            {'legend': 'Benutzdaten',
+            {'legend': _('user data'),
              'fields': ['first_name', 'last_name', 'username', 'mail', 'password', 'password_repeat']},
-            {'legend': 'Berechtigungen',
+            {'legend': _('permissions'),
              'fields': ['vendor', 'referent', 'financier', 'admin']}
         ],
         'columns': ['username', 'vendor', 'referent', 'financier', 'admin']

@@ -1,15 +1,16 @@
 from django import forms
+from django.utils.text import capfirst
+
+from django.utils.translation import gettext_lazy as _
 
 
 class SaleForm(forms.Form):
     ean_add = forms.CharField(
-        label='Artikel hinzufügen',
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
     ean_remove = forms.CharField(
-        label='Artikel entfernen',
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
@@ -30,29 +31,28 @@ class SaleForm(forms.Form):
 class CashbookForm(forms.Form):
     start = forms.DateField(
         required=False,
-        widget=forms.DateInput(attrs={'class': 'form-control',
-                                      'placeholder': 'TT.MM.JJJJ'})
+        widget=forms.DateInput(attrs={'class'      : 'form-control',
+                                      'placeholder': _('YYYY-MM-DD')})
     )
 
     end = forms.DateField(
         required=False,
-        widget=forms.DateInput(attrs={'class': 'form-control',
-                                      'placeholder': 'TT.MM.JJJJ'})
+        widget=forms.DateInput(attrs={'class'      : 'form-control',
+                                      'placeholder': _('YYYY-MM-DD')})
     )
 
     update = forms.DecimalField(
         max_digits=6,
         decimal_places=2,
         required=False,
-        widget=forms.NumberInput(attrs={'class': 'form-control text-right',
-                                        'placeholder': 'Betrag'})
+        widget=forms.NumberInput(attrs={'class': 'form-control text-right'})
     )
 
     comment = forms.CharField(
         max_length=40,
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control',
-                                      'placeholder': 'Optionaler Kommentar'})
+        widget=forms.TextInput(attrs={'class'      : 'form-control',
+                                      'placeholder': capfirst(_('optional comment'))})
     )
 
 

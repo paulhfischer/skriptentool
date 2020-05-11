@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from core.forms import SaleForm
 from core.models import Balance, Cart, CartItem, DepositNote, Shift, User, get_product, get_type
@@ -29,7 +30,8 @@ def sale(request):
         can_close = Balance.objects.latest('time').counted and empty
         can_next = cart and not empty
         can_open = Balance.objects.latest('time').counted and not cart
-        can_order = vendor and not Balance.objects.latest('time').is_opening or vendor and Balance.objects.latest('time').counted
+        can_order = vendor and not Balance.objects.latest('time').is_opening \
+                    or vendor and Balance.objects.latest('time').counted
 
         # button triggers
         action_count = 'count' in request.POST and form.is_valid() and form.cleaned_data['balance']
@@ -39,7 +41,10 @@ def sale(request):
         action_order = 'order' in request.POST and form.is_valid()
         action_has_deposit = 'has_deposit' in request.POST and request.POST['has_deposit']
         action_add_deposit = 'add_deposit' in request.POST and request.POST['add_deposit']
-        action_remove_deposit = 'remove_deposit' in request.POST and request.POST['remove_deposit'] and form.is_valid() and form.cleaned_data['deposit_number']
+        action_remove_deposit = 'remove_deposit' in request.POST \
+                                and request.POST['remove_deposit'] \
+                                and form.is_valid() \
+                                and form.cleaned_data['deposit_number']
         action_remove_old_deposit = 'remove_old_deposit' in request.POST and request.POST['remove_old_deposit']
 
         # count balance
@@ -78,7 +83,7 @@ def sale(request):
 
                     # prevent sale of deposit
                     if product_type == 'deposit':
-                        error = 'Kautionsscheine können nur mit Skript verkauft werden.'
+                        error = _('Deposit notes can only be sold with a lecture note.')
 
                     # check if article is available for sale
                     elif product.active:
@@ -89,9 +94,9 @@ def sale(request):
                         except AttributeError:
                             cart.add(ean)
                     else:
-                        error = 'Dieser Artikel steht nicht zum Verkauf.'
+                        error = _('This item isn\'t for sale.')
                 except ObjectDoesNotExist:
-                    error = 'Dieser Artikel existiert nicht.'
+                    error = _('This item doesn\'t exist.')
 
             elif form.cleaned_data['ean_remove']:
                 ean = form.cleaned_data['ean_remove']
@@ -106,21 +111,23 @@ def sale(request):
                     else:
                         cart.remove(ean)
                 except ObjectDoesNotExist:
-                    error = 'Dieser Artikel existiert nicht.'
+                    error = _('This item doesn\'t exist.')
 
-        # item sold before needed deposit but buyer already payed deposit
+        # item sold before needed deposit but buyer already paid deposit
         elif can_order and action_has_deposit:
             cart.add(request.POST['has_deposit'])
 
-        # item sold before needed deposit and buyer hasn't payed deposit yet
+        # item sold before needed deposit and buyer hasn't paid deposit yet
         elif can_order and action_add_deposit:
             # create new depositnote
             new_deposit_number = DepositNote.new_number()
-            DepositNote(number=new_deposit_number,
-                        price=get_product(request.POST['add_deposit'].split('|')[0]).price,
-                        sold_by=request.user,
-                        sold_time=timezone.now(),
-                        refundable=False).save()
+            DepositNote(
+                number=new_deposit_number,
+                price=get_product(request.POST['add_deposit'].split('|')[0]).price,
+                sold_by=request.user,
+                sold_time=timezone.now(),
+                refundable=False
+            ).save()
             # add deposit to cart
             cart.add(request.POST['add_deposit'].split('|')[0])
             # add item to cart
@@ -136,28 +143,30 @@ def sale(request):
                 if DepositNote.is_refundable(deposit_number):
                     # check if depositnote has already been refunded
                     if DepositNote.refunded(deposit_number):
-                        error = 'Der Kautionsschein ' + deposit_number + ' wurde bereits erstattet.'
+                        error = _('The deposit note %(num)s has alredy been refunded.') % {'num': deposit_number}
                     else:
                         DepositNote.refund(deposit_number, request.user)
                         cart.remove(deposit_ean)
                 else:
-                    error = 'Dieser Kautionsschein darf noch nicht erstattet werden.'
+                    error = _('This deposit note mustn\'t be refunded yet.')
             # start deposit refund of old depositnote if user is 'Referent'
             elif request.user.referent:
                 remove_old_deposit_number = deposit_number
                 remove_old_deposit_ean = deposit_ean
             else:
-                error = 'Der Kautionsschein ' + deposit_number + ' kann nur von Referenten erstattet werden.'
+                error = _('The deposit note %(num)s can only be refunded by a referent.') % {'num': deposit_number}
 
         # depositnote not in system should be refunded
         elif can_order and action_remove_old_deposit and request.user.referent:
             deposit_number = request.POST['remove_old_deposit'].split('|')[1]
             deposit_ean = request.POST['remove_old_deposit'].split('|')[0]
-            DepositNote(number=deposit_number,
-                        price=get_product(deposit_ean).price,
-                        refunded_by=request.user,
-                        refunded_time=timezone.now(),
-                        refundable=True).save()
+            DepositNote(
+                number=deposit_number,
+                price=get_product(deposit_ean).price,
+                refunded_by=request.user,
+                refunded_time=timezone.now(),
+                refundable=True
+            ).save()
             cart.remove(deposit_ean)
 
         # cart could be modified in other methods, therefor refresh variables
@@ -167,23 +176,24 @@ def sale(request):
 
         # Generate Context
         context = {
-            'can_count': not Balance.objects.latest('time').counted and empty,
-            'can_close': Balance.objects.latest('time').counted and empty,
-            'can_next': cart and not empty,
-            'can_open': Balance.objects.latest('time').counted and not cart,
-            'can_order': vendor and not Balance.objects.latest('time').is_opening or vendor and Balance.objects.latest('time').counted,
-            'balance': str(Balance.objects.latest('time').amount),
-            'form': SaleForm(initial={'balance': Balance.objects.latest('time').amount}),
-            'vendor': vendor,
-            'items': CartItem.objects.filter(cart=cart),
-            'cart': cart,
-            'error': error,
-            'add_deposit_ean': add_deposit_ean,
-            'remove_deposit_ean': remove_deposit_ean,
-            'remove_old_deposit_ean': remove_old_deposit_ean,
+            'can_count'                : not Balance.objects.latest('time').counted and empty,
+            'can_close'                : Balance.objects.latest('time').counted and empty,
+            'can_next'                 : cart and not empty,
+            'can_open'                 : Balance.objects.latest('time').counted and not cart,
+            'can_order'                : vendor and not Balance.objects.latest('time').is_opening
+                                         or vendor and Balance.objects.latest('time').counted,
+            'balance'                  : str(Balance.objects.latest('time').amount),
+            'form'                     : SaleForm(initial={'balance': Balance.objects.latest('time').amount}),
+            'vendor'                   : vendor,
+            'items'                    : CartItem.objects.filter(cart=cart),
+            'cart'                     : cart,
+            'error'                    : error,
+            'add_deposit_ean'          : add_deposit_ean,
+            'remove_deposit_ean'       : remove_deposit_ean,
+            'remove_old_deposit_ean'   : remove_old_deposit_ean,
             'remove_old_deposit_number': remove_old_deposit_number,
-            'new_deposit_number': new_deposit_number,
-            'product_ean': product_ean,
+            'new_deposit_number'       : new_deposit_number,
+            'product_ean'              : product_ean,
         }
 
         return render(request, 'core/sale.html', context)

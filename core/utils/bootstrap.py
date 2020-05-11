@@ -1,8 +1,9 @@
 from django.core.exceptions import ImproperlyConfigured
-from django.forms import BaseFormSet, CheckboxInput, EmailInput, FileInput, NumberInput, PasswordInput, Select, TextInput, URLInput, DateTimeField
+from django.forms import BaseFormSet, CheckboxInput, DateTimeField, EmailInput, FileInput, NumberInput, PasswordInput, Select, TextInput, URLInput
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 
 def text_value(value):
@@ -41,14 +42,14 @@ def formset_errors_renderer(formset, model_name):
         html = '<ul>{}</ul>'.format(html)
     elif formset.total_error_count():
         alert_class = ' alert-danger'
-        html = 'Bitte die markierten Felder korrigieren.'
+        html = _('Please correct the marked fields.')
     elif formset.is_valid():
         if formset.has_changed():
             alert_class = ' alert-success'
-            html = model_name + ' erfolgreich gespeichert.'
+            html = _('%(model_name)s successfully saved.') % {'model_name': model_name}
         else:
             alert_class = ' alert-dark'
-            html = 'Nichts gespeichert, da keine Änderungen vorgenommen wurden.'
+            html = _('Nothing saved, as no changes have been made.')
     else:
         return ''
 
@@ -73,9 +74,11 @@ def field_renderer(field, style='default'):
         return text_value(field)
 
     # check if field-type is supported
-    if not isinstance(widget,
-                      (CheckboxInput, FileInput, Select, TextInput, NumberInput, EmailInput, URLInput, PasswordInput,))\
-       or (style == 'tabular' and isinstance(field.field.widget, FileInput)):
+    if not isinstance(
+            widget, (CheckboxInput, FileInput, Select, TextInput, NumberInput, EmailInput, URLInput, PasswordInput,)
+       ) or (
+            style == 'tabular' and isinstance(field.field.widget, FileInput)
+       ):
         raise ImproperlyConfigured()
 
     # render errors
@@ -139,13 +142,13 @@ def field_renderer(field, style='default'):
                    '<label class="custom-control-label{disabled_css}" for="{input_id}">{label_content}</label>' \
                    '</div>' \
                    '</div>' \
-                    .format(
-                        validation=validation,
-                        input_id=field.id_for_label,
-                        input=input_html,
-                        label_content=text_value(field.label),
-                        disabled_css=disabled_css,
-                    )
+                   .format(
+                       validation=validation,
+                       input_id=field.id_for_label,
+                       input=input_html,
+                       label_content=text_value(field.label),
+                       disabled_css=disabled_css,
+                   )
         elif style == 'horizontal':
             html = '<div class="form-group row{validation}">' \
                    '<label class="col-md-3 col-form-label"></label>' \
@@ -157,12 +160,12 @@ def field_renderer(field, style='default'):
                    '</div>' \
                    '</div>' \
                    .format(
-                        validation=validation,
-                        input_id=field.id_for_label,
-                        input=input_html,
-                        label_content=text_value(field.label),
-                        disabled_css=disabled_css,
-                    )
+                       validation=validation,
+                       input_id=field.id_for_label,
+                       input=input_html,
+                       label_content=text_value(field.label),
+                       disabled_css=disabled_css,
+                   )
         else:
             html = '<td class="align-middle text-center{validation}">' \
                    '<div class="custom-control custom-switch">' \
@@ -170,12 +173,12 @@ def field_renderer(field, style='default'):
                    '<label class="custom-control-label{disabled_css}" for="{input_id}"></label>' \
                    '</div>' \
                    '</td>' \
-                    .format(
-                        validation=validation,
-                        input_id=field.id_for_label,
-                        input=input_html,
-                        disabled_css=disabled_css,
-                    )
+                   .format(
+                       validation=validation,
+                       input_id=field.id_for_label,
+                       input=input_html,
+                       disabled_css=disabled_css,
+                   )
 
     elif isinstance(widget, FileInput):
         if style == 'default':
@@ -187,14 +190,14 @@ def field_renderer(field, style='default'):
                    '{invalid_feedback}' \
                    '</div>' \
                    '</div>' \
-                    .format(
-                        invalid_feedback=invalid_feedback,
-                        value=text_value(field.value()),
-                        input_name=field.name,
-                        input_id=field.id_for_label,
-                        label_content=text_value(field.label),
-                        required=required,
-                    )
+                   .format(
+                       invalid_feedback=invalid_feedback,
+                       value=text_value(field.value()),
+                       input_name=field.name,
+                       input_id=field.id_for_label,
+                       label_content=text_value(field.label),
+                       required=required,
+                   )
         else:
             html = '<div class="form-group row {required}">' \
                    '<label class="col-md-3 col-form-label" for="{input_id}">{label_content}</label>' \
@@ -206,14 +209,14 @@ def field_renderer(field, style='default'):
                    '</div>' \
                    '</div>' \
                    '</div>' \
-                    .format(
-                        invalid_feedback=invalid_feedback,
-                        value=text_value(field.value()).replace('media/', ''),
-                        input_name=field.name,
-                        input_id=field.id_for_label,
-                        label_content=text_value(field.label),
-                        required=required,
-                    )
+                   .format(
+                       invalid_feedback=invalid_feedback,
+                       value=text_value(field.value()).replace('media/', ''),
+                       input_name=field.name,
+                       input_id=field.id_for_label,
+                       label_content=text_value(field.label),
+                       required=required,
+                   )
 
     else:
         if style == 'default':
@@ -222,13 +225,13 @@ def field_renderer(field, style='default'):
                    '{input}' \
                    '{invalid_feedback}' \
                    '</div>' \
-                    .format(
-                        invalid_feedback=invalid_feedback,
-                        input_id=field.id_for_label,
-                        input=input_html,
-                        label_content=text_value(field.label),
-                        required=required
-                    )
+                   .format(
+                       invalid_feedback=invalid_feedback,
+                       input_id=field.id_for_label,
+                       input=input_html,
+                       label_content=text_value(field.label),
+                       required=required
+                   )
         elif style == 'horizontal':
             html = '<div class="form-group row {required}">' \
                    '<label class="col-md-3 col-form-label" for="{input_id}">{label_content}</label>' \
@@ -237,19 +240,19 @@ def field_renderer(field, style='default'):
                    '{invalid_feedback}' \
                    '</div>' \
                    '</div>' \
-                    .format(
-                        invalid_feedback=invalid_feedback,
-                        input_id=field.id_for_label,
-                        input=input_html,
-                        label_content=text_value(field.label),
-                        required=required,
-                    )
+                   .format(
+                       invalid_feedback=invalid_feedback,
+                       input_id=field.id_for_label,
+                       input=input_html,
+                       label_content=text_value(field.label),
+                       required=required,
+                   )
         else:
             html = '<td class="p-0">' \
                    '{input}' \
                    '</td>' \
                    .format(
-                        input=input_html
-                    )
+                       input=input_html
+                   )
 
     return mark_safe(html)

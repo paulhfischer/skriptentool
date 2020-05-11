@@ -3,17 +3,19 @@ import subprocess
 
 from django.apps import AppConfig, apps
 from django.http import Http404
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
 
 
 # return number of pages of pdf using pdfinfo
-# on error return 'unbekannt'
+# on error return 'unknown'
 def get_pdf_page_count(path):
     output = subprocess.run(['pdfinfo', path], stdout=subprocess.PIPE).stdout.decode()
     for line in output.splitlines():
         if line.startswith('Pages:'):
             return line.split(':')[1].strip()
 
-    return 'unbekannt'
+    return 'unknown'
 
 
 # escape characters to prevent tex-injection
@@ -69,18 +71,23 @@ def get_semesters(start, end):
 
     # add summerterm
     if start.startswith('S'):
-        choices.append(('S' + str(int(start[1:])), 'Sommersemester ' + str(int(start[1:]))))
+        choices.append(
+            ('S' + str(int(start[1:])), format_lazy('{} {}', _('summer term'), str(int(start[1:]))))
+        )
 
     # add choices in range
     for year in range(year_start, year_end):
-        choices.extend(
-            [('W' + str(year), 'Wintersemester ' + str(year) + ' / ' + str(year+1)),
-             ('S' + str(year+1), 'Sommersemester ' + str(year+1))]
-        )
+        choices.extend([
+            ('W' + str(year), format_lazy('{} {} / {}', _('winter term'), str(year), str(year + 1))),
+            ('S' + str(year + 1), format_lazy('{} {}', _('summer term'), str(year + 1))),
+        ])
 
     # add winterterm
     if end.startswith('W'):
-        choices.append(('W' + str(int(end[1:])), 'Wintersemester ' + str(int(end[1:])) + ' / ' + str(int(end[1:])+1)))
+        choices.append(
+            ('W' + str(int(end[1:])),
+             format_lazy('{} {} / {}', _('winter term'), str(int(end[1:])), str(int(end[1:]) + 1)))
+        )
 
     choices.reverse()
 

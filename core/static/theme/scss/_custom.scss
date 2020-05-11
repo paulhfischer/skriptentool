@@ -141,11 +141,6 @@ td, th {
   cursor: default !important;
 }
 
-// translate file text
-.custom-file-label::after {
-  content: "Auswählen";
-}
-
 // extra small table styling
 .table-xsm {
   th, td {
@@ -227,20 +222,32 @@ th.sortable {
   }
 
   .dropdown-menu {
-    min-width: 100%;
+    width: 100%;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+
+    .dropdown-header {
+      padding-left: 0.75rem !important;
+      padding-right: 0.75rem !important;
+    }
 
     .dropdown-options {
       max-height: 8rem;
       overflow-y: scroll;
 
       .dropdown-item {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        cursor: pointer;
+        padding: 0 0.75rem !important;
       }
     }
+  }
+}
+
+// hover effect for dropdown-menu
+.dropdown-item {
+  cursor: pointer;
+
+  &:hover:not(.active) {
+    background-color: $pagination-hover-bg;
   }
 }
 
