@@ -4,10 +4,12 @@ import subprocess  # nosec
 from django.apps import AppConfig
 from django.apps import apps
 from django.http import Http404
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
 
 
 # return number of pages of pdf using pdfinfo
-# on error return 'unbekannt'
+# on error return 'unknown'
 def get_pdf_page_count(path):
     output = subprocess.run(  # nosec
         ["pdfinfo", path],
@@ -17,7 +19,7 @@ def get_pdf_page_count(path):
         if line.startswith("Pages:"):
             return line.split(":")[1].strip()
 
-    return "unbekannt"
+    return "unknown"
 
 
 # escape characters to prevent tex-injection
@@ -77,14 +79,25 @@ def get_semesters(start, end):
 
     # add summerterm
     if start.startswith("S"):
-        choices.append((f"S{int(start[1:])}", f"Sommersemester {int(start[1:])}"))
+        choices.append(
+            (
+                f"S{int(start[1:])}",
+                format_lazy("{} {}", _("summer term"), str(int(start[1:]))),
+            ),
+        )
 
     # add choices in range
     for year in range(year_start, year_end):
         choices.extend(
             [
-                (f"W{year}", f"Wintersemester {year} / {year + 1}"),
-                (f"S{year + 1}", f"Sommersemester {year + 1}"),
+                (
+                    f"W{year}",
+                    format_lazy("{} {} / {}", _("winter term"), str(year), str(year + 1)),
+                ),
+                (
+                    f"S{year + 1}",
+                    format_lazy("{} {}", _("summer term"), str(year + 1)),
+                ),
             ],
         )
 
@@ -93,7 +106,12 @@ def get_semesters(start, end):
         choices.append(
             (
                 f"W{int(end[1:])}",
-                f"Wintersemester {int(end[1:])} / {int(end[1:]) + 1}",
+                format_lazy(
+                    "{} {} / {}",
+                    _("winter term"),
+                    str(int(end[1:])),
+                    str(int(end[1:]) + 1),
+                ),
             ),
         )
 

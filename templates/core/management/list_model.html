@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load bootstrap %}
 
-{% block title %}Verwaltung{% endblock %}
+{% block title %}{% trans 'management'|capfirst %}{% endblock %}
 
 {% block extrascript %}
 <script>
@@ -17,9 +18,18 @@
 
                 case 'datetime-local':
                     if (input.val()) {
-                        // separate datetime
-                        const date = input.val().split(' ')[0].split('.');
-                        const time = input.val().split(' ')[1].split(':');
+                        let date, time;
+
+                        switch ($('html')[0].lang) {
+                            case 'en':
+                                // separate datetime
+                                date = input.val().split(' ')[0].split('-');
+                                time = input.val().split(' ')[1].split(':');
+                            case 'de':
+                                // separate datetime
+                                date = input.val().split(' ')[0].split('.');
+                                time = input.val().split(' ')[1].split(':');
+                        }
 
                         // create datetime
                         const datetime = Date.parse(date[2] + '-' + date[1] + '-' + date[0] +
@@ -87,7 +97,7 @@
                     }
                 }).appendTo(tableBody)
             } else {
-                alert('Fehler beim Sortieren der Tabelle!');
+                alert('{% trans "An error occured while sorting the table!" %}');
             }
         });
     });
@@ -105,7 +115,7 @@
     {{ formset.management_form }}
 
     <h2 class="card-header">
-        {{ verbose_name_plural }} anzeigen
+        {% blocktrans %}Show {{ verbose_name_plural }}{% endblocktrans %}
 
         <div class="btn-toolbar float-lg-right spacer-t-md text-center">
             {% if can_create %}
@@ -137,11 +147,17 @@
         {% if formset.total_form_count %}
         <table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
             <caption class="pb-0">
+                {{ verbose_name|capfirst }}
                 {% if page.start_index == page.end_index %}
-                {{ verbose_name }} {{ page.start_index }} von {{ page.paginator.count }}
+                {% blocktrans trimmed with start=page.start_index count=page.paginator.count %}
+                {{ start }} of {{ count }}
+                {% endblocktrans %}
                 {% else %}
-                {{ verbose_name }} {{ page.start_index }} bis {{ page.end_index }} von {{ page.paginator.count }}
+                {% blocktrans trimmed with start=page.start_index end=page.end_index count=page.paginator.count %}
+                {{ start }} to {{ end }} of {{ count }}
+                {% endblocktrans %}
                 {% endif %}
+
                 {% if page.paginator.num_pages != 1 %}
                 <ul class="pagination pagination-sm float-right mb-0">
                     {% if page.has_previous %}
@@ -198,7 +214,7 @@
                         class="text-center"
                         style="width: 5.5rem !important;"
                     >
-                        Aktionen
+                        {% trans 'actions'|capfirst %}
                     </th>
                     {% endif %}
                 </tr>
@@ -240,7 +256,7 @@
             </tbody>
         </table>
         {% else %}
-        Es wurden keine {{ verbose_name_plural }} gefunden.
+        {% blocktrans %}No {{ verbose_name_plural }} found.{% endblocktrans %}
         {% endif %}
     </div>
 </form>

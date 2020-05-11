@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load filters %}
 
-{% block title %}Kassenbuch{% endblock %}
+{% block title %}{% trans 'cashbook'|capfirst %}{% endblock %}
 
 {% block content %}
 <div class="card spacer-b">
     <h2 class="card-header">
-        Verwaltung
+        {% trans 'management'|capfirst %}
         <div class="input-group w-auto float-lg-right spacer-t-md">
             <div class="input-group-prepend">
-                <span class="input-group-text">Kassenstand</span>
+                <span class="input-group-text">{% trans 'balance'|capfirst %}</span>
             </div>
             <input
                 type="number"
@@ -31,7 +32,9 @@
 
             <div class="input-group col-lg-5 spacer-b-md">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">Einlage / Entnahme</span>
+                    <span class="input-group-text">
+                        {% trans 'deposit'|capfirst %} / {% trans 'withdrawal'|capfirst %}
+                    </span>
                 </div>
                 {{ cashbook_form.update }}
                 <div class="input-group-append">
@@ -40,7 +43,7 @@
             </div>
             <div class="input-group col-lg-5 spacer-b-md">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">Kommentar</span>
+                    <span class="input-group-text">{% trans 'comment'|capfirst %}</span>
                 </div>
                 {{ cashbook_form.comment }}
             </div>
@@ -50,7 +53,7 @@
                     name="change"
                     class="btn btn-block btn-primary"
                 >
-                    Buchen
+                    {% trans 'book'|capfirst %}
                 </button>
             </div>
         </form>
@@ -58,7 +61,7 @@
 </div>
 <div class="card">
     <div class="card-header">
-        <h2 class="spacer-b">Kassenbuch</h2>
+        <h2 class="spacer-b">{% trans 'cashbook'|capfirst %}</h2>
         <form method="post">
             {% csrf_token %}
 
@@ -66,11 +69,11 @@
                 <div class="col-lg-6 spacer-b-md">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">Vom</span>
+                            <span class="input-group-text">{% trans 'from'|capfirst %}</span>
                         </div>
                         {{ cashbook_form.start }}
                         <div class="input-group-prepend">
-                            <span class="input-group-text border-left-0">bis zum</span>
+                            <span class="input-group-text border-left-0">{% trans 'until' %}</span>
                         </div>
                         {{ cashbook_form.end }}
                     </div>
@@ -83,7 +86,7 @@
                                 name="refresh"
                                 class="btn btn-primary btn-block"
                             >
-                                Aktualisieren
+                                {% trans 'refresh'|capfirst %}
                             </button>
                         </div>
                         <div class="col-6">
@@ -92,7 +95,7 @@
                                 name="csv"
                                 class="btn btn-primary btn-block"
                             >
-                                CSV-Export
+                                {% trans 'export CSV'|capfirst %}
                             </button>
                         </div>
                     </div>
@@ -103,39 +106,47 @@
     <div class="card-body table-responsive">
         <table class="table table-xsm mb-0 table-fixed text-nowrap">
             <tr>
-                <th>Zeitpunkt</th>
-                <th>Benutzername</th>
-                <th class="text-right">Kassenstand</th>
-                <th>Beschreibung</th>
+                <th>{% trans 'time'|capfirst %}</th>
+                <th>{% trans 'username'|capfirst %}</th>
+                <th class="text-right">{% trans 'balance'|capfirst %}</th>
+                <th>{% trans 'description'|capfirst %}</th>
             </tr>
+
+            {% trans 'opening' as opening %}
+            {% trans 'closing' as closing %}
+            {% trans 'temporary' as temporary %}
+            {% trans 'correction' as correction %}
+            {% trans 'deposit' as deposit %}
+            {% trans 'withdrawal' as withdrawal %}
+
             {% for cash_book_entry in cashbook %}
-            {% if cash_book_entry.3 == 'Kassenbeginn' or cash_book_entry.3 == 'Kassenschluss' or cash_book_entry.3 == 'Zwischenstand' %}
+            {% if cash_book_entry.3 == opening or cash_book_entry.3 == closing or cash_book_entry.3 == temporary %}
             <tr class="table-secondary">
                 <th>{{ cash_book_entry.0 }}</th>
                 <th>{{ cash_book_entry.1|username_from_id }}</th>
                 <th class="text-right">{{ cash_book_entry.2 }} €</th>
-                <th>{{ cash_book_entry.3 }}</th>
+                <th>{{ cash_book_entry.3|capfirst }}</th>
             </tr>
-            {% elif cash_book_entry.3 == 'Korrektur' %}
+            {% elif cash_book_entry.3 == correction %}
             <tr class="table-danger">
                 <td>{{ cash_book_entry.0 }}</td>
                 <td>{{ cash_book_entry.1|username_from_id }}</td>
                 <td class="text-right">{{ cash_book_entry.2 }} €</td>
-                <td>{{ cash_book_entry.3 }}</td>
+                <td>{{ cash_book_entry.3|capfirst }}</td>
             </tr>
-            {% elif 'Einlage' in cash_book_entry.3 or 'Entnahme' in cash_book_entry.3 %}
+            {% elif deposit in cash_book_entry.3 or withdrawal in cash_book_entry.3 %}
             <tr class="table-success">
                 <td>{{ cash_book_entry.0 }}</td>
                 <td>{{ cash_book_entry.1|username_from_id }}</td>
                 <td class="text-right">{{ cash_book_entry.2 }} €</td>
-                <td>{{ cash_book_entry.3 }}</td>
+                <td>{{ cash_book_entry.3|capfirst }}</td>
             </tr>
             {% else %}
             <tr>
                 <td>{{ cash_book_entry.0 }}</td>
                 <td>{{ cash_book_entry.1|username_from_id }}</td>
                 <td class="text-right">{{ cash_book_entry.2 }} €</td>
-                <td>{{ cash_book_entry.3 }}</td>
+                <td>{{ cash_book_entry.3|capfirst }}</td>
             </tr>
             {% endif %}
             {% endfor %}

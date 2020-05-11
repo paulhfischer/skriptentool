@@ -12,6 +12,7 @@ from django.forms import URLInput
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 
 def text_value(value):
@@ -55,14 +56,14 @@ def formset_errors_renderer(formset, model_name):
         html = f"<ul>{html}</ul>"
     elif formset.total_error_count():
         alert_class = " alert-danger"
-        html = "Bitte die markierten Felder korrigieren."
+        html = _("Please correct the marked fields.")
     elif formset.is_valid():
         if formset.has_changed():
             alert_class = " alert-success"
-            html = f"{model_name} erfolgreich gespeichert."
+            html = _("%(model_name)s successfully saved.") % {"model_name": model_name}
         else:
             alert_class = " alert-secondary"
-            html = "Nichts gespeichert, da keine Änderungen vorgenommen wurden."
+            html = _("Nothing saved, as no changes have been made.")
     else:
         return None
 

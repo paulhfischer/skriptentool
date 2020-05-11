@@ -1,5 +1,7 @@
+{% load i18n %}
+
 <div class="card spacer-b">
-    <h2 class="card-header">Kassenstand</h2>
+    <h2 class="card-header">{% trans 'balance'|capfirst %}</h2>
     {% if can_count %}
     <div class="card-body">
         <form method="post">
@@ -16,7 +18,7 @@
                 name="count"
                 class="btn btn-primary btn-block mt-3"
             >
-                Bestätigen
+                {% trans 'confirm'|capfirst %}
             </button>
         </form>
     </div>

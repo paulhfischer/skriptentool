@@ -4,6 +4,7 @@ from django.forms import ModelForm
 from django.forms import ValidationError
 from django.http import Http404
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 
 from core.models import User
@@ -39,12 +40,12 @@ def get_form(form_model, user):
 
             password = forms.CharField(
                 widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
-                label="Passwort",
+                label=_("password"),
             )
 
             password_repeat = forms.CharField(
                 widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
-                label="Passwort wiederholen",
+                label=_("repeat password"),
             )
 
             def clean_password_repeat(self):
@@ -52,7 +53,7 @@ def get_form(form_model, user):
                 password_repeat = self.cleaned_data.get("password_repeat")
 
                 if password and password_repeat and password != password_repeat:
-                    raise ValidationError("Die Passwörter müssen übereinstimmen.")
+                    raise ValidationError(_("The passwords don't match."))
 
                 return password_repeat
 

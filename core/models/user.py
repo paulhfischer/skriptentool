@@ -3,6 +3,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
@@ -52,8 +53,8 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     class Meta:
-        verbose_name = "Benutzer"
-        verbose_name_plural = "Benutzer"
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
         ordering = ["username"]
 
     EMAIL_FIELD = "mail"
@@ -68,47 +69,44 @@ class User(AbstractBaseUser):
         validators=[
             RegexValidator(
                 regex="@[a-z]+",
-                message=(
-                    "Lokale Benutzernamen müssen mit @ beginnen und dürfen nur Buchstaben "
-                    "enthalten."
-                ),
+                message=_('Local usernames have to start with "@" and may only contain letters.'),
             ),
         ],
-        verbose_name="Benutzername",
+        verbose_name=_("username"),
     )
 
     mail = models.EmailField(
-        verbose_name="E-Mail-Adresse",
+        verbose_name=_("mail"),
     )
 
     first_name = models.CharField(
         max_length=256,
-        verbose_name="Vorname",
+        verbose_name=_("first name"),
     )
 
     last_name = models.CharField(
         max_length=256,
-        verbose_name="Nachname",
+        verbose_name=_("last name"),
     )
 
     vendor = models.BooleanField(
         default=False,
-        verbose_name="Verkäufer",
+        verbose_name=_("vendor"),
     )
 
     referent = models.BooleanField(
         default=False,
-        verbose_name="Referent",
+        verbose_name=_("referent"),
     )
 
     financier = models.BooleanField(
         default=False,
-        verbose_name="Finanzer",
+        verbose_name=_("financier"),
     )
 
     admin = models.BooleanField(
         default=False,
-        verbose_name="Admin",
+        verbose_name=_("admin"),
     )
 
     def clean(self):

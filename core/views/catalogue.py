@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.utils.translation import gettext_lazy as _
 
 from core.models import LectureNote
 
@@ -18,15 +19,15 @@ def catalogue(request):
     context = {
         "mathematics_list": render_table(
             LectureNote.objects.filter(subject="M", active=True).order_by("name"),
-            "Mathematik",
+            _("mathematics"),
         ),
         "physics_list": render_table(
             LectureNote.objects.filter(subject="P", active=True).order_by("name"),
-            "Pyhsik",
+            _("physics"),
         ),
         "informatics_list": render_table(
             LectureNote.objects.filter(subject="I", active=True).order_by("name"),
-            "Informatik",
+            _("informatics"),
         ),
     }
 

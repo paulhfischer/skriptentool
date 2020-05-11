@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load bootstrap %}
+
+{% block title %}{% trans 'log in'|capfirst %}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="mx-auto col-lg-5">
         <div class="card">
-            <h2 class="card-header">Anmelden</h2>
+            <h2 class="card-header">{% trans 'log in'|capfirst %}</h2>
             <form
                 method="post"
                 class="list-group list-group-flush"
@@ -26,7 +29,7 @@
                         type="submit"
                         class="btn btn-primary btn-block"
                     >
-                        Login
+                        {% trans 'log in'|capfirst %}
                     </button>
                 </formset>
             </form>

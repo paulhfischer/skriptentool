@@ -1,39 +1,41 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.formats import date_format
+from django.utils.translation import gettext_lazy as _
 
 from core.models import User
 
 
 class CashBookEntry(models.Model):
     class Meta:
-        verbose_name = "Kassenbucheintrag"
-        verbose_name_plural = "Kassenbucheinträge"
+        verbose_name = _("cash book entry")
+        verbose_name_plural = _("cash book entries")
         ordering = ["-time"]
 
     user = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        verbose_name="Ersteller",
+        verbose_name=_("creator"),
     )
 
     time = models.DateTimeField(
         default=timezone.now,
-        verbose_name="Zeitpunkt",
+        verbose_name=_("time"),
     )
 
     detail = models.CharField(
         max_length=256,
-        verbose_name="Details",
+        verbose_name=_("detail"),
     )
 
     amount = models.DecimalField(
         max_digits=6,
         decimal_places=2,
-        verbose_name="Betrag in Euro",
+        verbose_name=_("amount (in €)"),
     )
 
     def __str__(self):
-        return timezone.localtime(self.time).strftime("%d.%m.%Y %H:%M")
+        return date_format(timezone.localtime(self.time), "SHORT_DATETIME_FORMAT")
 
     @classmethod
     def correction(cls, user, amount):

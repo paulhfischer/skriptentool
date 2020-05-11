@@ -80,6 +80,16 @@ repos:
             entry: ./manage.py makemigrations
             language: system
             pass_filenames: false
+          - id: django-makemessages
+            name: django-makemessages
+            entry: ./manage.py makemessages -a --add-location=file --ignore="node_modules/*"
+            language: system
+            pass_filenames: false
+          - id: django-compilemessages
+            name: django-compilemessages
+            entry: ./manage.py compilemessages # TODO: add `--ignore="node_modules/*"`-flag (requires django>=3.0)
+            language: system
+            pass_filenames: false
           - id: django-check
             name: django-check
             entry: ./manage.py check --fail-level=INFO

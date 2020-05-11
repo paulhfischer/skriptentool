@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Verwaltung{% endblock %}
+{% block title %}{% trans 'management'|capfirst %}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="mx-auto col-lg-8">
         <div class="card">
             <div class="card-header">
-                <h2>{{ verbose_name }} löschen</h2>
+                <h2>{% blocktrans %}Delete {{ verbose_name }}{% endblocktrans %}</h2>
             </div>
             <form
                 method="post"
@@ -18,7 +19,9 @@
                 {% if error %}
                 <formset class="list-group-item text-center">
                     <div class="alert alert-dismissible alert-danger mb-0">
-                        <strong>{{ object }}</strong> kann nicht gelöscht werden, da das Objekt noch mit anderen Objekten verknüpft ist!
+                        {% blocktrans trimmed %}
+                        <strong>{{ object }}</strong> can't be deleted, as the object is linked to other objects!
+                        {% endblocktrans %}
                     </div>
                 </formset>
                 <formset class="list-group-item">
@@ -29,14 +32,16 @@
                                 class="btn btn-primary btn-block"
                                 role="button"
                             >
-                                <i class="fas fa-trash-restore mr-2"></i>Abbrechen
+                                <i class="fas fa-trash-restore mr-2"></i>{% trans 'abort'|capfirst %}
                             </a>
                         </div>
                     </div>
                 </formset>
                 {% else %}
                 <formset class="list-group-item text-center">
-                    Soll <strong>{{ object }}</strong> wirklich gelöscht werden?
+                    {% blocktrans trimmed %}
+                    Are you sure you want to delete <strong>{{ object }}</strong>?
+                    {% endblocktrans %}
                 </formset>
                 <formset class="list-group-item">
                     <div class="row">
@@ -46,7 +51,7 @@
                                 class="btn btn-danger btn-block"
                                 type="submit"
                             >
-                                <i class="fas fa-trash mr-2"></i>Löschen
+                                <i class="fas fa-trash mr-2"></i>{% trans 'delete'|capfirst %}
                             </button>
                         </div>
                         <div class="col-5">
@@ -55,7 +60,7 @@
                                 class="btn btn-primary btn-block"
                                 role="button"
                             >
-                                <i class="fas fa-trash-restore mr-2"></i>Abbrechen
+                                <i class="fas fa-trash-restore mr-2"></i>{% trans 'abort'|capfirst %}
                             </a>
                         </div>
                         <div class="col-1"></div>

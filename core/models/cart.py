@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from core.models import Balance
 from core.models import CashBookEntry
@@ -15,19 +16,19 @@ from core.models import User
 
 class Cart(models.Model):
     class Meta:
-        verbose_name = "Verkaufsvorgang"
-        verbose_name_plural = "Verkaufsvorgänge"
+        verbose_name = _("cart")
+        verbose_name_plural = _("carts")
         ordering = ["vendor"]
 
     vendor = models.OneToOneField(
         User,
         on_delete=models.PROTECT,
-        verbose_name="Verkäufer",
+        verbose_name=_("vendor"),
     )
 
     time = models.DateTimeField(
         default=timezone.now,
-        verbose_name="Erstellzeitpunkt",
+        verbose_name=_("time of creation"),
     )
 
     def __str__(self):
@@ -36,12 +37,12 @@ class Cart(models.Model):
     def clean(self):
         # verify that only one cart can be created
         if self.objects.count() > 0 and self.pk != self.objects.get().pk:
-            raise ValidationError("Es darf nur ein Verkauf gleichzeitig stattfinden.")
+            raise ValidationError(_("There can only be one sale at a time."))
 
     def close(self, reason="closing"):
         # add sale entry to cashbook for every item in cart
         for cart_item in CartItem.objects.filter(cart=self):
-            for _ in range(abs(cart_item.quantity)):
+            for _i in range(abs(cart_item.quantity)):
                 CashBookEntry.sale(
                     self.vendor,
                     cart_item.ean,
@@ -135,36 +136,36 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     class Meta:
-        verbose_name = "Artikel"
-        verbose_name_plural = "Artikel"
+        verbose_name = _("item")
+        verbose_name_plural = _("items")
         ordering = ["cart", "ean"]
         constraints = [models.UniqueConstraint(fields=["ean", "cart"], name="unique_cart_item")]
 
     TYPES = [
-        ("lecturenote", "Skript"),
-        ("printingquota", "Druckkontingent"),
-        ("deposit", "Kautionsschein"),
+        ("lecturenote", _("lecture note")),
+        ("printingquota", _("printing quota")),
+        ("deposit", _("deposit")),
     ]
 
     ean = models.CharField(
         max_length=20,
-        verbose_name="EAN",
+        verbose_name=_("EAN"),
     )
 
     type = models.CharField(
         max_length=20,
         choices=TYPES,
-        verbose_name="Art",
+        verbose_name=_("type"),
     )
 
     quantity = models.IntegerField(
-        verbose_name="Anzahl",
+        verbose_name=_("quantity"),
     )
 
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
-        verbose_name="Verkaufsvorgang",
+        verbose_name=_("cart"),
     )
 
     def __str__(self):

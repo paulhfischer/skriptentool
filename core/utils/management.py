@@ -1,3 +1,6 @@
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
+
 from core.models import Author
 from core.models import Deposit
 from core.models import DepositNote
@@ -14,7 +17,7 @@ SETTINGS = {
                 "fields": ["ean", "stock", "active"],
             },
             {
-                "legend": "Eigenschaften",
+                "legend": _("properties"),
                 "fields": [
                     "name",
                     "subject",
@@ -27,7 +30,7 @@ SETTINGS = {
                 ],
             },
             {
-                "legend": "Druckeinstellungen",
+                "legend": _("print settings"),
                 "fields": ["color", "papersize", "sides", "printnotes", "file"],
             },
         ],
@@ -58,11 +61,11 @@ SETTINGS = {
                 "fields": ["number", "price"],
             },
             {
-                "legend": "Verkauf",
+                "legend": _("sale"),
                 "fields": ["sold_time", "sold_by"],
             },
             {
-                "legend": "Erstattung",
+                "legend": pgettext_lazy("noun", "refund"),
                 "fields": ["refunded_time", "refunded_by", "refundable"],
             },
         ],
@@ -89,7 +92,7 @@ SETTINGS = {
     User: {
         "fieldsets": [
             {
-                "legend": "Benutzdaten",
+                "legend": _("user data"),
                 "fields": [
                     "first_name",
                     "last_name",
@@ -100,7 +103,7 @@ SETTINGS = {
                 ],
             },
             {
-                "legend": "Berechtigungen",
+                "legend": _("permissions"),
                 "fields": ["vendor", "referent", "financier", "admin"],
             },
         ],

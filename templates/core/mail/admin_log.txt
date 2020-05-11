@@ -1,10 +1,10 @@
-Hallo,
+{% load i18n %}{% blocktrans  with message=message|default:'-' %}Hello,
 
-es wurde folgende Änderung von {{ username }} vorgenommen:
+the following changes have been performed by {{ username }}:
 
-Objektklasse: {{ class }}
-Objekt: {{ object }}
-{% if message %}Änderungsmeldung: {{ message }}{% endif %}
+Model: {{ class }}
+Object: {{ object }}
+Changelog: {{ message }}
 
-Liebe Grüße,
-Euer Skriptentool
+Regards,
+Your Skriptentool{% endblocktrans %}

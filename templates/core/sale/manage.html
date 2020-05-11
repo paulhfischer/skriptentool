@@ -1,21 +1,28 @@
+{% load i18n %}
+
 <div class="card spacer-b">
-    <h2 class="card-header">Verkauf</h2>
+    <h2 class="card-header">{% trans 'manage sale'|capfirst %}</h2>
     <div class="card-body">
         <form method="post">
             {% csrf_token %}
-
-            {# Meldungen #}
+            {# alerts #}
             {% if not vendor and cart %}
-            <div class="alert alert-danger mb-0"><strong>{{ cart.vendor }}</strong> noch aktiv!</div>
+            <div class="alert alert-danger">
+                {% blocktrans trimmed with vendor=cart.vendor %}
+                <strong>{{ vendor }}</strong> is still active
+                {% endblocktrans %}
+            </div>
             {% endif %}
             {% if can_next %}
-            <div class="alert alert-warning mb-0">Verkaufsvorgang läuft noch!</div>
+            <div class="alert alert-warning {% if vendor %}mb-0{% endif %}">
+                {% trans 'Sale process still running' %}
+            </div>
             {% endif %}
             {% if can_count %}
-            <div class="alert alert-warning mb-0">Kasse nicht gezählt!</div>
+            <div class="alert alert-warning mb-0">{% trans "Register isn't counted" %}</div>
             {% endif %}
 
-            {# Buttons #}
+            {# buttons #}
             {% if can_close %}
             <button
                 type="submit"
@@ -23,7 +30,7 @@
                 class="btn btn-primary btn-block"
                 value="{{ cart.vendor }}"
             >
-                Verkauf schließen
+                {% trans 'end sale'|capfirst %}
             </button>
             {% endif %}
             {% if can_next and not vendor %}
@@ -33,7 +40,7 @@
                 class="btn btn-primary btn-block"
                 value="{{ cart.vendor }}"
             >
-                Verkaufsvorgang beenden
+                {% trans 'close cart'|capfirst %}
             </button>
             {% endif %}
             {% if can_open %}
@@ -42,7 +49,7 @@
                 name="open"
                 class="btn btn-primary btn-block"
             >
-                Verkauf öffnen
+                {% trans 'open sale'|capfirst %}
             </button>
             {% endif %}
         </form>

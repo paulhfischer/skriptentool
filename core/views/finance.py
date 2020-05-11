@@ -7,6 +7,8 @@ from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
 
 from core.forms import CashbookForm
 from core.models import Balance
@@ -46,9 +48,7 @@ def finance(request):
         raise Http404
 
     start = timezone.make_aware(
-        datetime.fromisoformat(
-            (datetime.today().date() - timedelta(weeks=1)).strftime("%Y-%m-%d"),
-        ),
+        datetime.fromisoformat((datetime.today().date() - timedelta(weeks=1)).strftime("%Y-%m-%d")),
     )
     end = timezone.make_aware(
         datetime.fromisoformat(datetime.today().date().strftime("%Y-%m-%d")) + timedelta(days=1),
@@ -87,18 +87,19 @@ def finance(request):
     # 'CSV-Export'-button triggered
     if action_csv:
         response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = 'attatchment; filename="kassenbuch.csv"'
+        response["Content-Disposition"] = format_lazy(
+            'attatchment; filename="{}.csv"',
+            _("cashbook"),
+        )
         # create csv-file
         writer = csv.writer(response)
-        writer.writerow(["Zeitpunkt", "Beschreibung", "Preis"])
-        for cash_book_entry in CashBookEntry.objects.filter(
-            time__range=[start, end],
-        ).values_list("time", "detail", "amount"):
+        writer.writerow([_("time"), _("description"), _("price (in €)")])
+        for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end]):
             writer.writerow(
                 [
-                    cash_book_entry[0].strftime("%Y-%m-%d %H:%M:%S"),
-                    cash_book_entry[1],
-                    cash_book_entry[2],
+                    cash_book_entry.time.strftime("%Y-%m-%d %H:%M:%S"),
+                    cash_book_entry.text,
+                    cash_book_entry.amount,
                 ],
             )
         return response

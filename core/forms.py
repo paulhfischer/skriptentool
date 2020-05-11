@@ -1,4 +1,6 @@
 from django import forms
+from django.utils.text import capfirst
+from django.utils.translation import gettext_lazy as _
 
 
 class SaleForm(forms.Form):
@@ -47,7 +49,7 @@ class CashbookForm(forms.Form):
         widget=forms.DateInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "TT.MM.JJJJ",
+                "placeholder": _("YYYY-MM-DD"),
             },
         ),
     )
@@ -57,7 +59,7 @@ class CashbookForm(forms.Form):
         widget=forms.DateInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "TT.MM.JJJJ",
+                "placeholder": _("YYYY-MM-DD"),
             },
         ),
     )
@@ -79,7 +81,7 @@ class CashbookForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Optionaler Kommentar",
+                "placeholder": capfirst(_("optional comment")),
             },
         ),
     )

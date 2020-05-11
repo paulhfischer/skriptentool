@@ -1,54 +1,62 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.formats import date_format
+from django.utils.translation import gettext_lazy as _
 
 from core.models import User
 
 
 class Shift(models.Model):
     class Meta:
-        verbose_name = "Verkaufsschicht"
-        verbose_name_plural = "Verkaufsschichten"
+        verbose_name = _("sales shift")
+        verbose_name_plural = _("sales shifts")
         ordering = ["-time_start"]
 
     time_start = models.DateTimeField(
         default=timezone.now,
-        verbose_name="Verkaufsstart",
+        verbose_name=_("start time"),
     )
 
     time_end = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name="Verkaufsende",
+        verbose_name=_("end time"),
     )
 
     vendor = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        verbose_name="Verkäufer",
+        verbose_name=_("vendor"),
     )
 
     valid = models.BooleanField(
         default=False,
-        verbose_name="Überprüft",
+        verbose_name=_("reviewed"),
     )
 
     payout = models.BooleanField(
         default=False,
-        verbose_name="Getränke",
+        verbose_name=_("beverages"),
     )
 
     # generate displayname (depending on range or single-semester)
     def __str__(self):
         if self.time_end:
-            return (
-                f'{timezone.localtime(self.time_start).strftime("%d.%m.%Y")} '
-                f'({timezone.localtime(self.time_start).strftime("%H:%M")} bis '
-                f'{timezone.localtime(self.time_end).strftime("%H:%M")})'
+            return str(
+                _("%(date)s (%(time_start)s until %(time_end)s)")
+                % {
+                    "date": date_format(timezone.localtime(self.time_start), "SHORT_DATE_FORMAT"),
+                    "time_start": date_format(timezone.localtime(self.time_start), "TIME_FORMAT"),
+                    "time_end": date_format(timezone.localtime(self.time_end), "TIME_FORMAT"),
+                },
             )
         else:
-            return (
-                f'{timezone.localtime(self.time_start).strftime("%d.%m.%Y")} '
-                f'({timezone.localtime(self.time_start).strftime("%H:%M")} bis jetzt)'
+            return str(
+                _("%(date)s (%(time_start)s until now)")
+                % {
+                    "date": date_format(timezone.localtime(self.time_start), "SHORT_DATE_FORMAT"),
+                    "time_start": date_format(timezone.localtime(self.time_start), "TIME_FORMAT"),
+                },
             )
 
     @classmethod

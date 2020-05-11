@@ -1,31 +1,32 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from core.models import User
 
 
 class DepositNote(models.Model):
     class Meta:
-        verbose_name = "Kautionsschein"
-        verbose_name_plural = "Kautionsscheine"
+        verbose_name = _("deposit note")
+        verbose_name_plural = _("deposit notes")
         ordering = ["number"]
 
     number = models.CharField(
         max_length=20,
-        verbose_name="Kautionsscheinnummer",
+        verbose_name=_("number"),
     )
 
     price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        verbose_name="Kautionsbetrag in Euro",
+        verbose_name=_("deposit (in €)"),
     )
 
     sold_time = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name="Verkaufszeitpunkt",
+        verbose_name=_("time of sale"),
     )
 
     sold_by = models.ForeignKey(
@@ -34,13 +35,13 @@ class DepositNote(models.Model):
         blank=True,
         null=True,
         related_name="sold_by",
-        verbose_name="Verkauft von",
+        verbose_name=_("sold by"),
     )
 
     refunded_time = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name="Rückgabezeitpunkt",
+        verbose_name=_("return time"),
     )
 
     refunded_by = models.ForeignKey(
@@ -49,12 +50,12 @@ class DepositNote(models.Model):
         blank=True,
         null=True,
         related_name="refunded_by",
-        verbose_name="Zurückgegeben von",
+        verbose_name=_("refunded by"),
     )
 
     refundable = models.BooleanField(
         default=False,
-        verbose_name="Erstattbar",
+        verbose_name=_("refundable"),
     )
 
     def __str__(self):

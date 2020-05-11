@@ -1,7 +1,9 @@
+{% load i18n %}
+
 <div class="col-lg-9">
     <div class="card">
         <h2 class="card-header{% if not can_order %} border-bottom-0{% endif %}">
-            Aktueller Verkaufsvorgang
+            {% trans 'cart'|capfirst %}
             {% if can_next and vendor %}
             <form
                 method="post"
@@ -15,7 +17,7 @@
                     class="btn btn-primary btn-block"
                     value="{{ user }}"
                 >
-                    Abschließen
+                    {% trans 'close'|capfirst %}
                 </button>
             </form>
             {% endif %}
@@ -44,18 +46,20 @@
                 >
                     <i class="fa fa-times"></i>
                 </button>
-                Kautionsscheinnummer: <strong>{{ new_deposit_number }}</strong>
+                {% blocktrans trimmed with number=new_deposit_number %}
+                Number of new deposit note: <strong>{{ number }}</strong>
+                {% endblocktrans %}
             </div>
             {% endif %}
             <table class="table mb-0 table-striped table-fixed text-nowrap">
                 <thead>
                     <tr>
-                        <th>EAN</th>
-                        <th>Name</th>
-                        <th>Kategorie</th>
-                        <th class="text-right">Preis</th>
-                        <th class="text-center">Anzahl</th>
-                        <th class="text-right">Summe</th>
+                        <th>{% trans 'EAN' %}</th>
+                        <th>{% trans 'designation'|capfirst %}</th>
+                        <th>{% trans 'type'|capfirst %}</th>
+                        <th class="text-right">{% trans 'price (in €)'|capfirst %}</th>
+                        <th class="text-right">{% trans 'amount'|capfirst %}</th>
+                        <th class="text-right">{% trans 'total'|capfirst %}</th>
                     </tr>
                 </thead>
                 <tbody>

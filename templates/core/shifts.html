@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load filters bootstrap %}
 
-{% block title %}Verkaufschichten{% endblock %}
+{% block title %}{% trans 'shifts'|capfirst %}{% endblock %}
 
 {% block extrascript %}
 <script>
@@ -19,7 +20,7 @@
     <div class="mx-auto col-lg-8">
         <div class="card">
             <h2 class="card-header">
-                Deine Verkaufsschichten
+                {% trans 'Your shifts' %}
                 <form
                     method="post"
                     enctype="multipart/form-data"
@@ -34,9 +35,9 @@
                 <table class="table table-xsm mb-0">
                     <thead>
                         <tr>
-                            <th>Zeitraum</th>
-                            <th class="text-center">Bestätigt</th>
-                            <th class="text-center">Getänke</th>
+                            <th>{% trans 'Time' %}</th>
+                            <th class="text-center">{% trans 'reviewed'|capfirst %}</th>
+                            <th class="text-center">{% trans 'beverages'|capfirst %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,11 +62,8 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% for shift in shifts %}
-
-                {% endfor %}
                 {% else %}
-                Du hattest noch keine Verkaufsschichten.
+                {% trans "You hadn't had any shifts yet." %}
                 {% endif %}
             </div>
         </div>

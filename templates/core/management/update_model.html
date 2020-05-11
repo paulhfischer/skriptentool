@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load bootstrap %}
 
-{% block title %}Verwaltung{% endblock %}
+{% block title %}{% trans 'management'|capfirst %}{% endblock %}
 
 {% block extrascript %}
 <script>
@@ -119,7 +120,11 @@
     <div class="mx-auto col-lg-7">
         <div class="card">
             <h2 class="card-header">
-                {{ verbose_name }}{% if mode == 'create' %} hinzufügen{% elif mode == 'update' %} bearbeiten{% endif %}
+                {% if mode == 'create' %}
+                {% blocktrans %}Add {{ verbose_name }}{% endblocktrans %}
+                {% elif mode == 'update' %}
+                {% blocktrans %}Edit {{ verbose_name }}{% endblocktrans %}
+                {% endif %}
             </h2>
             <form
                 method="post"
@@ -137,7 +142,7 @@
                 {% for fieldset in fieldsets %}
                 <formset class="list-group-item{% if not fieldset.legend %} pt-md-3{% endif %}">
                     {% if fieldset.legend %}
-                    <legend>{{ fieldset.legend }}</legend>
+                    <legend>{{ fieldset.legend|capfirst}}</legend>
                     {% endif %}
 
                     {% for field in fieldset.fields %}
@@ -149,7 +154,6 @@
                     {% endfor %}
                 </formset>
                 {% endfor %}
-
                 <formset class="list-group-item">
                     <div class="row">
                         <div class="col-3 col-sm-2">

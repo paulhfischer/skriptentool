@@ -1,20 +1,21 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Author(models.Model):
     class Meta:
-        verbose_name = "Autor"
-        verbose_name_plural = "Autoren"
+        verbose_name = _("author")
+        verbose_name_plural = _("authors")
         ordering = ["name"]
 
     name = models.CharField(
         max_length=256,
-        verbose_name="Name",
+        verbose_name=_("name"),
     )
 
     mail = models.EmailField(
         max_length=256,
-        verbose_name="E-Mail Adresse",
+        verbose_name=_("mail"),
     )
 
     def __str__(self):

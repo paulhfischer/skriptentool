@@ -1,5 +1,7 @@
+{% load i18n %}
+
 {% if add_deposit_ean %}
-{# PopUp für Kautionsscheinverkauf #}
+{# popup for sale of deposit notes #}
 <script>
     $(window).on('load', () => {
         $('#addDepositModal').modal({
@@ -21,7 +23,7 @@
     >
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Kautionsschein benötigt!</h2>
+                <h2 class="modal-title">{% trans 'Deposit note required!' %}</h2>
             </div>
             <div class="modal-body">
                 <form method="post">
@@ -35,7 +37,7 @@
                                 value="{{ product_ean }}"
                                 class="btn btn-primary btn-block"
                             >
-                                Vorhanden
+                                {% trans 'existent'|capfirst %}
                             </button>
                         </div>
                         <div class="col-6">
@@ -45,7 +47,7 @@
                                 value="{{ add_deposit_ean }}|{{ product_ean }}"
                                 class="btn btn-primary btn-block"
                             >
-                                Hinzufügen
+                                {% trans 'add new'|capfirst %}
                             </button>
                         </div>
                     </div>
@@ -57,7 +59,7 @@
 {% endif %}
 
 {% if remove_deposit_ean %}
-{# PopUp für Kautionsscheinrücknahme #}
+{# popup for refund of deposit notes #}
 <script>
     $(window).on('load', () => {
         $('#removeDepositModal').modal({
@@ -82,7 +84,7 @@
     >
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Kautionsscheinnummer eingeben</h2>
+                <h2 class="modal-title">{% trans 'Enter number of deposit note' %}</h2>
             </div>
             <div class="modal-body">
                 <form method="post">
@@ -99,7 +101,7 @@
                                 value="{{ remove_deposit_ean }}"
                                 class="btn btn-primary btn-block"
                             >
-                                Bestätigen
+                                {% trans 'confirm'|capfirst %}
                             </button>
                         </div>
                     </div>
@@ -111,7 +113,7 @@
 {% endif %}
 
 {% if remove_old_deposit_ean %}
-{# PopUp für Kautionsscheinrücknahme alter Scheine #}
+{# popup for refund of old deposit notes #}
 <script>
     $(window).on('load', () => {
         $('#removeOldDepositModal').modal({
@@ -133,7 +135,11 @@
     >
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Alter Kautionsschein oder falsche Nummer ({{ remove_old_deposit_number }})</h2>
+                <h2 class="modal-title">
+                    {% blocktrans trimmed %}
+                    Old deposit note or wrong number ({{ remove_old_deposit_number }})
+                    {% endblocktrans %}
+                </h2>
             </div>
             <div class="modal-body">
                 <form method="post">
@@ -145,7 +151,7 @@
                                 type="submit"
                                 class="btn btn-primary btn-block"
                             >
-                                Nicht erstatten
+                                {% trans "don't refund"|capfirst %}
                             </button>
                         </div>
                         <div class="col-6">
@@ -155,7 +161,7 @@
                                 value="{{ remove_old_deposit_ean }}|{{ remove_old_deposit_number }}"
                                 class="btn btn-danger btn-block"
                             >
-                                Erstatten
+                                {% trans 'refund'|capfirst %}
                             </button>
                         </div>
                     </div>
@@ -164,4 +170,3 @@
         </div>
     </div>
 </div>
-{% endif %}

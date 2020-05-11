@@ -1,6 +1,6 @@
-Hallo,
+{% load i18n %}{% blocktrans %}Hello,
 
-der letzte Verkauf wurde mit einem Kassenstand von {{ balance }} € geschlossen!
+the last sale has been closed with a balance of {{ balance }} €!
 
-Liebe Grüße,
-Euer Skriptentool
+Regards,
+Your Skriptentool{% endblocktrans %}

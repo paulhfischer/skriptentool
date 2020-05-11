@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from core.forms import SaleForm
 from core.models import Balance
@@ -102,7 +103,7 @@ def sale(request):
 
                 # prevent sale of deposit
                 if product_type == "deposit":
-                    error = "Kautionsscheine können nur mit Skript verkauft werden."
+                    error = _("Deposit notes can only be sold with a lecture note.")
 
                 # check if article is available for sale
                 elif product.active:
@@ -113,9 +114,9 @@ def sale(request):
                     except AttributeError:
                         cart.add(ean)
                 else:
-                    error = "Dieser Artikel steht nicht zum Verkauf."
+                    error = _("This item isn't for sale.")
             except ObjectDoesNotExist:
-                error = "Dieser Artikel existiert nicht."
+                error = _("This item doesn't exist.")
 
         elif form.cleaned_data["ean_remove"]:
             ean = form.cleaned_data["ean_remove"]
@@ -130,7 +131,7 @@ def sale(request):
                 else:
                     cart.remove(ean)
             except ObjectDoesNotExist:
-                error = "Dieser Artikel existiert nicht."
+                error = _("This item doesn't exist.")
 
     # item sold before needed deposit but buyer already paid deposit
     elif can_order and action_has_deposit:
@@ -162,18 +163,22 @@ def sale(request):
             if DepositNote.is_refundable(deposit_number):
                 # check if depositnote has already been refunded
                 if DepositNote.refunded(deposit_number):
-                    error = f"Der Kautionsschein {deposit_number} wurde bereits erstattet."
+                    error = _("The deposit note %(num)s has alredy been refunded.") % {
+                        "num": deposit_number,
+                    }
                 else:
                     DepositNote.refund(deposit_number, request.user)
                     cart.remove(deposit_ean)
             else:
-                error = "Dieser Kautionsschein darf noch nicht erstattet werden."
+                error = _("This deposit note mustn't be refunded yet.")
         # start deposit refund of old depositnote if user is 'Referent'
         elif request.user.referent:
             remove_old_deposit_number = deposit_number
             remove_old_deposit_ean = deposit_ean
         else:
-            error = f"Der Kautionsschein {deposit_number} kann nur von Referenten erstattet werden."
+            error = _("The deposit note %(num)s can only be refunded by a referent.") % {
+                "num": deposit_number,
+            }
 
     # depositnote not in system should be refunded
     elif can_order and action_remove_old_deposit and request.user.referent:
