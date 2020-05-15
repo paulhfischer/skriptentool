@@ -229,7 +229,9 @@ class Migration(migrations.Migration):
             model_name="cashbookentry",
             name="detail",
             field=models.CharField(
+                blank=True,
                 max_length=256,
+                null=True,
                 verbose_name="detail",
             ),
         ),
@@ -239,6 +241,20 @@ class Migration(migrations.Migration):
             field=models.DateTimeField(
                 default=django.utils.timezone.now,
                 verbose_name="time",
+            ),
+        ),
+        migrations.AddField(
+            model_name="cashbookentry",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("correction", "correction"),
+                    ("withdrawal", "withdrawal"),
+                    ("deposit", "deposit"),
+                    ("sale", "sale"),
+                ],
+                max_length=20,
+                verbose_name="type",
             ),
         ),
         migrations.AlterField(

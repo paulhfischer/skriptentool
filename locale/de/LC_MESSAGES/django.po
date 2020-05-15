@@ -82,7 +82,7 @@ msgstr "Betrag (in €)"
 msgid "counted"
 msgstr "gezählt"
 
-#: core/models/balance.py core/models/cart.py
+#: core/models/balance.py core/models/cart.py core/models/cashbookentry.py
 #: templates/core/sale/sale_process.html
 msgid "type"
 msgstr "Art"
@@ -127,11 +127,12 @@ msgstr "Skript"
 msgid "printing quota"
 msgstr "Druckkontingent"
 
-#: core/models/cart.py core/models/products.py templates/core/finance.html
+#: core/models/cart.py core/models/cashbookentry.py core/models/products.py
+#: templates/core/finance.html
 msgid "deposit"
 msgstr "Kaution"
 
-#: core/models/cart.py core/models/products.py
+#: core/models/cart.py core/models/cashbookentry.py core/models/products.py
 #: templates/core/sale/sale_process.html
 msgid "EAN"
 msgstr "EAN"
@@ -147,6 +148,19 @@ msgstr "Kassenbucheintrag"
 #: core/models/cashbookentry.py
 msgid "cash book entries"
 msgstr "Kassenbucheinträge"
+
+#: core/models/cashbookentry.py templates/core/finance.html
+msgid "correction"
+msgstr "Korrektur"
+
+#: core/models/cashbookentry.py templates/core/finance.html
+msgid "withdrawal"
+msgstr "Entnahme"
+
+#: core/models/cashbookentry.py core/utils/management.py templates/base.html
+#: templates/core/sale.html
+msgid "sale"
+msgstr "Verkauf"
 
 #: core/models/cashbookentry.py
 msgid "creator"
@@ -492,10 +506,6 @@ msgstr "Eigenschaften"
 msgid "print settings"
 msgstr "Druckeinstellungen"
 
-#: core/utils/management.py templates/base.html templates/core/sale.html
-msgid "sale"
-msgstr "Verkauf"
-
 #: core/utils/management.py
 msgctxt "noun"
 msgid "refund"
@@ -593,10 +603,6 @@ msgid "about"
 msgstr "über diese Software"
 
 #: templates/core/finance.html
-msgid "withdrawal"
-msgstr "Entnahme"
-
-#: templates/core/finance.html
 msgid "comment"
 msgstr "Kommentar"
 
@@ -619,10 +625,6 @@ msgstr "aktualisieren"
 #: templates/core/finance.html
 msgid "export CSV"
 msgstr "CSV exportieren"
-
-#: templates/core/finance.html
-msgid "correction"
-msgstr "Korrektur"
 
 #: templates/core/mail/admin_log.txt
 #, python-format
