@@ -1,0 +1,6 @@
+{% load i18n %}{% blocktrans %}Hello,
+
+at the last count by {{ user }}, there has been a deviation of {{ amount }} €!
+
+Regards,
+Your Skriptentool{% endblocktrans %}

@@ -156,6 +156,10 @@ msgstr "Ersteller"
 msgid "detail"
 msgstr "Details"
 
+#: core/models/cashbookentry.py
+msgid "Correction"
+msgstr "Korrektur"
+
 #: core/models/depositnote.py
 msgid "deposit note"
 msgstr "Kautionsschein"
@@ -641,6 +645,24 @@ msgstr ""
 "Objektklasse: %(class)s\n"
 "Objekt: %(object)s\n"
 "Änderungsmeldung: %(message)s\n"
+"\n"
+"Liebe Grüße,\n"
+"Euer Skriptentool"
+
+#: templates/core/mail/correction.txt
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"at the last count by %(user)s, there has been a deviation of %(amount)s €!\n"
+"\n"
+"Regards,\n"
+"Your Skriptentool"
+msgstr ""
+"Hallo,\n"
+"\n"
+"bei der letzten Zählung von %(user)s gab es eine Abweichung von %(amount)s "
+"€!\n"
 "\n"
 "Liebe Grüße,\n"
 "Euer Skriptentool"

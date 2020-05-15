@@ -1,9 +1,15 @@
+from django.core.mail import send_mail
 from django.db import models
+from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils import translation
 from django.utils.formats import date_format
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 
 from core.models import User
+from skriptentool import config
+from skriptentool import settings
 
 
 class CashBookEntry(models.Model):
@@ -40,6 +46,17 @@ class CashBookEntry(models.Model):
     @classmethod
     def correction(cls, user, amount):
         CashBookEntry(user=user, detail="Korrektur", amount=amount).save()
+
+        with translation.override(settings.LANGUAGE_CODE):
+            send_mail(
+                subject=format_lazy("[Skriptentool] {}", _("Correction")),
+                message=render_to_string(
+                    "core/mail/correction.txt",
+                    {"user": user, "amount": amount},
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=config.FINANCE_EMAILS,
+            )
 
     @classmethod
     def withdrawal(cls, user, amount, comment):
