@@ -552,14 +552,6 @@ msgid "The deposit note %(num)s can only be refunded by a referent."
 msgstr ""
 "Der Kautionsschein %(num)s darf nur von einem Referenten erstattet werden."
 
-#: skriptentool/settings.py
-msgid "German"
-msgstr "Deutsch"
-
-#: skriptentool/settings.py
-msgid "English"
-msgstr "Englisch"
-
 #: templates/base.html templates/core/catalogue.html
 msgid "catalogue"
 msgstr "Katalog"

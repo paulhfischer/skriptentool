@@ -1,7 +1,5 @@
 import os
 
-from django.utils.translation import gettext_noop
-
 from skriptentool import config
 
 ###############
@@ -122,8 +120,8 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 LANGUAGES = [
-    ("de", gettext_noop("German")),
-    ("en", gettext_noop("English")),
+    ("de", "German"),
+    ("en", "English"),
 ]
 LOCALE_PATHS = [os.path.join(BASE_DIR, "locale/")]
 MIDDLEWARE += ["django.middleware.locale.LocaleMiddleware"]
