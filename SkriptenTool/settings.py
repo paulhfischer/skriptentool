@@ -1,7 +1,5 @@
 import os
 
-from django.utils.translation import gettext_noop
-
 from SkriptenTool import config
 
 ###############
@@ -126,8 +124,8 @@ if config.SSL:
 ###############
 
 LANGUAGES = [
-    ('de', gettext_noop('German')),
-    ('en', gettext_noop('English')),
+    ('de', 'German'),
+    ('en', 'English'),
 ]
 LANGUAGE_CODE = 'de'
 TIME_ZONE = 'Europe/Berlin'
