@@ -14,5 +14,5 @@ class Command(BaseCommand):
             user=User.objects.get(username=options["user"]),
             amount=options["balance"],
             counted=True,
-            type="initial",
+            type=Balance.INITIAL,
         ).save()

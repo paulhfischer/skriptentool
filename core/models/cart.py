@@ -20,6 +20,9 @@ class Cart(models.Model):
         verbose_name_plural = _("carts")
         ordering = ["vendor"]
 
+    CLOSING = "closing"
+    SALE = "sale"
+
     vendor = models.OneToOneField(
         User,
         on_delete=models.PROTECT,
@@ -39,7 +42,7 @@ class Cart(models.Model):
         if self.objects.count() > 0 and self.pk != self.objects.get().pk:
             raise ValidationError(_("There can only be one sale at a time."))
 
-    def close(self, reason="closing"):
+    def close(self, reason=CLOSING):
         # add sale entry to cashbook for every item in cart
         for cart_item in CartItem.objects.filter(cart=self):
             for _i in range(abs(cart_item.quantity)):
@@ -50,9 +53,9 @@ class Cart(models.Model):
                 )
 
         # add cashbookentry and end shift if cart is closed
-        if reason == "sale" and self.total != 0:
+        if reason == self.SALE and self.total != 0:
             Balance.add_temp(self.vendor, Balance.objects.latest("time").amount + self.total, False)
-        elif reason == "closing":
+        elif reason == self.CLOSING:
             Balance.add_closing(self.vendor, Balance.objects.latest("time").amount + self.total)
             Shift.end_shift(self.vendor)
 
@@ -141,10 +144,14 @@ class CartItem(models.Model):
         ordering = ["cart", "ean"]
         constraints = [models.UniqueConstraint(fields=["ean", "cart"], name="unique_cart_item")]
 
+    LECTURENOTE = "lecturenote"
+    PRINTINGQUOTA = "printingquota"
+    DEPOSIT = "deposit"
+
     TYPES = [
-        ("lecturenote", _("lecture note")),
-        ("printingquota", _("printing quota")),
-        ("deposit", _("deposit")),
+        (LECTURENOTE, _("lecture note")),
+        (PRINTINGQUOTA, _("printing quota")),
+        (DEPOSIT, _("deposit")),
     ]
 
     ean = models.CharField(

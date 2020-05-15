@@ -20,11 +20,16 @@ class Balance(models.Model):
         verbose_name_plural = _("balances")
         ordering = ["-time"]
 
+    INITIAL = "initial"
+    OPENING = "opening"
+    CLOSING = "closing"
+    TEMPORARY = "temporary"
+
     TYPES = [
-        ("initial", _("initial")),
-        ("opening", _("opening")),
-        ("closing", _("closing")),
-        ("temporary", _("temporary")),
+        (INITIAL, _("initial")),
+        (OPENING, _("opening")),
+        (CLOSING, _("closing")),
+        (TEMPORARY, _("temporary")),
     ]
 
     user = models.ForeignKey(
@@ -60,7 +65,7 @@ class Balance(models.Model):
 
     @property
     def is_opening(self):
-        return self.type == "opening"
+        return self.type == self.OPENING
 
     @classmethod
     def count_latest(cls, user, amount):
@@ -72,7 +77,7 @@ class Balance(models.Model):
             latest.save()
 
             # remove all temporary balances
-            Balance.objects.filter(type="temporary").exclude(pk=latest.pk).delete()
+            Balance.objects.filter(type=cls.TEMPORARY).exclude(pk=latest.pk).delete()
         else:
             CashBookEntry.correction(user, amount - latest.amount)
 
@@ -81,16 +86,16 @@ class Balance(models.Model):
             latest.save()
 
             # remove all temporary balances
-            Balance.objects.filter(type="temporary").exclude(pk=latest.pk).delete()
+            Balance.objects.filter(type=cls.TEMPORARY).exclude(pk=latest.pk).delete()
 
     @classmethod
     def add_temp(cls, user, amount, counted):
-        Balance(user=user, amount=amount, counted=counted, type="temporary").save()
+        Balance(user=user, amount=amount, counted=counted, type=cls.TEMPORARY).save()
 
     @classmethod
     def add_update(cls, user, amount):
-        Balance.objects.filter(type="temporary").delete()
-        Balance(user=user, amount=amount, counted=True, type="temporary").save()
+        Balance.objects.filter(type=cls.TEMPORARY).delete()
+        Balance(user=user, amount=amount, counted=True, type=cls.TEMPORARY).save()
 
     @classmethod
     def add_opening(cls, user):
@@ -98,13 +103,13 @@ class Balance(models.Model):
             user=user,
             amount=Balance.objects.latest("time").amount,
             counted=False,
-            type="opening",
+            type=cls.OPENING,
         ).save()
 
     @classmethod
     def add_closing(cls, user, amount):
-        Balance(user=user, amount=amount, counted=True, type="closing").save()
-        Balance.objects.filter(type="temporary").delete()
+        Balance(user=user, amount=amount, counted=True, type=cls.CLOSING).save()
+        Balance.objects.filter(type=cls.TEMPORARY).delete()
 
         # send email if balance is too high
         if amount >= 1000:
