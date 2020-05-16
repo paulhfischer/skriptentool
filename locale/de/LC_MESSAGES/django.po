@@ -742,7 +742,7 @@ msgstr "Aktionen"
 msgid "No %(verbose_name_plural)s found."
 msgstr "Keine %(verbose_name_plural)s gefunden."
 
-#: templates/core/management/update_model.html
+#: templates/core/management/update_model.html templates/core/shifts.html
 msgid "search"
 msgstr "suchen"
 
