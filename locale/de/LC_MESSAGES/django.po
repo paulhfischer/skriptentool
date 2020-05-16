@@ -743,6 +743,10 @@ msgid "No %(verbose_name_plural)s found."
 msgstr "Keine %(verbose_name_plural)s gefunden."
 
 #: templates/core/management/update_model.html
+msgid "search"
+msgstr "suchen"
+
+#: templates/core/management/update_model.html
 #, python-format
 msgid "Add %(verbose_name)s"
 msgstr "%(verbose_name)s hinzufügen"
