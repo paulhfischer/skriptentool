@@ -1,6 +1,9 @@
+from django.contrib import messages
 from django.forms import ModelForm
 from django.http import Http404
 from django.urls import reverse
+from django.utils.text import capfirst
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView
 
 from core.models import User
@@ -80,6 +83,22 @@ class UpdateModelView(UpdateView):
             get_context(self.request.user, get_model(self.kwargs["model"]), self.kwargs["pk"]),
         )
         return context
+
+    def form_valid(self, form):
+        if form.has_changed():
+            messages.success(
+                self.request,
+                capfirst(
+                    _("<strong>%(object_name)s</strong> successfully saved.")
+                    % {"object_name": self.object},
+                ),
+            )
+        else:
+            messages.info(
+                self.request,
+                _("Nothing saved, as no changes have been made."),
+            )
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse("core:management_list", args=[self.kwargs["model"]])

@@ -1,3 +1,4 @@
+from django.contrib.messages import get_messages
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import BaseFormSet
 from django.forms import CheckboxInput
@@ -258,5 +259,20 @@ def field_renderer(field, style="default"):
             )
         else:
             html = f'<td class="p-0">{input_html}</td>'
+
+    return mark_safe(html)  # nosec
+
+
+def messages_renderer(context):
+    html = ""
+    for message in get_messages(context.request):
+        html += (
+            f'<div class="alert alert-dismissible alert-{message.tags}">'
+            '<button type="button" class="close" data-dismiss="alert">'
+            '<i class="fa fa-times"></i>'
+            "</button>"
+            f"{message}"
+            "</div>"
+        )
 
     return mark_safe(html)  # nosec

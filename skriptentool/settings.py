@@ -1,5 +1,7 @@
 import os
 
+from django.contrib import messages
+
 from skriptentool import config
 
 ###############
@@ -83,6 +85,13 @@ TEMPLATES = [
         },
     },
 ]
+MESSAGE_TAGS = {
+    messages.DEBUG: "secondary",
+    messages.INFO: "secondary",
+    messages.SUCCESS: "success",
+    messages.WARNING: "warning",
+    messages.ERROR: "danger",
+}
 WSGI_APPLICATION = "skriptentool.wsgi.application"
 if config.LOCAL:
     DATABASES = {

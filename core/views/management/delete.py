@@ -1,6 +1,9 @@
+from django.contrib import messages
 from django.db.models import ProtectedError
 from django.http import Http404
 from django.urls import reverse
+from django.utils.text import capfirst
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView
 
 from core.utils.functions import get_model
@@ -23,6 +26,13 @@ class DeleteModelView(DeleteView):
         return context
 
     def get_success_url(self):
+        messages.success(
+            self.request,
+            capfirst(
+                _("<strong>%(object_name)s</strong> successfully deleted.")
+                % {"object_name": self.object},
+            ),
+        )
         return reverse("core:management_list", args=[self.kwargs["model"]])
 
     def delete(self, request, *args, **kwargs):

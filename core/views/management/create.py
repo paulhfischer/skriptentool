@@ -1,9 +1,11 @@
 from django import forms
+from django.contrib import messages
 from django.contrib.auth import password_validation
 from django.forms import ModelForm
 from django.forms import ValidationError
 from django.http import Http404
 from django.urls import reverse
+from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 
@@ -86,6 +88,13 @@ class CreateModelView(CreateView):
         return context
 
     def get_success_url(self):
+        messages.success(
+            self.request,
+            capfirst(
+                _("<strong>%(object_name)s</strong> successfully created.")
+                % {"object_name": self.object},
+            ),
+        )
         return reverse("core:management_list", args=[self.kwargs["model"]])
 
     def get_form_class(self):

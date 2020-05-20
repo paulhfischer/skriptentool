@@ -486,7 +486,7 @@ msgstr "Bitte die markierten Felder korrigieren."
 msgid "%(model_name)s successfully saved."
 msgstr "%(model_name)s erfolgreich gespeichert."
 
-#: core/utils/bootstrap.py
+#: core/utils/bootstrap.py core/views/management/update.py
 msgid "Nothing saved, as no changes have been made."
 msgstr "Nichts gespeichert, da keine Änderungen vorgenommen wurden."
 
@@ -538,6 +538,21 @@ msgstr "Passwort wiederholen"
 #: core/views/management/create.py
 msgid "The passwords don't match."
 msgstr "Die Passwörter stimmen nicht überein."
+
+#: core/views/management/create.py
+#, python-format
+msgid "<strong>%(object_name)s</strong> successfully created."
+msgstr "<strong>%(object_name)s</strong> erfolgreich hinzugefügt."
+
+#: core/views/management/delete.py
+#, python-format
+msgid "<strong>%(object_name)s</strong> successfully deleted."
+msgstr "<strong>%(object_name)s</strong> erfolgreich gelöscht."
+
+#: core/views/management/update.py
+#, python-format
+msgid "<strong>%(object_name)s</strong> successfully saved."
+msgstr "<strong>%(object_name)s</strong> erfolgreich gespeichert."
 
 #: core/views/sale.py
 msgid "Deposit notes can only be sold with a lecture note."
