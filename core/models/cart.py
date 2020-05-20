@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 
 from core.models import Balance
 from core.models import CashBookEntry
@@ -151,7 +152,7 @@ class CartItem(models.Model):
     TYPES = [
         (LECTURENOTE, _("lecture note")),
         (PRINTINGQUOTA, _("printing quota")),
-        (DEPOSIT, _("deposit")),
+        (DEPOSIT, pgettext_lazy("security deposit", "deposit")),
     ]
 
     ean = models.CharField(

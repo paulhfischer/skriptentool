@@ -70,7 +70,7 @@ msgid "user"
 msgstr "Benutzer"
 
 #: core/models/balance.py core/models/cashbookentry.py core/views/finance.py
-#: templates/core/finance.html
+#: templates/core/finance.html templates/core/shifts.html
 msgid "time"
 msgstr "Zeitpunkt"
 
@@ -127,8 +127,8 @@ msgstr "Skript"
 msgid "printing quota"
 msgstr "Druckkontingent"
 
-#: core/models/cart.py core/models/cashbookentry.py core/models/products.py
-#: templates/core/finance.html
+#: core/models/cart.py core/models/products.py
+msgctxt "security deposit"
 msgid "deposit"
 msgstr "Kaution"
 
@@ -156,6 +156,10 @@ msgstr "Korrektur"
 #: core/models/cashbookentry.py templates/core/finance.html
 msgid "withdrawal"
 msgstr "Entnahme"
+
+#: core/models/cashbookentry.py templates/core/finance.html
+msgid "deposit"
+msgstr "Einlage"
 
 #: core/models/cashbookentry.py core/utils/management.py templates/base.html
 #: templates/core/sale.html
@@ -858,10 +862,6 @@ msgstr "Summe"
 #: templates/core/shifts.html
 msgid "Your shifts"
 msgstr "Deine Verkaufsschichten"
-
-#: templates/core/shifts.html
-msgid "Time"
-msgstr "Zeitpunkt"
 
 #: templates/core/shifts.html
 msgid "You hadn't had any shifts yet."

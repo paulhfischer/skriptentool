@@ -10,6 +10,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 
 from core.models import Author
 from core.utils.functions import get_pdf_page_count
@@ -190,7 +191,7 @@ def ean_unique(obj, model, exclude):
 
 class Deposit(models.Model):
     class Meta:
-        verbose_name = _("deposit")
+        verbose_name = pgettext_lazy("security deposit", "deposit")
         verbose_name_plural = _("deposits")
         ordering = ["ean"]
 
@@ -341,7 +342,7 @@ class LectureNote(models.Model):
         on_delete=models.PROTECT,
         blank=True,
         null=True,
-        verbose_name=_("deposit"),
+        verbose_name=pgettext_lazy("security deposit", "deposit"),
     )
 
     stock = models.IntegerField(
