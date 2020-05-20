@@ -1,8 +1,10 @@
+from django.contrib.messages import get_messages
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import BaseFormSet, CheckboxInput, DateTimeField, EmailInput, FileInput, NumberInput, PasswordInput, Select, TextInput, URLInput
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
 
@@ -46,9 +48,9 @@ def formset_errors_renderer(formset, model_name):
     elif formset.is_valid():
         if formset.has_changed():
             alert_class = ' alert-success'
-            html = _('%(model_name)s successfully saved.') % {'model_name': model_name}
+            html = capfirst(_('%(model_name)s successfully saved.') % {'model_name': model_name})
         else:
-            alert_class = ' alert-dark'
+            alert_class = ' alert-secondary'
             html = _('Nothing saved, as no changes have been made.')
     else:
         return ''
@@ -254,5 +256,20 @@ def field_renderer(field, style='default'):
                    .format(
                        input=input_html
                    )
+
+    return mark_safe(html)
+
+
+def messages_renderer(context):
+    html = ''
+    for message in get_messages(context.request):
+        html += '<div class="alert alert-dismissible alert-{tag}">' \
+                '<button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>' \
+                '{content}' \
+                 '</div>' \
+                .format(
+                    tag=message.tags,
+                    content=message,
+                )
 
     return mark_safe(html)

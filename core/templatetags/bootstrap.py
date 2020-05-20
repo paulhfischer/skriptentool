@@ -1,6 +1,6 @@
 from django import template
 
-from core.utils.bootstrap import field_renderer, formset_errors_renderer, nonfield_errors_renderer
+from core.utils.bootstrap import field_renderer, formset_errors_renderer, messages_renderer, nonfield_errors_renderer
 
 register = template.Library()
 
@@ -28,3 +28,8 @@ def bootstrap_listfield(field):
 @register.simple_tag()
 def bootstrap_nonfielderrors(field):
     return nonfield_errors_renderer(field)
+
+
+@register.simple_tag(takes_context=True)
+def bootstrap_messages(context):
+    return messages_renderer(context)

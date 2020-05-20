@@ -3,7 +3,7 @@ from math import copysign
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 
 from core.models import Balance, CashBookEntry, Shift, User, get_product, get_type
 
@@ -141,7 +141,7 @@ class CartItem(models.Model):
     TYPES = [
         (LECTURENOTE, _('lecture note')),
         (PRINTINGQUOTA, _('printing quota')),
-        (DEPOSIT, _('deposit')),
+        (DEPOSIT, pgettext_lazy('security deposit', 'deposit')),
     ]
 
     ean = models.CharField(

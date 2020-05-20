@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import FileExtensionValidator, MinValueValidator
 from django.db import models
 from django.utils import translation
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 
 from SkriptenTool import settings
 from SkriptenTool.storage import OverwriteStorage
@@ -148,7 +148,7 @@ def ean_unique(obj, model, exclude):
 
 class Deposit(models.Model):
     class Meta:
-        verbose_name = _('deposit')
+        verbose_name = pgettext_lazy('security deposit', 'deposit')
         verbose_name_plural = _('deposits')
         ordering = ['ean']
 
@@ -288,7 +288,7 @@ class LectureNote(models.Model):
         Deposit,
         on_delete=models.PROTECT,
         blank=True, null=True,
-        verbose_name=_('deposit'),
+        verbose_name=pgettext_lazy('security deposit', 'deposit'),
     )
 
     stock = models.IntegerField(

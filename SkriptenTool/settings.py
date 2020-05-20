@@ -1,5 +1,7 @@
 import os
 
+from django.contrib import messages
+
 from SkriptenTool import config
 
 ###############
@@ -84,7 +86,14 @@ TEMPLATES = [{
             'django.contrib.messages.context_processors.messages',
         ],
     },
-}, ]
+}]
+MESSAGE_TAGS = {
+    messages.DEBUG  : 'secondary',
+    messages.INFO   : 'secondary',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR  : 'danger',
+}
 WSGI_APPLICATION = 'SkriptenTool.wsgi.application'
 if config.LOCAL:
     DATABASES = {
@@ -104,12 +113,6 @@ else:
             'PORT'    : '',
         }
     }
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
-]
 SECURE_REFERRER_POLICY = 'origin'
 if config.SSL:
     SECURE_SSL_REDIRECT = True
@@ -140,3 +143,12 @@ MIDDLEWARE += ['django.middleware.locale.LocaleMiddleware']
 ####################
 
 AUTH_USER_MODEL = 'core.User'
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
+]
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

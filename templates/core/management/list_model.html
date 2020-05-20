@@ -105,6 +105,7 @@
 {% endblock %}
 
 {% block content %}
+    {% bootstrap_messages %}
     <form method="post" class="card">
         {% csrf_token %}
         {{ formset.management_form }}
