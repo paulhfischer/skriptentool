@@ -13,6 +13,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: core/admin.py
+msgid "generate orders"
+msgstr "Skriptenaufträge generieren"
+
+#: core/admin.py
+msgid "generate covers"
+msgstr "Deckblätter generieren"
+
+#: core/admin.py
 msgid "Changes in admin interface"
 msgstr "Änderungen im Admin-Interface"
 
