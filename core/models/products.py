@@ -81,14 +81,15 @@ def generate_order(lecturenote):
             template = f.read()
 
         # replace placeholders in template
-        content = template.replace('_file_', xml_escape(lecturenote.ean + '.pdf')) \
+        content = template.replace('_name_', xml_escape(lecturenote.name)) \
+                          .replace('_number_', xml_escape(lecturenote.ean)) \
                           .replace('_color_', xml_escape(lecturenote.get_color_display() or '')) \
                           .replace('_papersize_', xml_escape(lecturenote.get_papersize_display() or '')) \
                           .replace('_sides_', xml_escape(lecturenote.get_sides_display() or '')) \
                           .replace('_amount_', xml_escape('')) \
                           .replace('_subject_', xml_escape(lecturenote.get_subject_display())) \
                           .replace('_printnotes_', xml_escape(lecturenote.printnotes or '')) \
-                          .replace('_name_', xml_escape(''))
+                          .replace('_author_', xml_escape(''))
 
         with open(os.path.join(settings.ORDERS_DIR, lecturenote.ean + '.xfdf'), 'w+') as f:
             f.write(content)
