@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkriptenTool\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-20 16:09+0200\n"
+"POT-Creation-Date: 2020-07-24 15:09+0200\n"
 "PO-Revision-Date: 2020-04-25 08:00+0200\n"
 "Last-Translator: Paul Fischer <paul.fischer@tum.de>\n"
 "Language-Team: \n"
@@ -14,7 +14,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: core/admin.py:19 core/admin.py:29 core/admin.py:39
+#: core/admin.py:23
+msgid "generate orders"
+msgstr "Skriptenaufträge generieren"
+
+#: core/admin.py:31
+msgid "generate covers"
+msgstr "Deckblätter generieren"
+
+#: core/admin.py:38 core/admin.py:48 core/admin.py:58
 msgid "Changes in admin interface"
 msgstr "Änderungen im Admin-Interface"
 
@@ -26,7 +34,7 @@ msgstr "TT.MM.JJJJ"
 msgid "optional comment"
 msgstr "optionaler Kommentar"
 
-#: core/models/author.py:7 core/models/products.py:267
+#: core/models/author.py:7 core/models/products.py:268
 msgid "author"
 msgstr "Autor"
 
@@ -123,24 +131,23 @@ msgstr "Artikel"
 msgid "items"
 msgstr "Artikel"
 
-#: core/models/cart.py:142 core/models/products.py:191
+#: core/models/cart.py:142 core/models/products.py:192
 msgid "lecture note"
 msgstr "Skript"
 
-#: core/models/cart.py:143 core/models/products.py:392
+#: core/models/cart.py:143 core/models/products.py:393
 msgid "printing quota"
 msgstr "Druckkontingent"
 
-#: core/models/cart.py:144 core/models/products.py:151
-#: core/models/products.py:291
-#| msgid "deposit"
+#: core/models/cart.py:144 core/models/products.py:152
+#: core/models/products.py:292
 msgctxt "security deposit"
 msgid "deposit"
 msgstr "Kaution"
 
 #: core/models/cart.py:149 core/models/cashbookentry.py:72
-#: core/models/products.py:159 core/models/products.py:238
-#: core/models/products.py:399 templates/core/sale/sale_process.html:35
+#: core/models/products.py:160 core/models/products.py:239
+#: core/models/products.py:400 templates/core/sale/sale_process.html:35
 msgid "EAN"
 msgstr "EAN"
 
@@ -234,192 +241,192 @@ msgstr "Es konnte kein Artikel mit der EAN %(ean)s gefunden werden."
 msgid "%(semester_start)s until %(semester_end)s"
 msgstr "%(semester_start)s bis %(semester_end)s"
 
-#: core/models/products.py:128
+#: core/models/products.py:129
 msgid "EANs may only contain numbers."
 msgstr "EANs dürfen nur aus Zahlen bestehen."
 
-#: core/models/products.py:143
+#: core/models/products.py:144
 msgid "An article with this EAN already exists."
 msgstr "Ein Artikel mit dieser EAN existiert bereits."
 
-#: core/models/products.py:152 templates/base.html:78
+#: core/models/products.py:153 templates/base.html:78
 msgid "deposits"
 msgstr "Kautionen"
 
-#: core/models/products.py:165 core/models/products.py:243
+#: core/models/products.py:166 core/models/products.py:244
 #: templates/core/sale/sale_process.html:36
 msgid "designation"
 msgstr "Bezeichnung"
 
-#: core/models/products.py:171
+#: core/models/products.py:172
 msgid "deposit amount (in €)"
 msgstr "Kautionsbetrag (in €)"
 
-#: core/models/products.py:192 templates/base.html:73
+#: core/models/products.py:193 templates/base.html:73
 msgid "lecture notes"
 msgstr "Skripten"
 
-#: core/models/products.py:196 core/views/catalogue.py:21
+#: core/models/products.py:197 core/views/catalogue.py:21
 #: templates/core/catalogue.html:9
 msgid "mathematics"
 msgstr "Mathematik"
 
-#: core/models/products.py:197 core/views/catalogue.py:24
+#: core/models/products.py:198 core/views/catalogue.py:24
 #: templates/core/catalogue.html:15
 msgid "physics"
 msgstr "Physik"
 
-#: core/models/products.py:198 core/views/catalogue.py:27
+#: core/models/products.py:199 core/views/catalogue.py:27
 #: templates/core/catalogue.html:21
 msgid "informatics"
 msgstr "Informatik"
 
-#: core/models/products.py:202
+#: core/models/products.py:203
 msgid "royal blue"
 msgstr "royalblau"
 
-#: core/models/products.py:203
+#: core/models/products.py:204
 msgid "ice blue"
 msgstr "eisblau"
 
-#: core/models/products.py:204
+#: core/models/products.py:205
 msgid "caribbean blue"
 msgstr "karibikblau"
 
-#: core/models/products.py:205
+#: core/models/products.py:206
 msgid "sea green"
 msgstr "seegrün"
 
-#: core/models/products.py:206
+#: core/models/products.py:207
 msgid "grass green"
 msgstr "grasgrün"
 
-#: core/models/products.py:207
+#: core/models/products.py:208
 msgid "may green"
 msgstr "maigrün"
 
-#: core/models/products.py:208
+#: core/models/products.py:209
 msgid "grey"
 msgstr "grau"
 
-#: core/models/products.py:209
+#: core/models/products.py:210
 msgid "fuchsia"
 msgstr "fuchsia"
 
-#: core/models/products.py:210
+#: core/models/products.py:211
 msgid "purple"
 msgstr "lila"
 
-#: core/models/products.py:211
+#: core/models/products.py:212
 msgid "violet"
 msgstr "violett"
 
-#: core/models/products.py:212
+#: core/models/products.py:213
 msgid "brick red"
 msgstr "ziegelrot"
 
-#: core/models/products.py:213
+#: core/models/products.py:214
 msgid "pink"
 msgstr "rosa"
 
-#: core/models/products.py:214
+#: core/models/products.py:215
 msgid "salmon"
 msgstr "lachsfarben"
 
-#: core/models/products.py:215
+#: core/models/products.py:216
 msgid "orange"
 msgstr "orange"
 
-#: core/models/products.py:216
+#: core/models/products.py:217
 msgid "camel"
 msgstr "camel"
 
-#: core/models/products.py:217
+#: core/models/products.py:218
 msgid "light yellow"
 msgstr "hellgelb"
 
-#: core/models/products.py:218
+#: core/models/products.py:219
 msgid "golden yellow"
 msgstr "goldgelb"
 
-#: core/models/products.py:219
+#: core/models/products.py:220
 msgid "chamois"
 msgstr "chamois"
 
-#: core/models/products.py:223
+#: core/models/products.py:224
 msgid "A4 (portrait)"
 msgstr "A4 (Hochformat)"
 
-#: core/models/products.py:224
+#: core/models/products.py:225
 msgid "A4 (landscape)"
 msgstr "A4 (Querformat)"
 
-#: core/models/products.py:228
+#: core/models/products.py:229
 msgid "one-sided"
 msgstr "einseitig"
 
-#: core/models/products.py:229
+#: core/models/products.py:230
 msgid "two-sided"
 msgstr "doppelseitig"
 
-#: core/models/products.py:249
+#: core/models/products.py:250
 msgid "subject"
 msgstr "Studienfach"
 
-#: core/models/products.py:256 core/models/products.py:405
+#: core/models/products.py:257 core/models/products.py:406
 #: core/views/finance.py:71 templates/core/sale/sale_process.html:38
 msgid "price (in €)"
 msgstr "Preis (in €)"
 
-#: core/models/products.py:260
+#: core/models/products.py:261
 msgid "study grants"
 msgstr "Studienzuschüsse"
 
-#: core/models/products.py:273
+#: core/models/products.py:274
 msgid "semester (start)"
 msgstr "Semester (von)"
 
-#: core/models/products.py:280
+#: core/models/products.py:281
 msgid "semester (end)"
 msgstr "Semester (bis)"
 
-#: core/models/products.py:284 core/models/products.py:413
+#: core/models/products.py:285 core/models/products.py:414
 msgid "for sale"
 msgstr "steht zum Verkauf"
 
-#: core/models/products.py:296
+#: core/models/products.py:297
 msgid "stock"
 msgstr "Bestand"
 
-#: core/models/products.py:303
+#: core/models/products.py:304
 msgid "color of cover"
 msgstr "Deckblattfarbe"
 
-#: core/models/products.py:310
+#: core/models/products.py:311
 msgid "papersize"
 msgstr "Papiergröße"
 
-#: core/models/products.py:317
+#: core/models/products.py:318
 msgid "sides"
 msgstr "Seitigkeit"
 
-#: core/models/products.py:323
+#: core/models/products.py:324
 msgid "notes for printing"
 msgstr "Anmerkungen für den Druck"
 
-#: core/models/products.py:330
+#: core/models/products.py:331
 msgid "PDF file"
 msgstr "PDF-Datei"
 
-#: core/models/products.py:393 templates/base.html:77
+#: core/models/products.py:394 templates/base.html:77
 msgid "printing quotas"
 msgstr "Druckkontingente"
 
-#: core/models/products.py:409
+#: core/models/products.py:410
 msgid "number of pages"
 msgstr "Seitenzahl"
 
-#: core/models/products.py:425
+#: core/models/products.py:426
 #, python-format
 msgid "%(num)d pages"
 msgstr "%(num)d Seiten"
@@ -492,16 +499,16 @@ msgstr "Finanzer"
 msgid "admin"
 msgstr "Administrator"
 
-#: core/utils/bootstrap.py:48
+#: core/utils/bootstrap.py:47
 msgid "Please correct the marked fields."
 msgstr "Bitte die markierten Felder korrigieren."
 
-#: core/utils/bootstrap.py:52
+#: core/utils/bootstrap.py:51
 #, python-format
 msgid "%(model_name)s successfully saved."
 msgstr "%(model_name)s erfolgreich gespeichert."
 
-#: core/utils/bootstrap.py:55 core/views/management/update.py:86
+#: core/utils/bootstrap.py:54 core/views/management/update.py:86
 msgid "Nothing saved, as no changes have been made."
 msgstr "Nichts gespeichert, da keine Änderungen vorgenommen wurden."
 
