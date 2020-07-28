@@ -2,18 +2,19 @@
 
 
 ## Konfiguration
-```shell script
-chmod +x setup.sh
-./setup.sh
+Die Datei `config.py` muss im Ordner `SkriptenTool` angelegt werden:
+```python
+LOCAL = False
+SECRET_KEY = '****************'
+DEBUG = False
+SSL = True
+ALLOWED_HOSTS = ['skripten.mpi.fs.tum.de']
+ADMINS = [('hertle@fs.tum.de', 'hertle@fs.tum.de'), ('paul.fischer@fs.tum.de', 'paul.fischer@fs.tum.de')]
+SENDER_EMAIL = 'skripten@fs.tum.de'
+FINANCE_EMAILS = ['finanz@fs.tum.de']
+DATABASE_PASSWORD = '****************'
 ```
 
-## Logs
-```shell script
-journalctl -u gunicorn
-```
-```shell script
-journalctl -u nginx
-```
 
 ## Bedienungsanleitung
 Das SkriptenTool findet sich unter [skripten.mpi.fs.tum.de](https://skripten.mpi.fs.tum.de), die Anmeldung erfolgt mit
