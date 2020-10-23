@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SkriptenTool\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-24 15:09+0200\n"
-"PO-Revision-Date: 2020-04-25 08:00+0200\n"
+"POT-Creation-Date: 2020-10-23 11:00+0200\n"
+"PO-Revision-Date: 2020-10-23 11:00+0200\n"
 "Last-Translator: Paul Fischer <paul.fischer@tum.de>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -178,7 +178,7 @@ msgstr "Entnahme"
 msgid "deposit"
 msgstr "Einlage"
 
-#: core/models/cashbookentry.py:28 core/utils/management.py:35
+#: core/models/cashbookentry.py:28 core/utils/management.py:47
 #: templates/base.html:57 templates/core/sale.html:5
 msgid "sale"
 msgstr "Verkauf"
@@ -528,16 +528,16 @@ msgstr "Eigenschaften"
 msgid "print settings"
 msgstr "Druckeinstellungen"
 
-#: core/utils/management.py:37
+#: core/utils/management.py:49
 msgctxt "noun"
 msgid "refund"
 msgstr "Erstattung"
 
-#: core/utils/management.py:58
+#: core/utils/management.py:76
 msgid "user data"
 msgstr "Benutzerdaten"
 
-#: core/utils/management.py:60
+#: core/utils/management.py:78
 msgid "permissions"
 msgstr "Berechtigungen"
 
@@ -777,7 +777,15 @@ msgstr "%(start)s bis %(end)s von %(count)s"
 msgid "actions"
 msgstr "Aktionen"
 
+#: templates/core/management/list_model.html:206
+msgid "cover"
+msgstr "Deckblatt"
+
 #: templates/core/management/list_model.html:212
+msgid "file"
+msgstr "Datei"
+
+#: templates/core/management/list_model.html:224
 #, python-format
 msgid "No %(verbose_name_plural)s found."
 msgstr "Keine %(verbose_name_plural)s gefunden."

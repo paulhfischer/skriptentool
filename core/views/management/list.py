@@ -5,12 +5,13 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
 
-from core.models import User
+from core.models import User, LectureNote
 from core.utils.functions import get_model
 from core.utils.management import get_column_style, get_columns, get_disabled_columns, is_allowed
 
 
 def get_context(user, model):
+    print(model)
     return {
         'verbose_name'       : model._meta.verbose_name,
         'verbose_name_plural': model._meta.verbose_name_plural,
@@ -19,6 +20,8 @@ def get_context(user, model):
         'can_update'         : is_allowed(user, model, 'update'),
         'can_delete'         : is_allowed(user, model, 'delete'),
         'can_create'         : is_allowed(user, model, 'create'),
+        'can_download_cover' : model == LectureNote,
+        'can_download_file'  : model == LectureNote,
         'editable_fields'    : not len(get_columns(user, model)) == len(get_disabled_columns(user, model)),
         'ordering'           : model._meta.ordering,
     }
