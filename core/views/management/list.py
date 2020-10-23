@@ -7,7 +7,7 @@ from django.views import View
 
 from core.models import User
 from core.utils.functions import get_model
-from core.utils.management import get_columns, get_disabled_columns, is_allowed
+from core.utils.management import get_column_style, get_columns, get_disabled_columns, is_allowed
 
 
 def get_context(user, model):
@@ -37,6 +37,7 @@ def get_formset(user, form_model):
                     if field in get_disabled_columns(user, form_model):
                         self.fields[field].disabled = True
                         self.fields[field].required = False
+                    self.fields[field].widget.attrs['wrapper_style'] = get_column_style(form_model, field)
 
     else:
         # special form for user update

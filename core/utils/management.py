@@ -12,21 +12,33 @@ SETTINGS = {
             {'legend': _('print settings'),
              'fields': ['color', 'papersize', 'sides', 'printnotes', 'file']}
         ],
-        'columns': ['ean', 'name', 'subject', 'active', 'stock', 'printnotes']
+        'columns': {
+            'fields': ['ean', 'name', 'subject', 'active', 'stock', 'printnotes'],
+            'styles': {
+                'ean': ['width: 100px'],
+                'active': ['width: 75px'],
+                'stock': ['width: 50px'],
+                'printnotes': ['width: 200px']
+            }
+        }
     },
     Author: {
         'fieldsets': [
             {'legend': None,
              'fields': ['name', 'mail']}
         ],
-        'columns': ['name', 'mail']
+        'columns': {
+            'fields': ['name', 'mail']
+        }
     },
     Deposit: {
         'fieldsets': [
             {'legend': None,
              'fields': ['ean', 'name', 'price']}
         ],
-        'columns': ['ean', 'name', 'price']
+        'columns': {
+            'fields': ['ean', 'name', 'price']
+        }
     },
     DepositNote: {
         'fieldsets': [
@@ -37,21 +49,27 @@ SETTINGS = {
             {'legend': pgettext_lazy('noun', 'refund'),
              'fields': ['refunded_time', 'refunded_by', 'refundable']}
         ],
-        'columns': ['number', 'price', 'sold_time', 'refunded_time', 'refundable']
+        'columns': {
+            'fields': ['number', 'price', 'sold_time', 'refunded_time', 'refundable']
+        }
     },
     PrintingQuota: {
         'fieldsets': [
             {'legend': None,
              'fields': ['ean', 'pages', 'price', 'active']}
         ],
-        'columns': ['ean', 'pages', 'price', 'active']
+        'columns': {
+            'fields': ['ean', 'pages', 'price', 'active']
+        }
     },
     Shift: {
         'fieldsets': [
             {'legend': None,
              'fields': ['time_start', 'time_end', 'vendor', 'valid', 'payout']}
         ],
-        'columns': ['time_start', 'time_end', 'vendor', 'valid', 'payout']
+        'columns': {
+            'fields': ['time_start', 'time_end', 'vendor', 'valid', 'payout']
+        }
     },
     User: {
         'fieldsets': [
@@ -60,7 +78,9 @@ SETTINGS = {
             {'legend': _('permissions'),
              'fields': ['vendor', 'referent', 'financier', 'admin']}
         ],
-        'columns': ['username', 'vendor', 'referent', 'financier', 'admin']
+        'columns': {
+            'fields': ['username', 'vendor', 'referent', 'financier', 'admin']
+        }
     },
 }
 
@@ -129,7 +149,7 @@ def get_disabled_fields(user, model, action):
 
 # return configured columns that are allowed to be listed
 def get_columns(user, model):
-    all_columns = SETTINGS.get(model).get('columns')
+    all_columns = SETTINGS.get(model).get('columns').get('fields')
     allowed_columns = _get_allowed_fields(user, model, 'list')
 
     # check if all fields are allowed
@@ -137,6 +157,11 @@ def get_columns(user, model):
         return all_columns
 
     return list(set(allowed_columns).intersection(set(all_columns)))
+
+
+# return custom column styles
+def get_column_style(model, field):
+    return SETTINGS.get(model).get('columns').get('styles', {}).get(field, [])
 
 
 # return listable columns that are not allowed for action

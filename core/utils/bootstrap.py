@@ -93,6 +93,13 @@ def field_renderer(field, style='default'):
         validation = ''
         invalid_feedback = ''
 
+    # render wrapper style
+    if widget.attrs.get('wrapper_style'):
+        wrapper_style = ' style="{}"'.format('; '.join(widget.attrs.get('wrapper_style')))
+    else:
+        wrapper_style = ''
+    del widget.attrs['wrapper_style']
+
     # remove borders if tabular
     border = ' border-0' if style == 'tabular' else ''
 
@@ -129,8 +136,9 @@ def field_renderer(field, style='default'):
             widget.attrs['placeholder'] = widget.attrs.get('placeholder', text_value(field.label))
 
     # modify input-types
-    if isinstance(field.field, DateTimeField):
-        setattr(widget, 'input_type', 'datetime-local')
+    # currently disabled, as django does not return rfc3339-formatted date for inputs
+    # if isinstance(field.field, DateTimeField):
+    #     setattr(widget, 'input_type', 'datetime-local')
 
     # generate html for field
     input_html = field.as_widget(attrs=widget.attrs)
@@ -167,9 +175,10 @@ def field_renderer(field, style='default'):
                        input=input_html,
                        label_content=text_value(field.label),
                        disabled_css=disabled_css,
+
                    )
         else:
-            html = '<td class="align-middle text-center{validation}">' \
+            html = '<td class="align-middle text-center{validation}"{wrapper_style}>' \
                    '<div class="custom-control custom-switch">' \
                    '{input}' \
                    '<label class="custom-control-label{disabled_css}" for="{input_id}"></label>' \
@@ -177,6 +186,7 @@ def field_renderer(field, style='default'):
                    '</td>' \
                    .format(
                        validation=validation,
+                       wrapper_style=wrapper_style,
                        input_id=field.id_for_label,
                        input=input_html,
                        disabled_css=disabled_css,
@@ -250,10 +260,11 @@ def field_renderer(field, style='default'):
                        required=required,
                    )
         else:
-            html = '<td class="p-0">' \
+            html = '<td class="p-0"{wrapper_style}>' \
                    '{input}' \
                    '</td>' \
                    .format(
+                       wrapper_style=wrapper_style,
                        input=input_html
                    )
 
