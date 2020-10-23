@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 from django.contrib.messages import get_messages
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import BaseFormSet
@@ -127,7 +129,8 @@ def field_renderer(field, style="default"):
         wrapper_style = f' style="{"; ".join(widget.attrs.get("wrapper_style"))}"'
     else:
         wrapper_style = ""
-    del widget.attrs["wrapper_style"]
+    with suppress(KeyError):
+        del widget.attrs["wrapper_style"]
 
     # remove borders if tabular
     border = " border-0" if style == "tabular" else ""
