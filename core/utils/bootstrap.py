@@ -98,7 +98,10 @@ def field_renderer(field, style='default'):
         wrapper_style = ' style="{}"'.format('; '.join(widget.attrs.get('wrapper_style')))
     else:
         wrapper_style = ''
-    del widget.attrs['wrapper_style']
+    try:
+        del widget.attrs['wrapper_style']
+    except KeyError:
+        pass
 
     # remove borders if tabular
     border = ' border-0' if style == 'tabular' else ''
