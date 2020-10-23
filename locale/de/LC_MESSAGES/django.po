@@ -765,6 +765,14 @@ msgid "actions"
 msgstr "Aktionen"
 
 #: templates/core/management/list_model.html
+msgid "cover"
+msgstr "Deckblatt"
+
+#: templates/core/management/list_model.html
+msgid "file"
+msgstr "Datei"
+
+#: templates/core/management/list_model.html
 #, python-format
 msgid "No %(verbose_name_plural)s found."
 msgstr "Keine %(verbose_name_plural)s gefunden."

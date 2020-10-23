@@ -247,7 +247,31 @@
                             class="text-danger"
                             href="{% url 'core:management_delete' model_name form.id.value %}"
                         >
-                            <i class="fas fa-trash{% if can_delete and can_update %} ml-2{% endif %}"></i>
+                            <i class="fas fa-trash{% if can_update %} ml-2{% endif %}{% if can_download_cover or can_download_file %} mr-3{% endif %}"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if can_download_cover %}
+                        <a
+                            class="text-primary"
+                            target="_blank"
+                            download
+                            title="{% trans 'cover'|capfirst %}"
+                            href="/media/skriptenaufträge/{{ form.ean.value }}.pdf"
+                        >
+                            <i class="fas fa-download{% if can_delete or can_update %} ml-2{% endif %}"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if can_download_file %}
+                        <a
+                            class="text-primary"
+                            target="_blank"
+                            download
+                            title="{% trans 'file'|capfirst %}"
+                            href="/media/druck/{{ form.ean.value }}.pdf"
+                        >
+                            <i class="fas fa-download{% if can_download_cover or can_delete or can_update %} ml-2{% endif %}"></i>
                         </a>
                         {% endif %}
                     </td>
