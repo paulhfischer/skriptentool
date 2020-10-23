@@ -1,6 +1,6 @@
-{% load i18n %}{% blocktrans  with message=message|default:'-' %}Hello,
+{% load i18n %}{% blocktrans %}Hello,
 
 the last sale has been closed with a balance of {{ balance }} €!
 
 Regards,
-Your SkriptenTool{% endblocktrans %}
+Your Skriptentool{% endblocktrans %}

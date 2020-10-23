@@ -5,61 +5,84 @@
         <h2 class="card-header{% if not can_order %} border-bottom-0{% endif %}">
             {% trans 'cart'|capfirst %}
             {% if can_next and vendor %}
-                <form method="post" class="float-right my-auto">
-                    {% csrf_token %}
-                    <button type="submit" name="next" class="btn btn-primary btn-block" value="{{ user }}">
-                        {% trans 'close'|capfirst %}
-                    </button>
-                </form>
+            <form
+                method="post"
+                class="float-right my-auto"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    name="next"
+                    class="btn btn-primary btn-block"
+                    value="{{ user }}"
+                >
+                    {% trans 'close'|capfirst %}
+                </button>
+            </form>
             {% endif %}
         </h2>
         {% if can_order %}
-            <div class="card-body table-responsive">
-                {% if error %}
-                    <div class="alert alert-dismissible alert-danger">
-                        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
-                        {{ error }}
-                    </div>
-                {% endif %}
-                {% if new_deposit_number %}
-                    <div class="alert alert-dismissible alert-success">
-                        <button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>
-                        {% blocktrans trimmed with number=new_deposit_number %}
-                            Number of new deposit note: <strong>{{ number }}</strong>
-                        {% endblocktrans %}
-                    </div>
-                {% endif %}
-                <table class="table mb-0 table-striped table-fixed text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>{% trans 'EAN' %}</th>
-                            <th>{% trans 'designation'|capfirst %}</th>
-                            <th>{% trans 'type'|capfirst %}</th>
-                            <th class="text-right">{% trans 'price (in €)'|capfirst %}</th>
-                            <th class="text-right">{% trans 'amount'|capfirst %}</th>
-                            <th class="text-right">{% trans 'total'|capfirst %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for item in items %}
-                        <tr>
-                            <td>{{ item.ean }}</td>
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.get_type_display }}</td>
-                            <td class="text-right">{{ item.price_single }} €</td>
-                            <td class="text-right">{{ item.quantity }}</td>
-                            <td class="text-right">{{ item.price_total }} €</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="5"></th>
-                            <th class="text-right">{{ cart.total }} €</th>
-                        </tr>
-                    </tfoot>
-                </table>
+        <div class="card-body table-responsive">
+            {% if error %}
+            <div class="alert alert-dismissible alert-danger">
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="alert"
+                >
+                    <i class="fa fa-times"></i>
+                </button>
+                {{ error }}
             </div>
+            {% endif %}
+
+            {% if new_deposit_number %}
+            <div class="alert alert-dismissible alert-success">
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="alert"
+                >
+                    <i class="fa fa-times"></i>
+                </button>
+                {% blocktrans trimmed with number=new_deposit_number %}
+                Number of new deposit note: <strong>{{ number }}</strong>
+                {% endblocktrans %}
+            </div>
+            {% endif %}
+
+            <table class="table mb-0 table-striped table-fixed text-nowrap">
+                <thead>
+                    <tr>
+                        <th>{% trans 'EAN' %}</th>
+                        <th>{% trans 'designation'|capfirst %}</th>
+                        <th>{% trans 'type'|capfirst %}</th>
+                        <th class="text-right">{% trans 'price (in €)'|capfirst %}</th>
+                        <th class="text-right">{% trans 'amount'|capfirst %}</th>
+                        <th class="text-right">{% trans 'total'|capfirst %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.ean }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.get_type_display }}</td>
+                        <td class="text-right">{{ item.price_single }} €</td>
+                        <td class="text-right">{{ item.quantity }}</td>
+                        <td class="text-right">{{ item.price_total }} €</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="5"></th>
+                        <th class="text-right">{{ cart.total }} €</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
         {% endif %}
     </div>
 </div>

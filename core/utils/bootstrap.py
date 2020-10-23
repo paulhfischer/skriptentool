@@ -1,6 +1,18 @@
+from contextlib import suppress
+
 from django.contrib.messages import get_messages
 from django.core.exceptions import ImproperlyConfigured
-from django.forms import BaseFormSet, CheckboxInput, DateTimeField, EmailInput, FileInput, NumberInput, PasswordInput, Select, TextInput, URLInput
+from django.forms import (
+    BaseFormSet,
+    CheckboxInput,
+    EmailInput,
+    FileInput,
+    NumberInput,
+    PasswordInput,
+    Select,
+    TextInput,
+    URLInput,
+)
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -12,63 +24,73 @@ def text_value(value):
     if value:
         return force_str(value)
     else:
-        return ''
+        return ""
 
 
 def nonfield_errors_renderer(form):
     if form.non_field_errors():
-        errors = ''
+        errors = ""
         for error in form.non_field_errors():
-            errors += '<li>{}</li>'.format(conditional_escape(text_value(error)))
+            errors += f"<li>{conditional_escape(text_value(error))}</li>"
 
-        html = '<div class="alert alert-dismissible alert-danger mb-0">' \
-               '<button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>' \
-               '<ul class="mb-0">' \
-               '{}' \
-               '</ul>' \
-               '</div>' \
-               .format(errors)
+        html = (
+            '<div class="alert alert-dismissible alert-danger mb-0">'
+            '<button type="button" class="close" data-dismiss="alert">'
+            '<i class="fa fa-times"></i>'
+            "</button>"
+            '<ul class="mb-0">'
+            f"{errors}"
+            "</ul>"
+            "</div>"
+        )
 
-        return mark_safe(html)
+        return mark_safe(html)  # nosec
+
+    return None
 
 
 def formset_errors_renderer(formset, model_name):
     if not isinstance(formset, BaseFormSet):
-        raise ImproperlyConfigured('no formset provided')
+        raise ImproperlyConfigured("no formset provided")
 
     if formset.non_form_errors():
-        alert_class = ' alert-danger'
-        html = ''
+        alert_class = " alert-danger"
+        html = ""
         for error in formset.non_form_errors():
-            html += '<li>{}</li>'.format(error)
-        html = '<ul>{}</ul>'.format(html)
+            html += f"<li>{error}</li>"
+        html = f"<ul>{html}</ul>"
     elif formset.total_error_count():
-        alert_class = ' alert-danger'
-        html = _('Please correct the marked fields.')
+        alert_class = " alert-danger"
+        html = _("Please correct the marked fields.")
     elif formset.is_valid():
         if formset.has_changed():
-            alert_class = ' alert-success'
-            html = capfirst(_('%(model_name)s successfully saved.') % {'model_name': model_name})
+            alert_class = " alert-success"
+            html = capfirst(
+                _("%(model_name)s successfully saved.") % {"model_name": model_name},
+            )
         else:
-            alert_class = ' alert-secondary'
-            html = _('Nothing saved, as no changes have been made.')
+            alert_class = " alert-secondary"
+            html = _("Nothing saved, as no changes have been made.")
     else:
-        return ''
+        return None
 
-    html = '<div class="alert alert-dismissible{}">' \
-           '<button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>' \
-           '{}' \
-           '</div>' \
-           .format(alert_class, html)
+    html = (
+        f'<div class="alert alert-dismissible{alert_class}">'
+        '<button type="button" class="close" data-dismiss="alert">'
+        '<i class="fa fa-times"></i>'
+        "</button>"
+        f"{html}"
+        "</div>"
+    )
 
-    return mark_safe(html)
+    return mark_safe(html)  # nosec
 
 
-def field_renderer(field, style='default'):
+def field_renderer(field, style="default"):
     widget = field.field.widget
 
     # check if style is supported
-    if style not in ['default', 'horizontal', 'tabular']:
+    if style not in ["default", "horizontal", "tabular"]:
         raise ImproperlyConfigured()
 
     # do not render hidden fields
@@ -76,67 +98,81 @@ def field_renderer(field, style='default'):
         return text_value(field)
 
     # check if field-type is supported
-    if not isinstance(
-            widget, (CheckboxInput, FileInput, Select, TextInput, NumberInput, EmailInput, URLInput, PasswordInput,)
-       ) or (
-            style == 'tabular' and isinstance(field.field.widget, FileInput)
-       ):
+    if (
+        not isinstance(
+            widget,
+            (
+                CheckboxInput,
+                FileInput,
+                Select,
+                TextInput,
+                NumberInput,
+                EmailInput,
+                URLInput,
+                PasswordInput,
+            ),
+        )
+        or (style == "tabular" and isinstance(field.field.widget, FileInput))
+    ):
         raise ImproperlyConfigured()
 
     # render errors
     if field.errors:
-        validation = ' is-invalid'
-        invalid_feedback = ''
+        validation = " is-invalid"
+        invalid_feedback = ""
         for error in field.errors:
-            invalid_feedback += '<div class="invalid-feedback">{}</div>'.format(conditional_escape(text_value(error)))
+            invalid_feedback += (
+                '<div class="invalid-feedback">' f"{conditional_escape(text_value(error))}" "</div>"
+            )
     else:
-        validation = ''
-        invalid_feedback = ''
+        validation = ""
+        invalid_feedback = ""
 
     # render wrapper style
-    if widget.attrs.get('wrapper_style'):
-        wrapper_style = ' style="{}"'.format('; '.join(widget.attrs.get('wrapper_style')))
+    if widget.attrs.get("wrapper_style"):
+        wrapper_style = f' style="{"; ".join(widget.attrs.get("wrapper_style"))}"'
     else:
-        wrapper_style = ''
-    try:
-        del widget.attrs['wrapper_style']
-    except KeyError:
-        pass
+        wrapper_style = ""
+    with suppress(KeyError):
+        del widget.attrs["wrapper_style"]
 
     # remove borders if tabular
-    border = ' border-0' if style == 'tabular' else ''
+    border = " border-0" if style == "tabular" else ""
 
     # bold label if field is required
-    required = ' font-weight-bold' if field.field.required else ''
+    required = " font-weight-bold" if field.field.required else ""
 
     # align numbers right if tabular
-    align_right = ' text-right' if isinstance(widget, NumberInput) and style == 'tabular' else ''
+    align_right = " text-right" if isinstance(widget, NumberInput) and style == "tabular" else ""
 
     # add class to disable checkbox
-    disabled_css = ' disabled' if isinstance(widget, CheckboxInput) and field.field.disabled else ''
+    disabled_css = " disabled" if isinstance(widget, CheckboxInput) and field.field.disabled else ""
 
     # small inputs if tabular
-    if style == 'tabular':
-        small = ' custom-select-sm' if isinstance(widget, Select) else ' form-control-sm'
+    if style == "tabular":
+        small = " custom-select-sm" if isinstance(widget, Select) else " form-control-sm"
     else:
-        small = ''
+        small = ""
 
     # modify widget
     if isinstance(widget, CheckboxInput):
-        widget.attrs['class'] = 'custom-control-input'
+        widget.attrs["class"] = "custom-control-input"
 
     elif isinstance(widget, FileInput):
-        widget.attrs['class'] = 'custom-file-input'
+        widget.attrs["class"] = "custom-file-input"
 
     elif isinstance(widget, Select):
-        widget.attrs['class'] = 'custom-select {}{}{}'.format(small, border, validation)
+        widget.attrs["class"] = f"custom-select {small}{border}{validation}"
 
     else:
-        widget.attrs['class'] = 'form-control {}{}{}{}'.format(small, border, align_right, validation)
+        widget.attrs["class"] = f"form-control {small}{border}{align_right}{validation}"
 
         # set placeholder if field is not disabled
         if not field.field.disabled:
-            widget.attrs['placeholder'] = widget.attrs.get('placeholder', text_value(field.label))
+            widget.attrs["placeholder"] = widget.attrs.get(
+                "placeholder",
+                text_value(field.label),
+            )
 
     # modify input-types
     # currently disabled, as django does not return rfc3339-formatted date for inputs
@@ -148,142 +184,113 @@ def field_renderer(field, style='default'):
 
     # render wrapper with field
     if isinstance(widget, CheckboxInput):
-        if style == 'default':
-            html = '<div class="form-group {validation}">' \
-                   '<div class="custom-control custom-switch">' \
-                   '{input}' \
-                   '<label class="custom-control-label{disabled_css}" for="{input_id}">{label_content}</label>' \
-                   '</div>' \
-                   '</div>' \
-                   .format(
-                       validation=validation,
-                       input_id=field.id_for_label,
-                       input=input_html,
-                       label_content=text_value(field.label),
-                       disabled_css=disabled_css,
-                   )
-        elif style == 'horizontal':
-            html = '<div class="form-group row{validation}">' \
-                   '<label class="col-md-3 col-form-label"></label>' \
-                   '<div class="col-md-9 d-flex align-items-center">' \
-                   '<div class="custom-control custom-switch">' \
-                   '{input}' \
-                   '<label class="custom-control-label{disabled_css}" for="{input_id}">{label_content}</label>' \
-                   '</div>' \
-                   '</div>' \
-                   '</div>' \
-                   .format(
-                       validation=validation,
-                       input_id=field.id_for_label,
-                       input=input_html,
-                       label_content=text_value(field.label),
-                       disabled_css=disabled_css,
-
-                   )
+        if style == "default":
+            html = (
+                f'<div class="form-group {validation}">'
+                '<div class="custom-control custom-switch">'
+                f"{input_html}"
+                f'<label class="custom-control-label{disabled_css}" for="{field.id_for_label}">'
+                f"{text_value(field.label)}"
+                "</label>"
+                "</div>"
+                "</div>"
+            )
+        elif style == "horizontal":
+            html = (
+                f'<div class="form-group row{validation}">'
+                '<label class="col-md-3 col-form-label"></label>'
+                '<div class="col-md-9 d-flex align-items-center">'
+                '<div class="custom-control custom-switch">'
+                f"{input_html}"
+                f'<label class="custom-control-label{disabled_css}" for="{field.id_for_label}">'
+                f"{text_value(field.label)}"
+                "</label>"
+                "</div>"
+                "</div>"
+                "</div>"
+            )
         else:
-            html = '<td class="align-middle text-center{validation}"{wrapper_style}>' \
-                   '<div class="custom-control custom-switch">' \
-                   '{input}' \
-                   '<label class="custom-control-label{disabled_css}" for="{input_id}"></label>' \
-                   '</div>' \
-                   '</td>' \
-                   .format(
-                       validation=validation,
-                       wrapper_style=wrapper_style,
-                       input_id=field.id_for_label,
-                       input=input_html,
-                       disabled_css=disabled_css,
-                   )
+            html = (
+                f'<td class="align-middle text-center{validation}"{wrapper_style}>'
+                '<div class="custom-control custom-switch">'
+                f"{input_html}"
+                f'<label class="custom-control-label{disabled_css}" for="{field.id_for_label}">'
+                "</label>"
+                "</div>"
+                "</td>"
+            )
 
     elif isinstance(widget, FileInput):
-        if style == 'default':
-            html = '<div class="form-group {required}">' \
-                   '<label for="{input_id}">{label_content}</label>' \
-                   '<div class="custom-file">' \
-                   '<input type="file" name="{input_name}" class="custom-file-input" id="{input_id}">' \
-                   '<label class="custom-file-label" for="{input_id}">{value}</label>' \
-                   '{invalid_feedback}' \
-                   '</div>' \
-                   '</div>' \
-                   .format(
-                       invalid_feedback=invalid_feedback,
-                       value=text_value(field.value()),
-                       input_name=field.name,
-                       input_id=field.id_for_label,
-                       label_content=text_value(field.label),
-                       required=required,
-                   )
+        if style == "default":
+            html = (
+                f'<div class="form-group {required}">'
+                f'<label for="{field.id_for_label}">{text_value(field.label)}</label>'
+                '<div class="custom-file">'
+                f'<input type="file" name="{field.name}" class="custom-file-input" '
+                f'id="{field.id_for_label}">'
+                f'<label class="custom-file-label" for="{field.id_for_label}">'
+                f"{text_value(field.value())}"
+                "</label>"
+                f"{invalid_feedback}"
+                "</div>"
+                "</div>"
+            )
         else:
-            html = '<div class="form-group row {required}">' \
-                   '<label class="col-md-3 col-form-label" for="{input_id}">{label_content}</label>' \
-                   '<div class="col-md-9 my-auto">' \
-                   '<div class="custom-file">' \
-                   '<input type="file" name="{input_name}" class="custom-file-input" id="{input_id}">' \
-                   '<label class="custom-file-label" for="{input_id}">{value}</label>' \
-                   '{invalid_feedback}' \
-                   '</div>' \
-                   '</div>' \
-                   '</div>' \
-                   .format(
-                       invalid_feedback=invalid_feedback,
-                       value=text_value(field.value()).replace('media/', ''),
-                       input_name=field.name,
-                       input_id=field.id_for_label,
-                       label_content=text_value(field.label),
-                       required=required,
-                   )
+            html = (
+                f'<div class="form-group row {required}">'
+                f'<label class="col-md-3 col-form-label" for="{field.id_for_label}">'
+                f"{text_value(field.label)}"
+                "</label>"
+                '<div class="col-md-9 my-auto">'
+                '<div class="custom-file">'
+                f'<input type="file" name="{field.name}" class="custom-file-input" '
+                f'id="{field.id_for_label}">'
+                f'<label class="custom-file-label" for="{field.id_for_label}">'
+                f'{text_value(field.value()).replace("media/", "")}'
+                "</label>"
+                f"{invalid_feedback}"
+                "</div>"
+                "</div>"
+                "</div>"
+            )
 
     else:
-        if style == 'default':
-            html = '<div class="form-group {required}">' \
-                   '<label for="{input_id}">{label_content}</label>' \
-                   '{input}' \
-                   '{invalid_feedback}' \
-                   '</div>' \
-                   .format(
-                       invalid_feedback=invalid_feedback,
-                       input_id=field.id_for_label,
-                       input=input_html,
-                       label_content=text_value(field.label),
-                       required=required
-                   )
-        elif style == 'horizontal':
-            html = '<div class="form-group row {required}">' \
-                   '<label class="col-md-3 col-form-label" for="{input_id}">{label_content}</label>' \
-                   '<div class="col-md-9 my-auto">' \
-                   '{input}' \
-                   '{invalid_feedback}' \
-                   '</div>' \
-                   '</div>' \
-                   .format(
-                       invalid_feedback=invalid_feedback,
-                       input_id=field.id_for_label,
-                       input=input_html,
-                       label_content=text_value(field.label),
-                       required=required,
-                   )
+        if style == "default":
+            html = (
+                f'<div class="form-group {required}">'
+                f'<label for="{field.id_for_label}">{text_value(field.label)}</label>'
+                f"{input_html}"
+                f"{invalid_feedback}"
+                "</div>"
+            )
+        elif style == "horizontal":
+            html = (
+                f'<div class="form-group row {required}">'
+                f'<label class="col-md-3 col-form-label" for="{field.id_for_label}">'
+                f"{text_value(field.label)}"
+                "</label>"
+                '<div class="col-md-9 my-auto">'
+                f"{input_html}"
+                f"{invalid_feedback}"
+                "</div>"
+                "</div>"
+            )
         else:
-            html = '<td class="p-0"{wrapper_style}>' \
-                   '{input}' \
-                   '</td>' \
-                   .format(
-                       wrapper_style=wrapper_style,
-                       input=input_html
-                   )
+            html = f'<td class="p-0"{wrapper_style}>{input_html}</td>'
 
-    return mark_safe(html)
+    return mark_safe(html)  # nosec
 
 
 def messages_renderer(context):
-    html = ''
+    html = ""
     for message in get_messages(context.request):
-        html += '<div class="alert alert-dismissible alert-{tag}">' \
-                '<button type="button" class="close" data-dismiss="alert"><i class="fa fa-times"></i></button>' \
-                '{content}' \
-                 '</div>' \
-                .format(
-                    tag=message.tags,
-                    content=message,
-                )
+        html += (
+            f'<div class="alert alert-dismissible alert-{message.tags}">'
+            '<button type="button" class="close" data-dismiss="alert">'
+            '<i class="fa fa-times"></i>'
+            "</button>"
+            f"{message}"
+            "</div>"
+        )
 
-    return mark_safe(html)
+    return mark_safe(html)  # nosec

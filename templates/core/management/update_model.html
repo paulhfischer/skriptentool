@@ -6,77 +6,101 @@
 {% block title %}{% trans 'management'|capfirst %}{% endblock %}
 
 {% block extrascript %}
-    <script src="{% static 'select.js' %}" data-search="{% trans 'search'|capfirst %}" id="select-script"></script>
-    <script>
-        // update label of file-upload-field after file has been selected
-        $(window).on('load', () => {
-            const fileField = $('input[type="file"]');
+<script
+    src="{% static 'select.js' %}"
+    data-search="{% trans 'search'|capfirst %}"
+    id="select-script"
+></script>
+<script>
+    // update label of file-upload-field after file has been selected
+    $(window).on('load', () => {
+        const fileField = $('input[type="file"]');
 
-            fileField.on('change', (event) => {
-                const fileName = event.target.files[0].name;
-                const fileLabel = $('label.custom-file-label[for=' + event.target.id + ']');
-                fileLabel.text(fileName);
-            });
+        fileField.on('change', (event) => {
+            const fileName = event.target.files[0].name;
+            const fileLabel = $('label.custom-file-label[for=' + event.target.id + ']');
+            fileLabel.text(fileName);
         });
-    </script>
+    });
+
+</script>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="mx-auto col-lg-7">
-            <div class="card">
-                <h2 class="card-header">
-                    {% if mode == 'create' %}
-                        {% blocktrans %}Add {{ verbose_name }}{% endblocktrans %}
-                    {% elif mode == 'update' %}
-                        {% blocktrans %}Edit {{ verbose_name }}{% endblocktrans %}
-                    {% endif %}
-                </h2>
-                <form method="post" enctype="multipart/form-data" class="list-group list-group-flush">
-                    {% csrf_token %}
-                    {% if form.non_field_errors %}
-                        <formset class="list-group-item">
-                            {% bootstrap_nonfielderrors form %}
-                        </formset>
-                    {% endif %}
-                    {% for fieldset in fieldsets %}
-                        <formset class="list-group-item{% if not fieldset.legend %} pt-md-3{% endif %}">
-                            {% if fieldset.legend %}
-                                <legend>{{ fieldset.legend|capfirst}}</legend>
-                            {% endif %}
+<div class="row">
+    <div class="mx-auto col-lg-7">
+        <div class="card">
+            <h2 class="card-header">
+                {% if mode == 'create' %}
+                {% blocktrans %}Add {{ verbose_name }}{% endblocktrans %}
+                {% elif mode == 'update' %}
+                {% blocktrans %}Edit {{ verbose_name }}{% endblocktrans %}
+                {% endif %}
+            </h2>
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                class="list-group list-group-flush"
+            >
+                {% csrf_token %}
 
-                            {% for field in fieldset.fields %}
-                                {% for form_field in form %}
-                                    {% if form_field.name == field %}
-                                        {% bootstrap_horizontalfield form_field %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endfor %}
-                        </formset>
+                {% if form.non_field_errors %}
+                <formset class="list-group-item">
+                    {% bootstrap_nonfielderrors form %}
+                </formset>
+                {% endif %}
+
+                {% for fieldset in fieldsets %}
+                <formset class="list-group-item{% if not fieldset.legend %} pt-md-3{% endif %}">
+                    {% if fieldset.legend %}
+                    <legend>{{ fieldset.legend|capfirst}}</legend>
+                    {% endif %}
+
+                    {% for field in fieldset.fields %}
+                    {% for form_field in form %}
+                    {% if form_field.name == field %}
+                    {% bootstrap_horizontalfield form_field %}
+                    {% endif %}
                     {% endfor %}
-                    <formset class="list-group-item">
-                        <div class="row">
-                            <div class="col-3 col-sm-2">
-                                <a href="{{ abort_url }}" class="btn btn-primary btn-block" role="button">
-                                    <i class="fas fa-chevron-left"></i>
-                                </a>
-                            </div>
-                            <div class="col-6 offset-sm-1">
-                                <button class="btn btn-success btn-block" type="submit">
-                                    <i class="fas fa-save"></i>
-                                </button>
-                            </div>
-                            {% if delete_url %}
-                                <div class="col-3 col-sm-2 offset-sm-1">
-                                    <a href="{{ delete_url }}" class="btn btn-danger btn-block" role="button">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            {% endif %}
+                    {% endfor %}
+                </formset>
+                {% endfor %}
+
+                <formset class="list-group-item">
+                    <div class="row">
+                        <div class="col-3 col-sm-2">
+                            <a
+                                href="{{ abort_url }}"
+                                class="btn btn-primary btn-block"
+                                role="button"
+                            >
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
                         </div>
-                    </formset>
-                </form>
-            </div>
+                        <div class="col-6 offset-sm-1">
+                            <button
+                                class="btn btn-success btn-block"
+                                type="submit"
+                            >
+                                <i class="fas fa-save"></i>
+                            </button>
+                        </div>
+
+                        {% if delete_url %}
+                        <div class="col-3 col-sm-2 offset-sm-1">
+                            <a
+                                href="{{ delete_url }}"
+                                class="btn btn-danger btn-block"
+                                role="button"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </formset>
+            </form>
         </div>
     </div>
+</div>
 {% endblock %}

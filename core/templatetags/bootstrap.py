@@ -1,6 +1,11 @@
 from django import template
 
-from core.utils.bootstrap import field_renderer, formset_errors_renderer, messages_renderer, nonfield_errors_renderer
+from core.utils.bootstrap import (
+    field_renderer,
+    formset_errors_renderer,
+    messages_renderer,
+    nonfield_errors_renderer,
+)
 
 register = template.Library()
 
@@ -12,12 +17,12 @@ def bootstrap_formseterrors(formset, model_name):
 
 @register.simple_tag()
 def bootstrap_tablefield(field):
-    return field_renderer(field, 'tabular')
+    return field_renderer(field, "tabular")
 
 
 @register.simple_tag()
 def bootstrap_horizontalfield(field):
-    return field_renderer(field, 'horizontal')
+    return field_renderer(field, "horizontal")
 
 
 @register.simple_tag()

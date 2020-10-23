@@ -1,26 +1,26 @@
 {% load i18n %}
 
 {% if lecturenotes %}
-    <table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
-        <tr>
-            <th>{% trans 'title'|capfirst %}</th>
-            <th class="text-right">{% trans 'price'|capfirst %}</th>
-            <th class="text-right">{% trans 'availability'|capfirst %}</th>
-        </tr>
-        {% for lecturenote in lecturenotes %}
-            <tr>
-                <td>{{ lecturenote.name }}</td>
-                <td class="text-right">{{ lecturenote.price }} €</td>
-                <td class="text-right">
-                    {% if lecturenote.stock > 0 %}
-                        {% blocktrans with stock=lecturenote.stock %}{{ stock }} copies{% endblocktrans %}
-                    {% else %}
-                        {% trans 'sold out' %}
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+<table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
+    <tr>
+        <th>{% trans 'title'|capfirst %}</th>
+        <th class="text-right">{% trans 'price'|capfirst %}</th>
+        <th class="text-right">{% trans 'availability'|capfirst %}</th>
+    </tr>
+    {% for lecturenote in lecturenotes %}
+    <tr>
+        <td>{{ lecturenote.name }}</td>
+        <td class="text-right">{{ lecturenote.price }} €</td>
+        <td class="text-right">
+            {% if lecturenote.stock > 0 %}
+            {% blocktrans with stock=lecturenote.stock %}{{ stock }} copies{% endblocktrans %}
+            {% else %}
+            {% trans 'sold out' %}
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 {% else %}
-    {% blocktrans %}There are currently no lecture notes for {{ subject }} available.{% endblocktrans %}
+{% blocktrans %}There are currently no lecture notes for {{ subject }} available.{% endblocktrans %}
 {% endif %}

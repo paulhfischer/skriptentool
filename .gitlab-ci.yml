@@ -1,0 +1,38 @@
+image: nikolaik/python-nodejs:python3.8-nodejs12
+
+before_script:
+    - apt-get -qq update
+
+pre-commit:
+    only:
+        refs:
+            - master
+    variables:
+        PIP_CACHE_DIR: '$CI_PROJECT_DIR/.cache/pip'
+        PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
+        SKIP: build core
+    cache:
+        key: ${CI_COMMIT_REF_SLUG}
+        paths:
+            - .cache/pip
+            - .cache/pre-commit
+            - venv
+    script:
+        - apt-get -qq install -y xmlsec1 libldap2-dev libsasl2-dev gettext
+        - python -m venv venv
+        - source venv/bin/activate
+        - set -o pipefail; pip install --upgrade pip | { grep -v "Requirement already" || :; }
+        - set -o pipefail; pip install pre-commit -r requirements.txt | { grep -v "Requirement already" || :; }
+        - echo 'LOCAL=True' >> skriptentool/config.py
+        - echo "SECRET_KEY=\"$(LC_ALL=C tr -dc 'a-zA-Z0-9!#$%&*+-=?^_' </dev/urandom | head -c32)\"" >> skriptentool/config.py
+        - echo 'DEBUG=False' >> skriptentool/config.py
+        - echo 'SSL=False' >> skriptentool/config.py
+        - echo 'ALLOWED_HOSTS=["localhost"]' >> skriptentool/config.py
+        - echo 'ADMINS=[("","")]' >> skriptentool/config.py
+        - echo 'SENDER_EMAIL=""' >> skriptentool/config.py
+        - echo 'FINANCE_EMAILS=[]' >> skriptentool/config.py
+        - echo 'REFERENT_EMAILS=[]' >> skriptentool/config.py
+        - echo 'QPILOT_USERNAME=""' >> skriptentool/config.py
+        - echo 'QPILOT_PASSWORD=""' >> skriptentool/config.py
+        - echo 'DATABASE_PASSWORD=""' >> skriptentool/config.py
+        - pre-commit run --all-files

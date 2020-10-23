@@ -5,34 +5,58 @@
     <div class="card-body">
         <form method="post">
             {% csrf_token %}
+
             {# alerts #}
             {% if not vendor and cart %}
-                <div class="alert alert-danger">
-                    {% blocktrans with vendor=cart.vendor %}<strong>{{ vendor }}</strong> is still active{% endblocktrans %}
-                </div>
+            <div class="alert alert-danger">
+                {% blocktrans trimmed with vendor=cart.vendor %}
+                <strong>{{ vendor }}</strong> is still active
+                {% endblocktrans %}
+            </div>
             {% endif %}
+
             {% if can_next %}
-                <div class="alert alert-warning {% if vendor %}mb-0{% endif %}">
-                    {% trans 'Sale process still running' %}
-                </div>
+            <div class="alert alert-warning {% if vendor %}mb-0{% endif %}">
+                {% trans 'Sale process still running' %}
+            </div>
             {% endif %}
+
             {% if can_count %}
-                <div class="alert alert-warning mb-0">{% blocktrans %}Register isn't counted{% endblocktrans %}</div>
+            <div class="alert alert-warning mb-0">{% trans "Register isn't counted" %}</div>
             {% endif %}
+
 
             {# buttons #}
             {% if can_close %}
-                <button type="submit" name="close" class="btn btn-primary btn-block" value="{{ cart.vendor }}">
-                    {% trans 'end sale'|capfirst %}
-                </button>
+            <button
+                type="submit"
+                name="close"
+                class="btn btn-primary btn-block"
+                value="{{ cart.vendor }}"
+            >
+                {% trans 'end sale'|capfirst %}
+            </button>
             {% endif %}
+
             {% if can_next and not vendor %}
-                <button type="submit" name="next" class="btn btn-primary btn-block" value="{{ cart.vendor }}">
-                    {% trans 'close cart'|capfirst %}
-                </button>
+            <button
+                type="submit"
+                name="next"
+                class="btn btn-primary btn-block"
+                value="{{ cart.vendor }}"
+            >
+                {% trans 'close cart'|capfirst %}
+            </button>
             {% endif %}
+
             {% if can_open %}
-                <button type="submit" name="open" class="btn btn-primary btn-block">{% trans 'open sale'|capfirst %}</button>
+            <button
+                type="submit"
+                name="open"
+                class="btn btn-primary btn-block"
+            >
+                {% trans 'open sale'|capfirst %}
+            </button>
             {% endif %}
         </form>
     </div>

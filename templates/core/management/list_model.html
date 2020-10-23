@@ -5,224 +5,285 @@
 {% block title %}{% trans 'management'|capfirst %}{% endblock %}
 
 {% block extrascript %}
-    <script>
-        // return value of cell
-        function cellValue(cell) {
-            // get input in cell
-            if (cell.find(' input').length) {
-                const input = cell.find(' input');
-                // parse value depending on input-type
-                switch (input.attr('type')) {
-                    case 'checkbox':
-                        return (input.is(':checked') + 0).toString();
+<script>
+    // return value of cell
+    function cellValue(cell) {
+        // get input in cell
+        if (cell.find(' input').length) {
+            const input = cell.find(' input');
+            // parse value depending on input-type
+            switch (input.attr('type')) {
+                case 'checkbox':
+                    return (input.is(':checked') + 0).toString();
 
-                    case 'datetime-local':
-                        if (input.val()) {
-                            let date, time;
+                case 'datetime-local':
+                    if (input.val()) {
+                        let date, time;
 
-                            switch ($('html')[0].lang) {
-                                case 'en':
-                                    // separate datetime
-                                    date = input.val().split(' ')[0].split('-');
-                                    time = input.val().split(' ')[1].split(':');
-                                case 'de':
-                                    // separate datetime
-                                    date = input.val().split(' ')[0].split('.');
-                                    time = input.val().split(' ')[1].split(':');
-                            }
-
-                            // create datetime
-                            const datetime = Date.parse(date[2] + '-' + date[1] + '-' + date[0] +
-                                'T' +
-                                (time[0] || '00') + ':' + (time[1] || '00') + ':' + (time[2] || '00'));
-
-                            return datetime.toString();
-                        } else {
-                            // empty cell
-                            return '0';
+                        switch ($('html')[0].lang) {
+                            case 'en':
+                                // separate datetime
+                                date = input.val().split(' ')[0].split('-');
+                                time = input.val().split(' ')[1].split(':');
+                            case 'de':
+                                // separate datetime
+                                date = input.val().split(' ')[0].split('.');
+                                time = input.val().split(' ')[1].split(':');
                         }
+
+                        // create datetime
+                        const datetime = Date.parse(date[2] + '-' + date[1] + '-' + date[0] +
+                            'T' +
+                            (time[0] || '00') + ':' + (time[1] || '00') + ':' + (time[2] || '00'));
+
+                        return datetime.toString();
+                    } else {
+                        // empty cell
+                        return '0';
+                    }
 
                     default:
                         return input.val()
-                }
-            } else if (cell.find(' select').length) {
-                return cell.find(' select').val();
-            } else {
-                return '0';
             }
+        } else if (cell.find(' select').length) {
+            return cell.find(' select').val();
+        } else {
+            return '0';
         }
+    }
 
-        $(window).on('load', () => {
-            const sortButton = $('.sortable');
+    $(window).on('load', () => {
+        const sortButton = $('.sortable');
 
-            sortButton.on('click', (event) => {
-                const target = $(event.target);
-                const tableBody = target.parent().parent().parent().find('tbody');
-                const index = target.parent().children().index(target);
+        sortButton.on('click', (event) => {
+            const target = $(event.target);
+            const tableBody = target.parent().parent().parent().find('tbody');
+            const index = target.parent().children().index(target);
 
-                // throw error if multiple table-bodies are found
-                if (tableBody.length == 1) {
-                    const tableRows = tableBody.find('tr');
+            // throw error if multiple table-bodies are found
+            if (tableBody.length == 1) {
+                const tableRows = tableBody.find('tr');
 
-                    if (target.hasClass('asc')) {
-                        // reset icons for all other buttons
-                        target.parent().find('.sortable').removeClass('asc desc');
-                        target.parent().find('.sortable').addClass('unsorted');
+                if (target.hasClass('asc')) {
+                    // reset icons for all other buttons
+                    target.parent().find('.sortable').removeClass('asc desc');
+                    target.parent().find('.sortable').addClass('unsorted');
 
-                        // add icon to button
-                        target.removeClass('unsorted');
-                        target.addClass('desc');
+                    // add icon to button
+                    target.removeClass('unsorted');
+                    target.addClass('desc');
 
-                        order = 'desc';
-                    } else {
-                        // reset icons for all other buttons
-                        target.parent().find('.sortable').removeClass('asc desc');
-                        target.parent().find('.sortable').addClass('unsorted');
-
-                        // add icon to button
-                        target.removeClass('unsorted');
-                        target.addClass('asc');
-
-                        order = 'asc';
-                    }
-
-                    tableRows.sort(function (a, b) {
-                        a = cellValue($(a).find('td').eq(index));
-                        b = cellValue($(b).find('td').eq(index));
-
-                        if (order == 'desc') {
-                            return b.localeCompare(a);
-                        } else {
-                            return a.localeCompare(b);
-                        }
-                    }).appendTo(tableBody)
+                    order = 'desc';
                 } else {
-                    alert('{% trans 'An error occured while sorting the table!' %}');
+                    // reset icons for all other buttons
+                    target.parent().find('.sortable').removeClass('asc desc');
+                    target.parent().find('.sortable').addClass('unsorted');
+
+                    // add icon to button
+                    target.removeClass('unsorted');
+                    target.addClass('asc');
+
+                    order = 'asc';
                 }
-            });
+
+                tableRows.sort(function(a, b) {
+                    a = cellValue($(a).find('td').eq(index));
+                    b = cellValue($(b).find('td').eq(index));
+
+                    if (order == 'desc') {
+                        return b.localeCompare(a);
+                    } else {
+                        return a.localeCompare(b);
+                    }
+                }).appendTo(tableBody)
+            } else {
+                alert('{% trans "An error occured while sorting the table!" %}');
+            }
         });
-    </script>
+    });
+
+</script>
 {% endblock %}
 
 {% block content %}
-    {% bootstrap_messages %}
-    <form method="post" class="card">
-        {% csrf_token %}
-        {{ formset.management_form }}
+{% bootstrap_messages %}
+<form
+    method="post"
+    class="card"
+>
+    {% csrf_token %}
+    {{ formset.management_form }}
 
-        <h2 class="card-header">
-            {% blocktrans %}Show {{ verbose_name_plural }}{% endblocktrans %}
+    <h2 class="card-header">
+        {% blocktrans %}Show {{ verbose_name_plural }}{% endblocktrans %}
 
-            <div class="btn-toolbar float-lg-right spacer-t-md text-center">
-                {% if can_create %}
-                    <div class="btn-group my-auto">
-                        <a href="{{ create_url }}" class="btn btn-primary btn-block" role="button">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                {% endif %}
-                {% if can_update and editable_fields and formset.total_form_count %}
-                    <div class="btn-group my-auto ml-3">
-                        <button class="btn btn-success btn-block" type="submit" name="save"><i class="fas fa-save"></i>
-                        </button>
-                    </div>
-                {% endif %}
+        <div class="btn-toolbar float-lg-right spacer-t-md text-center">
+            {% if can_create %}
+            <div class="btn-group my-auto">
+                <a
+                    href="{{ create_url }}"
+                    class="btn btn-primary btn-block"
+                    role="button"
+                >
+                    <i class="fas fa-plus"></i>
+                </a>
             </div>
-        </h2>
-        <div class="card-body table-responsive">
-            {% bootstrap_formseterrors formset verbose_name_plural %}
-            {% if formset.total_form_count %}
-                <table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
-                    <caption class="pb-0">
-                        {{ verbose_name|capfirst }}
-                        {% if page.start_index == page.end_index %}
-                            {% blocktrans trimmed with start=page.start_index count=page.paginator.count %}
-                                {{ start }} of {{ count }}
-                            {% endblocktrans %}
-                        {% else %}
-                            {% blocktrans trimmed with start=page.start_index end=page.end_index count=page.paginator.count %}
-                                {{ start }} to {{ end }} of {{ count }}
-                            {% endblocktrans %}
-                        {% endif %}
-                        {% if page.paginator.num_pages != 1 %}
-                        <ul class="pagination pagination-sm float-right mb-0">
-                            {% if page.has_previous %}
-                                <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}">
-                                    <i class="fas fa-caret-left"></i></a>
-                                </li>
-                            {% else %}
-                                <li class="page-item disabled"><a class="page-link">
-                                    <i class="fas fa-caret-left"></i></a>
-                                </li>
-                            {% endif %}
-                            <li class="page-item active"><a class="page-link">{{ page.number }}</a></li>
-                            {% if page.has_next %}
-                                <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">
-                                    <i class="fas fa-caret-right"></i></a>
-                                </li>
-                            {% else %}
-                                <li class="page-item disabled"><a class="page-link">
-                                    <i class="fas fa-caret-right"></i></a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                        {% endif %}
-                    </caption>
+            {% endif %}
 
-                    <thead>
-                    <tr>
-                        {% for field in formset.0 %}
-                            {% if field.field.widget.input_type != 'hidden' %}
-                                <th class="sortable{% if "-"|add:field.name in ordering %} desc{% elif field.name in ordering %} asc{% else %} unsorted{% endif %}{% if field.field.disabled %} font-weight-normal{% endif %}">{{ field.label }}</th>
-                            {% endif %}
-                        {% endfor %}
-                        {% if can_update or can_delete %}
-                            <th class="text-center" style="width: 5.5rem; !important;">{% trans 'actions'|capfirst %}</th>{% endif %}
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    {% for form in formset %}
-                        <tr>
-                            {% for field in form %}
-                                {% bootstrap_tablefield field %}
-                            {% endfor %}
-
-                            {% if can_update or can_delete %}
-                                <td class="align-middle text-center" style="width: 5.5rem; !important;">
-                                    {% if can_update %}
-                                        <a class="text-primary"
-                                           href="{% url 'core:management_update' model_name form.id.value %}">
-                                            <i class="fas fa-pen"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% if can_delete %}
-                                        <a class="text-danger"
-                                           href="{% url 'core:management_delete' model_name form.id.value %}">
-                                            <i class="fas fa-trash{% if can_update %} ml-2{% endif %}{% if can_download_cover or can_download_file %} mr-3{% endif %}"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% if can_download_cover %}
-                                        <a class="text-primary" target="_blank" download title="{% trans 'cover'|capfirst %}"
-                                           href="/media/skriptenaufträge/{{ form.ean.value }}.pdf">
-                                            <i class="fas fa-download{% if can_delete or can_update %} ml-2{% endif %}"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% if can_download_file %}
-                                        <a class="text-primary" target="_blank" download title="{% trans 'file'|capfirst %}"
-                                           href="/media/druck/{{ form.ean.value }}.pdf">
-                                            <i class="fas fa-download{% if can_download_cover or can_delete or can_update %} ml-2{% endif %}"></i>
-                                        </a>
-                                    {% endif %}
-                                </td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                {% blocktrans %}No {{ verbose_name_plural }} found.{% endblocktrans %}
+            {% if can_update and editable_fields and formset.total_form_count %}
+            <div class="btn-group my-auto ml-3">
+                <button
+                    class="btn btn-success btn-block"
+                    type="submit"
+                    name="save"
+                >
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
             {% endif %}
         </div>
-    </form>
+    </h2>
+    <div class="card-body table-responsive">
+        {% bootstrap_formseterrors formset verbose_name_plural %}
+        {% if formset.total_form_count %}
+        <table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
+            <caption class="pb-0">
+                {{ verbose_name|capfirst }}
+
+                {% if page.start_index == page.end_index %}
+                {% blocktrans trimmed with start=page.start_index count=page.paginator.count %}
+                {{ start }} of {{ count }}
+                {% endblocktrans %}
+                {% else %}
+                {% blocktrans trimmed with start=page.start_index end=page.end_index count=page.paginator.count %}
+                {{ start }} to {{ end }} of {{ count }}
+                {% endblocktrans %}
+                {% endif %}
+
+                {% if page.paginator.num_pages != 1 %}
+                <ul class="pagination pagination-sm float-right mb-0">
+                    {% if page.has_previous %}
+                    <li class="page-item">
+                        <a
+                            class="page-link"
+                            href="?page={{ page.previous_page_number }}"
+                        >
+                            <i class="fas fa-caret-left"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link">
+                            <i class="fas fa-caret-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active"><a class="page-link">{{ page.number }}</a></li>
+
+                    {% if page.has_next %}
+                    <li class="page-item">
+                        <a
+                            class="page-link"
+                            href="?page={{ page.next_page_number }}"
+                        >
+                            <i class="fas fa-caret-right"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link">
+                            <i class="fas fa-caret-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </caption>
+
+            <thead>
+                <tr>
+                    {% for field in formset.0 %}
+                    {% if field.field.widget.input_type != 'hidden' %}
+                    <th class="sortable{% if '-'|add:field.name in ordering %} desc{% elif field.name in ordering %} asc{% else %} unsorted{% endif %}{% if field.field.disabled %} font-weight-normal{% endif %}">
+                        {{ field.label }}
+                    </th>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if can_update or can_delete %}
+                    <th
+                        class="text-center"
+                        style="width: 5.5rem !important;"
+                    >
+                        {% trans 'actions'|capfirst %}
+                    </th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for form in formset %}
+                <tr>
+                    {% for field in form %}
+                    {% bootstrap_tablefield field %}
+                    {% endfor %}
+
+                    {% if can_update or can_delete %}
+                    <td
+                        class="align-middle text-center"
+                        style="width: 5.5rem !important;"
+                    >
+                        {% if can_update %}
+                        <a
+                            class="text-primary"
+                            href="{% url 'core:management_update' model_name form.id.value %}"
+                        >
+                            <i class="fas fa-pen"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if can_delete %}
+                        <a
+                            class="text-danger"
+                            href="{% url 'core:management_delete' model_name form.id.value %}"
+                        >
+                            <i class="fas fa-trash{% if can_update %} ml-2{% endif %}{% if can_download_cover or can_download_file %} mr-3{% endif %}"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if can_download_cover %}
+                        <a
+                            class="text-primary"
+                            target="_blank"
+                            download
+                            title="{% trans 'cover'|capfirst %}"
+                            href="/media/skriptenaufträge/{{ form.ean.value }}.pdf"
+                        >
+                            <i class="fas fa-download{% if can_delete or can_update %} ml-2{% endif %}"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if can_download_file %}
+                        <a
+                            class="text-primary"
+                            target="_blank"
+                            download
+                            title="{% trans 'file'|capfirst %}"
+                            href="/media/druck/{{ form.ean.value }}.pdf"
+                        >
+                            <i class="fas fa-download{% if can_download_cover or can_delete or can_update %} ml-2{% endif %}"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        {% blocktrans %}No {{ verbose_name_plural }} found.{% endblocktrans %}
+        {% endif %}
+    </div>
+</form>
 {% endblock %}

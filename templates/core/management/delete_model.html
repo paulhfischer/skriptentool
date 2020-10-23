@@ -4,54 +4,73 @@
 {% block title %}{% trans 'management'|capfirst %}{% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="mx-auto col-lg-8">
-            <div class="card">
-                <div class="card-header"><h2>{% blocktrans %}Delete {{ verbose_name }}{% endblocktrans %}</h2></div>
-                <form method="post" class="list-group list-group-flush">
-                    {% csrf_token %}
-                    {% if error %}
-                        <formset class="list-group-item text-center">
-                            <div class="alert alert-dismissible alert-danger mb-0">
-                                {% blocktrans trimmed %}
-                                <strong>{{ object }}</strong> can't be deleted, as the object is linked to other objects!
-                                {% endblocktrans %}
-                            </div>
-                        </formset>
-                        <formset class="list-group-item">
-                            <div class="row">
-                                <div class="col-5 mx-auto">
-                                    <a href="{{ abort_url }}" class="btn btn-primary btn-block" role="button">
-                                        <i class="fas fa-trash-restore mr-2"></i>{% trans 'abort'|capfirst %}
-                                    </a>
-                                </div>
-                            </div>
-                        </formset>
-                    {% else %}
-                        <formset class="list-group-item text-center">
-                            {% blocktrans trimmed %}
-                            Are you sure you want to delete <strong>{{ object }}</strong>?
-                            {% endblocktrans %}
-                        </formset>
-                        <formset class="list-group-item">
-                            <div class="row">
-                                <div class="col-1"></div>
-                                <div class="col-5">
-                                    <button class="btn btn-danger btn-block" type="submit">
-                                        <i class="fas fa-trash mr-2"></i>{% trans 'delete'|capfirst %}
-                                    </button>
-                                </div>
-                                <div class="col-5">
-                                    <a href="{{ abort_url }}" class="btn btn-primary btn-block" role="button">
-                                        <i class="fas fa-trash-restore mr-2"></i>{% trans 'abort'|capfirst %}
-                                    </a>
-                                </div>
-                                <div class="col-1"></div>
-                            </div>
-                        </formset>
-                    {% endif %}
-                </form>
+<div class="row">
+    <div class="mx-auto col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>{% blocktrans %}Delete {{ verbose_name }}{% endblocktrans %}</h2>
             </div>
+            <form
+                method="post"
+                class="list-group list-group-flush"
+            >
+                {% csrf_token %}
+
+                {% if error %}
+                <formset class="list-group-item text-center">
+                    <div class="alert alert-dismissible alert-danger mb-0">
+                        {% blocktrans trimmed %}
+                        <strong>{{ object }}</strong> can't be deleted, as the object is linked to
+                        other objects!
+                        {% endblocktrans %}
+                    </div>
+                </formset>
+                <formset class="list-group-item">
+                    <div class="row">
+                        <div class="col-5 mx-auto">
+                            <a
+                                href="{{ abort_url }}"
+                                class="btn btn-primary btn-block"
+                                role="button"
+                            >
+                                <i class="fas fa-trash-restore mr-2"></i>{% trans 'abort'|capfirst %}
+                            </a>
+                        </div>
+                    </div>
+                </formset>
+                {% else %}
+                <formset class="list-group-item text-center">
+                    {% blocktrans trimmed %}
+                    Are you sure you want to delete <strong>{{ object }}</strong>?
+                    {% endblocktrans %}
+                </formset>
+                <formset class="list-group-item">
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-5">
+                            <button
+                                class="btn btn-danger btn-block"
+                                type="submit"
+                            >
+                                <i class="fas fa-trash mr-2"></i>{% trans 'delete'|capfirst %}
+                            </button>
+                        </div>
+                        <div class="col-5">
+                            <a
+                                href="{{ abort_url }}"
+                                class="btn btn-primary btn-block"
+                                role="button"
+                            >
+                                <i class="fas fa-trash-restore mr-2"></i>
+                                {% trans 'abort'|capfirst %}
+                            </a>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+                </formset>
+                {% endif %}
+            </form>
         </div>
     </div>
+</div>
 {% endblock %}

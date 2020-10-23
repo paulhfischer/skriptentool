@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "check files",
+            "type": "shell",
+            "command": "pre-commit run --all-files",
+            "problemMatcher": []
+        },
+        {
+            "label": "watch core",
+            "type": "npm",
+            "script": "watch:core",
+            "problemMatcher": []
+        },
+        {
+            "label": "build core",
+            "type": "npm",
+            "script": "build:core",
+            "problemMatcher": []
+        }
+    ]
+}

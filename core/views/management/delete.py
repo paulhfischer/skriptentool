@@ -12,25 +12,28 @@ from core.utils.management import is_allowed
 
 def get_context(user, model):
     return {
-        'verbose_name': model._meta.verbose_name,
-        'abort_url'   : reverse('core:management_list', args=[model.__name__.lower()])
+        "verbose_name": model._meta.verbose_name,
+        "abort_url": reverse("core:management_list", args=[model.__name__.lower()]),
     }
 
 
 class DeleteModelView(DeleteView):
-    template_name = 'core/management/delete_model.html'
+    template_name = "core/management/delete_model.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(get_context(self.request.user, get_model(self.kwargs['model'])))
+        context.update(get_context(self.request.user, get_model(self.kwargs["model"])))
         return context
 
     def get_success_url(self):
         messages.success(
             self.request,
-            capfirst(_('<strong>%(object_name)s</strong> successfully deleted.') % {'object_name': self.object}),
+            capfirst(
+                _("<strong>%(object_name)s</strong> successfully deleted.")
+                % {"object_name": self.object},
+            ),
         )
-        return reverse('core:management_list', args=[self.kwargs['model']])
+        return reverse("core:management_list", args=[self.kwargs["model"]])
 
     def delete(self, request, *args, **kwargs):
         try:
@@ -41,17 +44,17 @@ class DeleteModelView(DeleteView):
             return self.render_to_response(context)
 
     def get(self, request, *args, **kwargs):
-        self.model = get_model(kwargs['model'])
+        self.model = get_model(kwargs["model"])
 
-        if is_allowed(request.user, self.model, 'delete'):
-            return super().get(self, request, *args, **kwargs)
-        else:
+        if not is_allowed(request.user, self.model, "delete"):
             raise Http404
+
+        return super().get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.model = get_model(kwargs['model'])
+        self.model = get_model(kwargs["model"])
 
-        if is_allowed(request.user, self.model, 'delete'):
-            return super().post(request, *args, **kwargs)
-        else:
+        if not is_allowed(request.user, self.model, "delete"):
             raise Http404
+
+        return super().post(request, *args, **kwargs)

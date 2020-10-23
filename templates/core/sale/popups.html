@@ -1,109 +1,172 @@
 {% load i18n %}
 
 {% if add_deposit_ean %}
-    {# popup if deposit note required #}
-    <script>
-        $(window).on('load', () => {
-            $('#addDepositModal').modal({backdrop: 'static', keyboard: false});
+{# popup if deposit note required #}
+<script>
+    $(window).on('load', () => {
+        $('#addDepositModal').modal({
+            backdrop: 'static',
+            keyboard: false
         });
-    </script>
-    <div class="modal fade" id="addDepositModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">{% trans 'Deposit note required!' %}</h2>
-                </div>
-                <div class="modal-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-6">
-                                <button type="submit" name="has_deposit" value="{{ product_ean }}" class="btn btn-primary btn-block">{% trans 'existent'|capfirst %}</button>
-                            </div>
-                            <div class="col-6">
-                                <button type="submit" name="add_deposit" value="{{ add_deposit_ean }}|{{ product_ean }}" class="btn btn-primary btn-block">
-                                    {% trans 'add new'|capfirst %}
-                                </button>
-                            </div>
+    });
+
+</script>
+<div
+    class="modal fade"
+    id="addDepositModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">{% trans 'Deposit note required!' %}</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="has_deposit"
+                                value="{{ product_ean }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                {% trans 'existent'|capfirst %}
+                            </button>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="add_deposit"
+                                value="{{ add_deposit_ean }}|{{ product_ean }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                {% trans 'add new'|capfirst %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endif %}
 
 {% if remove_deposit_ean %}
-    {# popup for refund of deposit note #}
-    <script>
-        $(window).on('load', () => {
-            $('#removeDepositModal').modal({backdrop: 'static', keyboard: false})
-                                    .on('shown.bs.modal', () => {
-                                        $('#id_deposit_number').focus();
-                                    });
-        });
-    </script>
-    <div class="modal fade" id="removeDepositModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">{% trans 'Enter number of deposit note' %}</h2>
-                </div>
-                <div class="modal-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-6">
-                                {{ form.deposit_number }}
-                            </div>
-                            <div class="col-6">
-                                <button type="submit" name="remove_deposit" value="{{ remove_deposit_ean }}" class="btn btn-primary btn-block">
-                                    {% trans 'confirm'|capfirst %}
-                                </button>
-                            </div>
+{# popup for refund of deposit note #}
+<script>
+    $(window).on('load', () => {
+        $('#removeDepositModal').modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+            .on('shown.bs.modal', () => {
+                $('#id_deposit_number').focus();
+            });
+    });
+
+</script>
+<div
+    class="modal fade"
+    id="removeDepositModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">{% trans 'Enter number of deposit note' %}</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form.deposit_number }}
                         </div>
-                    </form>
-                </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="remove_deposit"
+                                value="{{ remove_deposit_ean }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                {% trans 'confirm'|capfirst %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endif %}
 
 {% if remove_old_deposit_ean %}
-    {# popup for refund of old deposit note #}
-    <script>
-        $(window).on('load', () => {
-            $('#removeOldDepositModal').modal({backdrop: 'static', keyboard: false});
+{# popup for refund of old deposit note #}
+<script>
+    $(window).on('load', () => {
+        $('#removeOldDepositModal').modal({
+            backdrop: 'static',
+            keyboard: false
         });
-    </script>
-    <div class="modal fade" id="removeOldDepositModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">
-                        {% blocktrans %}Old deposit note or wrong number ({{ remove_old_deposit_number }}){% endblocktrans %}
-                    </h2>
-                </div>
-                <div class="modal-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-6">
-                                <button type="submit" class="btn btn-primary btn-block">
-                                    {% trans "don't refund"|capfirst %}
-                                </button>
-                            </div>
-                            <div class="col-6">
-                                <button type="submit" name="remove_old_deposit"
-                                        value="{{ remove_old_deposit_ean }}|{{ remove_old_deposit_number }}"
-                                        class="btn btn-danger btn-block">
-                                    {% trans 'refund'|capfirst %}
-                                </button>
-                            </div>
+    });
+
+</script>
+<div
+    class="modal fade"
+    id="removeOldDepositModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    {% blocktrans trimmed %}
+                    Old deposit note or wrong number ({{ remove_old_deposit_number }})
+                    {% endblocktrans %}
+                </h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-block"
+                            >
+                                {% trans "don't refund"|capfirst %}
+                            </button>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="remove_old_deposit"
+                                value="{{ remove_old_deposit_ean }}|{{ remove_old_deposit_number }}"
+                                class="btn btn-danger btn-block"
+                            >
+                                {% trans 'refund'|capfirst %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 {% endif %}

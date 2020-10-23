@@ -1,11 +1,10 @@
 .git
 .DS_Store
-.idea
 __pycache__
-venv
-static
+node_modules
+node_modules.nosync
 db.sqlite3
-SkriptenTool/config.py
+skriptentool/config.py
 media/deckblätter/*
 !media/deckblätter/vorlage/
 media/skriptenaufträge/*
@@ -14,5 +13,3 @@ media/skripten/*
 !media/skripten/.gitkeep
 media/druck/*
 !media/druck/.gitkeep
-core/static/theme/node_modules
-core/static/theme/package-lock.json

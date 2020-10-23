@@ -6,58 +6,58 @@ from django.utils.formats import date_format
 from django.utils.text import capfirst, format_lazy
 from django.utils.translation import gettext_lazy as _
 
-from SkriptenTool import config, settings
 from core.models import CashBookEntry, User
+from skriptentool import config, settings
 
 
 class Balance(models.Model):
     class Meta:
-        verbose_name = _('balance')
-        verbose_name_plural = _('balances')
-        ordering = ['-time']
+        verbose_name = _("balance")
+        verbose_name_plural = _("balances")
+        ordering = ["-time"]
 
-    INITIAL = 'initial'
-    OPENING = 'opening'
-    CLOSING = 'closing'
-    TEMPORARY = 'temporary'
+    INITIAL = "initial"
+    OPENING = "opening"
+    CLOSING = "closing"
+    TEMPORARY = "temporary"
 
     TYPES = [
-        (INITIAL, _('initial')),
-        (OPENING, _('opening')),
-        (CLOSING, _('closing')),
-        (TEMPORARY, _('temporary')),
+        (INITIAL, _("initial")),
+        (OPENING, _("opening")),
+        (CLOSING, _("closing")),
+        (TEMPORARY, _("temporary")),
     ]
 
     user = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        verbose_name=_('user'),
+        verbose_name=_("user"),
     )
 
     time = models.DateTimeField(
         default=timezone.now,
-        verbose_name=_('time'),
+        verbose_name=_("time"),
     )
 
     amount = models.DecimalField(
         max_digits=6,
         decimal_places=2,
-        verbose_name=_('amount (in €)'),
+        verbose_name=_("amount (in €)"),
     )
 
     counted = models.BooleanField(
         default=False,
-        verbose_name=_('counted'),
+        verbose_name=_("counted"),
     )
 
     type = models.CharField(
         max_length=20,
         choices=TYPES,
-        verbose_name=_('type'),
+        verbose_name=_("type"),
     )
 
     def __str__(self):
-        return date_format(timezone.localtime(self.time), 'SHORT_DATETIME_FORMAT')
+        return date_format(timezone.localtime(self.time), "SHORT_DATETIME_FORMAT")
 
     @property
     def is_opening(self):
@@ -65,8 +65,9 @@ class Balance(models.Model):
 
     @classmethod
     def count_latest(cls, user, amount):
-        # set counted of the latest model instance to true if counted amount is correct, add correction otherwise
-        latest = Balance.objects.latest('time')
+        # set counted of the latest model instance to true if counted amount is correct, add
+        # correction otherwise
+        latest = Balance.objects.latest("time")
         if latest.amount == amount:
             latest.counted = True
             latest.save()
@@ -94,7 +95,12 @@ class Balance(models.Model):
 
     @classmethod
     def add_opening(cls, user):
-        Balance(user=user, amount=Balance.objects.latest('time').amount, counted=False, type=cls.OPENING).save()
+        Balance(
+            user=user,
+            amount=Balance.objects.latest("time").amount,
+            counted=False,
+            type=cls.OPENING,
+        ).save()
 
     @classmethod
     def add_closing(cls, user, amount):
@@ -105,8 +111,14 @@ class Balance(models.Model):
         if amount >= 1000:
             with translation.override(settings.LANGUAGE_CODE):
                 send_mail(
-                    subject=format_lazy('[SkriptenTool] {}', capfirst(_('high balance'))),
-                    message=render_to_string('core/mail/high_balance.txt', {'balance': amount}),
+                    subject=format_lazy(
+                        "[Skriptentool] {}",
+                        capfirst(_("high balance")),
+                    ),
+                    message=render_to_string(
+                        "core/mail/high_balance.txt",
+                        {"balance": amount},
+                    ),
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=config.FINANCE_EMAILS,
                 )

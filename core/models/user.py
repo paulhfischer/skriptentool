@@ -8,7 +8,18 @@ from django.utils.translation import gettext_lazy as _
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, username, mail, first_name, last_name, password, vendor, financier, referent, admin):
+    def create_user(
+        self,
+        username,
+        mail,
+        first_name,
+        last_name,
+        password,
+        vendor,
+        financier,
+        referent,
+        admin,
+    ):
         user = self.model(
             username=username,
             mail=mail,
@@ -17,7 +28,7 @@ class UserManager(BaseUserManager):
             vendor=vendor,
             financier=financier,
             referent=referent,
-            admin=admin
+            admin=admin,
         )
 
         user.set_password(password)
@@ -26,63 +37,77 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, mail, first_name, last_name, password):
-        self.create_user(username, mail, first_name, last_name, password, True, True, True, True)
+        self.create_user(
+            username,
+            mail,
+            first_name,
+            last_name,
+            password,
+            True,
+            True,
+            True,
+            True,
+        )
 
 
 class User(AbstractBaseUser):
     class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
-        ordering = ['username']
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
+        ordering = ["username"]
 
-    EMAIL_FIELD = 'mail'
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['mail', 'first_name', 'last_name']
+    EMAIL_FIELD = "mail"
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["mail", "first_name", "last_name"]
 
     objects = UserManager()
 
     username = models.CharField(
         max_length=256,
         unique=True,
-        validators=[RegexValidator(
-            regex='@[a-z]+',
-            message=_('Local usernames have to start with "@" and may only contain letters.'),
-        )],
-        verbose_name=_('username'),
+        validators=[
+            RegexValidator(
+                regex="@[a-z]+",
+                message=_(
+                    'Local usernames have to start with "@" and may only contain letters.',
+                ),
+            ),
+        ],
+        verbose_name=_("username"),
     )
 
     mail = models.EmailField(
-        verbose_name=_('mail'),
+        verbose_name=_("mail"),
     )
 
     first_name = models.CharField(
         max_length=256,
-        verbose_name=_('first name'),
+        verbose_name=_("first name"),
     )
 
     last_name = models.CharField(
         max_length=256,
-        verbose_name=_('last name'),
+        verbose_name=_("last name"),
     )
 
     vendor = models.BooleanField(
         default=False,
-        verbose_name=_('vendor'),
+        verbose_name=_("vendor"),
     )
 
     referent = models.BooleanField(
         default=False,
-        verbose_name=_('referent'),
+        verbose_name=_("referent"),
     )
 
     financier = models.BooleanField(
         default=False,
-        verbose_name=_('financier'),
+        verbose_name=_("financier"),
     )
 
     admin = models.BooleanField(
         default=False,
-        verbose_name=_('admin'),
+        verbose_name=_("admin"),
     )
 
     def clean(self):
@@ -92,7 +117,13 @@ class User(AbstractBaseUser):
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.mail], **kwargs)
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+    ):
         if self.admin:
             self.vendor = True
             self.referent = True
@@ -105,13 +136,13 @@ class User(AbstractBaseUser):
     def groups(self):
         groups = []
         if self.vendor:
-            groups.append('is_vendor')
+            groups.append("is_vendor")
         if self.referent:
-            groups.append('is_referent')
+            groups.append("is_referent")
         if self.financier:
-            groups.append('is_financier')
+            groups.append("is_financier")
         if self.admin:
-            groups.append('is_admin')
+            groups.append("is_admin")
         return groups
 
     # allow backend access for admins only
@@ -130,11 +161,15 @@ class User(AbstractBaseUser):
         return self.admin
 
     permissions = {
-        'list'  : {'is_referent' : '__all__',
-                   'is_financier': '__all__'},
-        'create': {},
-        'update': {'is_referent' : ['vendor', 'referent'],
-                   'is_financier': ['financier'],
-                   'is_admin'    : ['admin']},
-        'delete': ['is_admin'],
+        "list": {
+            "is_referent": "__all__",
+            "is_financier": "__all__",
+        },
+        "create": {},
+        "update": {
+            "is_referent": ["vendor", "referent"],
+            "is_financier": ["financier"],
+            "is_admin": ["admin"],
+        },
+        "delete": ["is_admin"],
     }

@@ -6,56 +6,74 @@
 {% block title %}{% trans 'shifts'|capfirst %}{% endblock %}
 
 {% block extrascript %}
-    <script src="{% static 'select.js' %}" data-search="{% trans 'search'|capfirst %}" id="select-script"></script>
-    <script>
-        $(window).on('load', () => {
-            $('#{{ form.semester.id_for_label }}').on('change', function () {
-                $(this).parent().submit()
-            });
+<script
+    src="{% static 'select.js' %}"
+    data-search="{% trans 'search'|capfirst %}"
+    id="select-script"
+></script>
+<script>
+    $(window).on('load', () => {
+        $('#{{ form.semester.id_for_label }}').on('change', function() {
+            $(this).parent().submit()
         });
-    </script>
+    });
+
+</script>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="mx-auto col-lg-8">
-            <div class="card">
-                <h2 class="card-header">
-                    {% trans 'Your shifts' %}
-                    <form method="post" enctype="multipart/form-data" class="float-lg-right d-flex spacer-t-md">
-                        {% csrf_token %}
-                        {{ form.semester }}
-                    </form>
-                </h2>
-                <div class="card-body">
-                    {% if shifts %}
-                        <table class="table table-xsm mb-0">
-                            <thead>
-                            <tr>
-                                <th>{% trans 'time'|capfirst %}</th>
-                                <th class="text-center">{% trans 'reviewed'|capfirst %}</th>
-                                <th class="text-center">{% trans 'beverages'|capfirst %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for shift in shifts %}
-                                <tr>
-                                    <td>{{ shift }}</td>
-                                    <td class="text-center">{% if shift.valid %}
-                                        <i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}
-                                    </td>
-                                    <td class="text-center">{% if shift.payout %}
-                                        <i class="fa fa-check"></i>{% else %}<i class="fa fa-times"></i>{% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                        {% blocktrans %}You hadn't had any shifts yet.{% endblocktrans %}
-                    {% endif %}
-                </div>
+<div class="row">
+    <div class="mx-auto col-lg-8">
+        <div class="card">
+            <h2 class="card-header">
+                {% trans 'Your shifts' %}
+                <form
+                    method="post"
+                    enctype="multipart/form-data"
+                    class="float-lg-right d-flex spacer-t-md"
+                >
+                    {% csrf_token %}
+
+                    {{ form.semester }}
+                </form>
+            </h2>
+            <div class="card-body">
+                {% if shifts %}
+                <table class="table table-xsm mb-0">
+                    <thead>
+                        <tr>
+                            <th>{% trans 'time'|capfirst %}</th>
+                            <th class="text-center">{% trans 'reviewed'|capfirst %}</th>
+                            <th class="text-center">{% trans 'beverages'|capfirst %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shift in shifts %}
+                        <tr>
+                            <td>{{ shift }}</td>
+                            <td class="text-center">
+                                {% if shift.valid %}
+                                <i class="fa fa-check"></i>
+                                {% else %}
+                                <i class="fa fa-times"></i>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if shift.payout %}
+                                <i class="fa fa-check"></i>
+                                {% else %}
+                                <i class="fa fa-times"></i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                {% blocktrans %}You hadn't had any shifts yet.{% endblocktrans %}
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

@@ -3,29 +3,30 @@ from math import copysign
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 
 from core.models import Balance, CashBookEntry, Shift, User, get_product, get_type
 
 
 class Cart(models.Model):
     class Meta:
-        verbose_name = _('cart')
-        verbose_name_plural = _('carts')
-        ordering = ['vendor']
+        verbose_name = _("cart")
+        verbose_name_plural = _("carts")
+        ordering = ["vendor"]
 
-    CLOSING = 'closing'
-    SALE = 'sale'
+    CLOSING = "closing"
+    SALE = "sale"
 
     vendor = models.OneToOneField(
         User,
         on_delete=models.PROTECT,
-        verbose_name=_('vendor'),
+        verbose_name=_("vendor"),
     )
 
     time = models.DateTimeField(
         default=timezone.now,
-        verbose_name=_('time of creation'),
+        verbose_name=_("time of creation"),
     )
 
     def __str__(self):
@@ -34,19 +35,30 @@ class Cart(models.Model):
     def clean(self):
         # verify that only one cart can be created
         if self.objects.count() > 0 and self.pk != self.objects.get().pk:
-            raise ValidationError(_('There can only be one sale at a time.'))
+            raise ValidationError(_("There can only be one sale at a time."))
 
     def close(self, reason=CLOSING):
         # add sale entry to cashbook for every item in cart
         for cart_item in CartItem.objects.filter(cart=self):
-            for i in range(abs(cart_item.quantity)):
-                CashBookEntry.sale(self.vendor, cart_item.ean, copysign(cart_item.price_single, cart_item.quantity))
+            for _i in range(abs(cart_item.quantity)):
+                CashBookEntry.sale(
+                    self.vendor,
+                    cart_item.ean,
+                    copysign(cart_item.price_single, cart_item.quantity),
+                )
 
         # add cashbookentry and end shift if cart is closed
         if reason == self.SALE and self.total != 0:
-            Balance.add_temp(self.vendor, Balance.objects.latest('time').amount + self.total, False)
+            Balance.add_temp(
+                self.vendor,
+                Balance.objects.latest("time").amount + self.total,
+                False,
+            )
         elif reason == self.CLOSING:
-            Balance.add_closing(self.vendor, Balance.objects.latest('time').amount + self.total)
+            Balance.add_closing(
+                self.vendor,
+                Balance.objects.latest("time").amount + self.total,
+            )
             Shift.end_shift(self.vendor)
 
         # remove cart
@@ -129,40 +141,42 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     class Meta:
-        verbose_name = _('item')
-        verbose_name_plural = _('items')
-        ordering = ['cart', 'ean']
-        constraints = [models.UniqueConstraint(fields=['ean', 'cart'], name='unique_cart_item')]
+        verbose_name = _("item")
+        verbose_name_plural = _("items")
+        ordering = ["cart", "ean"]
+        constraints = [
+            models.UniqueConstraint(fields=["ean", "cart"], name="unique_cart_item"),
+        ]
 
-    LECTURENOTE = 'lecturenote'
-    PRINTINGQUOTA = 'printingquota'
-    DEPOSIT = 'deposit'
+    LECTURENOTE = "lecturenote"
+    PRINTINGQUOTA = "printingquota"
+    DEPOSIT = "deposit"
 
     TYPES = [
-        (LECTURENOTE, _('lecture note')),
-        (PRINTINGQUOTA, _('printing quota')),
-        (DEPOSIT, pgettext_lazy('security deposit', 'deposit')),
+        (LECTURENOTE, _("lecture note")),
+        (PRINTINGQUOTA, _("printing quota")),
+        (DEPOSIT, pgettext_lazy("security deposit", "deposit")),
     ]
 
     ean = models.CharField(
         max_length=20,
-        verbose_name=_('EAN'),
+        verbose_name=_("EAN"),
     )
 
     type = models.CharField(
         max_length=20,
         choices=TYPES,
-        verbose_name=_('type'),
+        verbose_name=_("type"),
     )
 
     quantity = models.IntegerField(
-        verbose_name=_('quantity'),
+        verbose_name=_("quantity"),
     )
 
     cart = models.ForeignKey(
         Cart,
         on_delete=models.CASCADE,
-        verbose_name=_('cart'),
+        verbose_name=_("cart"),
     )
 
     def __str__(self):

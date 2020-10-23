@@ -4,23 +4,22 @@
 {% block title %}{% trans 'catalogue'|capfirst %}{% endblock %}
 
 {% block content %}
-    {{ test|safe }}
-    <div class="card spacer-b">
-        <h2 class="card-header">{% trans 'mathematics'|capfirst %}</h2>
-        <div class="card-body table-responsive">
-            {{ mathematics_list }}
-        </div>
+<div class="card spacer-b">
+    <h2 class="card-header">{% trans 'mathematics'|capfirst %}</h2>
+    <div class="card-body table-responsive">
+        {{ mathematics_list }}
     </div>
-    <div class="card spacer-b">
-        <h2 class="card-header">{% trans 'physics'|capfirst %}</h2>
-        <div class="card-body table-responsive">
-            {{ physics_list }}
-        </div>
+</div>
+<div class="card spacer-b">
+    <h2 class="card-header">{% trans 'physics'|capfirst %}</h2>
+    <div class="card-body table-responsive">
+        {{ physics_list }}
     </div>
-    <div class="card">
-        <h2 class="card-header">{% trans 'informatics'|capfirst %}</h2>
-        <div class="card-body table-responsive">
-            {{ informatics_list }}
-        </div>
+</div>
+<div class="card">
+    <h2 class="card-header">{% trans 'informatics'|capfirst %}</h2>
+    <div class="card-body table-responsive">
+        {{ informatics_list }}
     </div>
+</div>
 {% endblock %}

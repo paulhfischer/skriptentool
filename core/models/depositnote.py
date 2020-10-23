@@ -8,50 +8,54 @@ from core.models import User
 
 class DepositNote(models.Model):
     class Meta:
-        verbose_name = _('deposit note')
-        verbose_name_plural = _('deposit notes')
-        ordering = ['number']
+        verbose_name = _("deposit note")
+        verbose_name_plural = _("deposit notes")
+        ordering = ["number"]
 
     number = models.CharField(
         max_length=20,
-        verbose_name=_('number'),
+        verbose_name=_("number"),
     )
 
     price = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        verbose_name=_('deposit (in €)'),
+        verbose_name=_("deposit (in €)"),
     )
 
     sold_time = models.DateTimeField(
-        blank=True, null=True,
-        verbose_name=_('time of sale'),
+        blank=True,
+        null=True,
+        verbose_name=_("time of sale"),
     )
 
     sold_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        blank=True, null=True,
-        related_name='sold_by',
-        verbose_name=_('sold by'),
+        blank=True,
+        null=True,
+        related_name="sold_by",
+        verbose_name=_("sold by"),
     )
 
     refunded_time = models.DateTimeField(
-        blank=True, null=True,
-        verbose_name=_('return time'),
+        blank=True,
+        null=True,
+        verbose_name=_("return time"),
     )
 
     refunded_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        blank=True, null=True,
-        related_name='refunded_by',
-        verbose_name=_('refunded by'),
+        blank=True,
+        null=True,
+        related_name="refunded_by",
+        verbose_name=_("refunded by"),
     )
 
     refundable = models.BooleanField(
         default=False,
-        verbose_name=_('refundable'),
+        verbose_name=_("refundable"),
     )
 
     def __str__(self):
@@ -67,9 +71,8 @@ class DepositNote(models.Model):
 
     @classmethod
     def refunded(cls, number):
-        if DepositNote.exists(number):
-            if DepositNote.objects.get(number=number).refunded_time:
-                return True
+        if DepositNote.exists(number) and DepositNote.objects.get(number=number).refunded_time:
+            return True
         return False
 
     @classmethod
@@ -89,13 +92,13 @@ class DepositNote(models.Model):
     @classmethod
     def new_number(cls):
         try:
-            return str(int(DepositNote.objects.latest('number').number) + 1)
+            return str(int(DepositNote.objects.latest("number").number) + 1)
         except ObjectDoesNotExist:
             return str(1500)
 
     permissions = {
-        'list'  : {'is_referent': '__all__'},
-        'create': {'is_referent': '__all__'},
-        'update': {'is_referent': ['sold_by', 'refunded_by', 'refundable']},
-        'delete': ['is_referent'],
+        "list": {"is_referent": "__all__"},
+        "create": {"is_referent": "__all__"},
+        "update": {"is_referent": ["sold_by", "refunded_by", "refundable"]},
+        "delete": ["is_referent"],
     }

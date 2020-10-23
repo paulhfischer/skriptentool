@@ -6,70 +6,79 @@ from django.utils.formats import date_format
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 
-from SkriptenTool import config, settings
 from core.models import User
+from skriptentool import config, settings
 
 
 class CashBookEntry(models.Model):
     class Meta:
-        verbose_name = _('cash book entry')
-        verbose_name_plural = _('cash book entries')
-        ordering = ['-time']
+        verbose_name = _("cash book entry")
+        verbose_name_plural = _("cash book entries")
+        ordering = ["-time"]
 
-    CORRECTION = 'correction'
-    WITHDRAWAL = 'withdrawal'
-    DEPOSIT = 'deposit'
-    SALE = 'sale'
+    CORRECTION = "correction"
+    WITHDRAWAL = "withdrawal"
+    DEPOSIT = "deposit"
+    SALE = "sale"
 
     TYPES = [
-        (CORRECTION, _('correction')),
-        (WITHDRAWAL, _('withdrawal')),
-        (DEPOSIT, _('deposit')),
-        (SALE, _('sale')),
+        (CORRECTION, _("correction")),
+        (WITHDRAWAL, _("withdrawal")),
+        (DEPOSIT, _("deposit")),
+        (SALE, _("sale")),
     ]
 
     user = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        verbose_name=_('creator'),
+        verbose_name=_("creator"),
     )
 
     time = models.DateTimeField(
         default=timezone.now,
-        verbose_name=_('time'),
+        verbose_name=_("time"),
     )
 
     type = models.CharField(
         max_length=20,
         choices=TYPES,
-        verbose_name=_('type'),
+        verbose_name=_("type"),
     )
 
     detail = models.CharField(
         max_length=256,
-        blank=True, null=True,
-        verbose_name=_('detail'),
+        blank=True,
+        null=True,
+        verbose_name=_("detail"),
     )
 
     amount = models.DecimalField(
         max_digits=6,
         decimal_places=2,
-        verbose_name=_('amount (in €)'),
+        verbose_name=_("amount (in €)"),
     )
 
     def __str__(self):
-        return date_format(timezone.localtime(self.time), 'SHORT_DATETIME_FORMAT')
+        return date_format(timezone.localtime(self.time), "SHORT_DATETIME_FORMAT")
 
     @property
     def text(self):
         if self.type == self.CORRECTION:
-            return _('correction')
+            return _("correction")
         elif self.type == self.WITHDRAWAL:
-            return format_lazy('{} ({})', _('withdrawal'), self.detail) if self.detail else _('withdrawal')
+            return (
+                format_lazy("{} ({})", _("withdrawal"), self.detail)
+                if self.detail
+                else _("withdrawal")
+            )
         elif self.type == self.DEPOSIT:
-            return format_lazy('{} ({})', _('deposit'), self.detail) if self.detail else _('deposit')
+            return (
+                format_lazy("{} ({})", _("deposit"), self.detail) if self.detail else _("deposit")
+            )
         elif self.type == self.SALE:
-            return format_lazy('{}: {}', _('EAN'), self.detail)
+            return format_lazy("{}: {}", _("EAN"), self.detail)
+
+        raise TypeError
 
     @classmethod
     def correction(cls, user, amount):
@@ -78,15 +87,23 @@ class CashBookEntry(models.Model):
         # send email if balance is too high
         with translation.override(settings.LANGUAGE_CODE):
             send_mail(
-                subject=format_lazy('[SkriptenTool] {}', _('High balance')),
-                message=render_to_string('core/mail/correction.txt', {'user': user, 'amount': amount}),
+                subject=format_lazy("[Skriptentool] {}", _("High balance")),
+                message=render_to_string(
+                    "core/mail/correction.txt",
+                    {"user": user, "amount": amount},
+                ),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=config.FINANCE_EMAILS,
             )
 
     @classmethod
     def withdrawal(cls, user, amount, comment):
-        CashBookEntry(user=user, type=cls.WITHDRAWAL, detail=comment, amount=amount).save()
+        CashBookEntry(
+            user=user,
+            type=cls.WITHDRAWAL,
+            detail=comment,
+            amount=amount,
+        ).save()
 
     @classmethod
     def deposit(cls, user, amount, comment):
