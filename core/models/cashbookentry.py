@@ -93,7 +93,7 @@ class CashBookEntry(models.Model):
                     {"user": user, "amount": amount},
                 ),
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=config.FINANCE_EMAILS,
+                recipient_list=config.FINANCE_EMAILS + [admin[0] for admin in config.ADMINS],
             )
 
     @classmethod

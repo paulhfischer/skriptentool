@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 from core.forms import SaleForm
 from core.models import Balance, Cart, CartItem, DepositNote, Shift, User, get_product, get_type
+from core.models.products import PrintingQuota
+from core.utils.printing_quota import add_balance, get_balance
 
 
 def sale(request):
@@ -28,7 +30,13 @@ def sale(request):
         add_deposit_ean
     ) = (
         remove_deposit_ean
-    ) = remove_old_deposit_ean = remove_old_deposit_number = new_deposit_number = product_ean = None
+    ) = (
+        remove_old_deposit_ean
+    ) = (
+        remove_old_deposit_number
+    ) = (
+        new_deposit_number
+    ) = add_quota_ean = remove_quota_ean = new_account_balance = product_ean = None
 
     # permissions for front- and backend-check
     can_count = not Balance.objects.latest("time").counted and empty
@@ -58,6 +66,18 @@ def sale(request):
     )
     action_remove_old_deposit = (
         "remove_old_deposit" in request.POST and request.POST["remove_old_deposit"]
+    )
+    action_add_quota = (
+        "add_quota" in request.POST
+        and request.POST["add_quota"]
+        and form.is_valid()
+        and form.cleaned_data["account_number"]
+    )
+    action_remove_quota = (
+        "remove_quota" in request.POST
+        and request.POST["remove_quota"]
+        and form.is_valid()
+        and form.cleaned_data["account_number"]
     )
 
     # count balance
@@ -107,7 +127,10 @@ def sale(request):
                         add_deposit_ean = product.deposit.ean
                         product_ean = ean
                     except AttributeError:
-                        cart.add(ean)
+                        if product_type == "printingquota":
+                            add_quota_ean = ean
+                        else:
+                            cart.add(ean)
                 else:
                     error = _("This item isn't for sale.")
             except ObjectDoesNotExist:
@@ -123,6 +146,8 @@ def sale(request):
                 # remove if not deposit, start refund process otherwise
                 if product_type == "deposit":
                     remove_deposit_ean = ean
+                if product_type == "printingquota":
+                    remove_quota_ean = ean
                 else:
                     cart.remove(ean)
             except ObjectDoesNotExist:
@@ -194,6 +219,40 @@ def sale(request):
         ).save()
         cart.remove(deposit_ean)
 
+    # printing quota should be added
+    elif can_order and action_add_quota:
+        account_number = form.cleaned_data["account_number"]
+        quota_ean = request.POST["add_quota"]
+        pages = PrintingQuota.objects.get(ean=quota_ean).pages
+        try:
+            # add balance to customer's account
+            new_account_balance = [f"{get_balance(request.user, account_number):.2f}"]
+            add_balance(request.user, account_number, pages)
+            new_account_balance += [f"{get_balance(request.user, account_number):.2f}"]
+
+            # add product to cart
+            cart.add(quota_ean)
+        except TypeError:
+            # retry process
+            add_quota_ean = quota_ean
+
+    # printing quota should be removed
+    elif can_order and action_remove_quota:
+        account_number = form.cleaned_data["account_number"]
+        quota_ean = request.POST["remove_quota"]
+        pages = PrintingQuota.objects.get(ean=quota_ean).pages
+        try:
+            # remove balance to customer's account
+            new_account_balance = [f"{get_balance(request.user, account_number):.2f}"]
+            add_balance(request.user, account_number, -pages)
+            new_account_balance += [f"{get_balance(request.user, account_number):.2f}"]
+
+            # add product to cart
+            cart.remove(quota_ean)
+        except TypeError:
+            # retry process
+            remove_quota_ean = quota_ean
+
     # cart could be modified in other methods, therefor refresh variables
     cart = Cart.objects.first() or False
     empty = getattr(cart, "is_empty", False)
@@ -222,6 +281,9 @@ def sale(request):
         "remove_old_deposit_ean": remove_old_deposit_ean,
         "remove_old_deposit_number": remove_old_deposit_number,
         "new_deposit_number": new_deposit_number,
+        "remove_quota_ean": remove_quota_ean,
+        "add_quota_ean": add_quota_ean,
+        "new_account_balance": new_account_balance,
         "product_ean": product_ean,
     }
 

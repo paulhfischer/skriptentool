@@ -14,6 +14,8 @@ ADMINS = [("hertle@fs.tum.de", "hertle@fs.tum.de"), ("paul.fischer@fs.tum.de", "
 SENDER_EMAIL = "skripten@fs.tum.de"
 FINANCE_EMAILS = ["finanz@fs.tum.de"]
 REFERENT_EMAILS = ["skripten-owner@fs.tum.de"]
+QPILOT_USERNAME = "fsmpi"
+QPILOT_PASSWORD = "****************"
 DATABASE_PASSWORD = "****************"
 ```
 

@@ -7,6 +7,7 @@ from .cashbookentry import CashBookEntry
 from .balance import Balance
 from .products import LectureNote, PrintingQuota, Deposit, get_product, get_type
 from .cart import Cart, CartItem
+from .printingquota_log import PrintingQuotaLog
 
 __all__ = [
     "User",
@@ -23,4 +24,5 @@ __all__ = [
     "get_type",
     "Cart",
     "CartItem",
+    "PrintingQuotaLog",
 ]

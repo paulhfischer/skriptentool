@@ -1,0 +1,6 @@
+{% load i18n %}{% blocktrans %}Hello,
+
+{{ vendor }} has booked {{ amount }} pages to the account {{ number }}.
+
+Regards,
+Your Skriptentool{% endblocktrans %}
