@@ -77,7 +77,8 @@ msgstr "Zwischenstand"
 msgid "user"
 msgstr "Benutzer"
 
-#: core/models/balance.py core/models/cashbookentry.py core/views/finance.py
+#: core/models/balance.py core/models/cashbookentry.py
+#: core/models/printingquota_log.py core/views/finance.py
 #: templates/core/finance.html templates/core/shifts.html
 msgid "time"
 msgstr "Zeitpunkt"
@@ -91,7 +92,7 @@ msgid "counted"
 msgstr "gezählt"
 
 #: core/models/balance.py core/models/cart.py core/models/cashbookentry.py
-#: templates/core/sale/sale_process.html
+#: core/models/printingquota_log.py templates/core/sale/sale_process.html
 msgid "type"
 msgstr "Art"
 
@@ -174,7 +175,7 @@ msgstr "Einlage"
 msgid "sale"
 msgstr "Verkauf"
 
-#: core/models/cashbookentry.py
+#: core/models/cashbookentry.py core/models/printingquota_log.py
 msgid "creator"
 msgstr "Ersteller"
 
@@ -221,6 +222,54 @@ msgstr "Erstattet von"
 #: core/models/depositnote.py
 msgid "refundable"
 msgstr "erstattbar"
+
+#: core/models/printingquota_log.py
+msgid "printing quota log"
+msgstr "Druckkontingent-Log"
+
+#: core/models/printingquota_log.py
+msgid "printing quota logs"
+msgstr "Druckkontingent-Logs"
+
+#: core/models/printingquota_log.py
+msgid "pending"
+msgstr "ausstehend"
+
+#: core/models/printingquota_log.py
+msgid "success"
+msgstr "erfolgreich"
+
+#: core/models/printingquota_log.py
+msgid "timeout"
+msgstr "Timeout"
+
+#: core/models/printingquota_log.py
+msgid "unknown number"
+msgstr "unbekannte Nummer"
+
+#: core/models/printingquota_log.py
+msgid "unauthorized"
+msgstr "nicht authentifiziert"
+
+#: core/models/printingquota_log.py
+msgid "get"
+msgstr "auslesen"
+
+#: core/models/printingquota_log.py
+msgid "add"
+msgstr "hinzufügen"
+
+#: core/models/printingquota_log.py
+msgid "account"
+msgstr "Account"
+
+#: core/models/printingquota_log.py templates/core/sale/sale_process.html
+msgid "amount"
+msgstr "Anzahl"
+
+#: core/models/printingquota_log.py
+msgid "status"
+msgstr "Status"
 
 #: core/models/products.py
 #, python-format
@@ -531,6 +580,10 @@ msgstr "Benutzerdaten"
 msgid "permissions"
 msgstr "Berechtigungen"
 
+#: core/utils/printing_quota.py
+msgid "printing quota booked"
+msgstr "Druckkontingent gebucht"
+
 #: core/views/finance.py templates/base.html templates/core/finance.html
 msgid "cashbook"
 msgstr "Kassenbuch"
@@ -714,6 +767,24 @@ msgstr ""
 "Liebe Grüße,\n"
 "Euer Skriptentool"
 
+#: templates/core/mail/printing_quota_booked.txt
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"%(vendor)s has booked %(amount)s pages to the account %(number)s.\n"
+"\n"
+"Regards,\n"
+"Your Skriptentool"
+msgstr ""
+"Hallo,\n"
+"\n"
+"der Verkäufer %(vendor)s hat %(amount)s Seiten auf den Account %(number)s "
+"gebucht.\n"
+"\n"
+"Liebe Grüße,\n"
+"Euer Skriptentool"
+
 #: templates/core/management/delete_model.html
 #, python-format
 msgid "Delete %(verbose_name)s"
@@ -858,6 +929,10 @@ msgstr "nicht erstatten"
 msgid "refund"
 msgstr "erstatten"
 
+#: templates/core/sale/popups.html
+msgid "Enter account number"
+msgstr "Accountnummer eingeben"
+
 #: templates/core/sale/sale_process.html
 msgid "close"
 msgstr "abschließen"
@@ -868,8 +943,11 @@ msgid "Number of new deposit note: <strong>%(number)s</strong>"
 msgstr "Neue Kautionsscheinnummer: <strong>%(number)s</strong>"
 
 #: templates/core/sale/sale_process.html
-msgid "amount"
-msgstr "Anzahl"
+#, python-format
+msgid ""
+"Balance: <strong>%(old_balance)s</strong> → <strong>%(new_balance)s</strong>"
+msgstr ""
+"Saldo: <strong>%(old_balance)s</strong> → <strong>%(new_balance)s</strong>"
 
 #: templates/core/sale/sale_process.html
 msgid "total"

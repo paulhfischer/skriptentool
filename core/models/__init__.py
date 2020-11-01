@@ -13,6 +13,7 @@ from .products import get_product
 from .products import get_type
 from .cart import Cart
 from .cart import CartItem
+from .printingquota_log import PrintingQuotaLog
 
 __all__ = [
     "User",
@@ -29,4 +30,5 @@ __all__ = [
     "get_type",
     "Cart",
     "CartItem",
+    "PrintingQuotaLog",
 ]

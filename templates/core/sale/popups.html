@@ -170,3 +170,126 @@
         </div>
     </div>
 </div>
+{% endif %}
+
+{% if add_quota_ean %}
+{# popup for adding printing quota #}
+<script>
+    $(window).on('load', () => {
+        $('#addQuotaModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
+
+</script>
+<div
+    class="modal fade"
+    id="addQuotaModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    {% trans 'Enter account number' %}
+                </h2>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form.account_number }}
+                        </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="add_quota"
+                                value="{{ add_quota_ean }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                {% trans 'confirm'|capfirst %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if remove_quota_ean %}
+{# popup for removing printing quota #}
+<script>
+    $(window).on('load', () => {
+        $('#removeQuotaModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    });
+
+</script>
+<div
+    class="modal fade"
+    id="removeQuotaModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    {% trans 'Enter account number' %}
+                </h2>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form.account_number }}
+                        </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="remove_quota"
+                                value="{{ remove_quota_ean }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                {% trans 'confirm'|capfirst %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

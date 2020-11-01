@@ -42,6 +42,11 @@ class SaleForm(forms.Form):
         ),
     )
 
+    account_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+
 
 class CashbookForm(forms.Form):
     start = forms.DateField(

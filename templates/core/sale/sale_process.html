@@ -51,6 +51,20 @@
                 {% endblocktrans %}
             </div>
             {% endif %}
+            {% if new_account_balance %}
+            <div class="alert alert-dismissible alert-success">
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="alert"
+                >
+                    <i class="fa fa-times"></i>
+                </button>
+                {% blocktrans trimmed with old_balance=new_account_balance.0 new_balance=new_account_balance.1 %}
+                Balance: <strong>{{ old_balance }}</strong> → <strong>{{ new_balance }}</strong>
+                {% endblocktrans %}
+            </div>
+            {% endif %}
             <table class="table mb-0 table-striped table-fixed text-nowrap">
                 <thead>
                     <tr>
