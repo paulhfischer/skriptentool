@@ -6,8 +6,6 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    replaces = [("core", "0004_printingquota_log"), ("core", "0005_printingquota_log")]
-
     dependencies = [
         ("core", "0003_translation"),
     ]
