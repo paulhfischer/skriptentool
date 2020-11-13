@@ -120,5 +120,5 @@ class Balance(models.Model):
                         {"balance": amount},
                     ),
                     from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=config.FINANCE_EMAILS + [admin[0] for admin in config.ADMINS],
+                    recipient_list=config.FINANCE_EMAILS,
                 )

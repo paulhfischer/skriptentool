@@ -111,5 +111,5 @@ def add_balance(vendor, number, amount):
                 {"vendor": vendor, "number": number, "amount": amount},
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=config.REFERENT_EMAILS + [admin[0] for admin in config.ADMINS],
+            recipient_list=config.REFERENT_EMAILS,
         )
