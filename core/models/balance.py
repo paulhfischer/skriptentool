@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
@@ -7,7 +8,6 @@ from django.utils.text import capfirst, format_lazy
 from django.utils.translation import gettext_lazy as _
 
 from core.models import CashBookEntry, User
-from skriptentool import config, settings
 
 
 class Balance(models.Model):
@@ -120,5 +120,5 @@ class Balance(models.Model):
                         {"balance": amount},
                     ),
                     from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=config.FINANCE_EMAILS,
+                    recipient_list=settings.FINANCE_EMAILS,
                 )
