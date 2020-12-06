@@ -152,7 +152,7 @@ def sale(request):
                 # remove if not deposit, start refund process otherwise
                 if product_type == "deposit":
                     remove_deposit_ean = ean
-                if product_type == "printingquota":
+                elif product_type == "printingquota":
                     remove_quota_ean = ean
                 else:
                     cart.remove(ean)
