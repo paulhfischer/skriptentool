@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.core.mail import mail_admins
@@ -11,7 +12,6 @@ from django.utils.translation import gettext_lazy as _
 from core.models import LectureNote
 from core.models.products import generate_cover
 from core.models.products import generate_order
-from skriptentool import settings
 
 admin.site.unregister(Group)
 

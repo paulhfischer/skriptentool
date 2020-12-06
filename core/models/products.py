@@ -2,6 +2,7 @@ import os
 import subprocess  # nosec
 from decimal import Decimal
 
+from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
@@ -17,7 +18,6 @@ from core.utils.functions import get_pdf_page_count
 from core.utils.functions import get_semesters
 from core.utils.functions import tex_escape
 from core.utils.functions import xml_escape
-from skriptentool import settings
 from skriptentool.storage import OverwriteStorage
 
 

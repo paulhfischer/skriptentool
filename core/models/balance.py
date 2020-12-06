@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
@@ -10,8 +11,6 @@ from django.utils.translation import gettext_lazy as _
 
 from core.models import CashBookEntry
 from core.models import User
-from skriptentool import config
-from skriptentool import settings
 
 
 class Balance(models.Model):
@@ -118,5 +117,5 @@ class Balance(models.Model):
                     subject=format_lazy("[Skriptentool] {}", capfirst(_("high balance"))),
                     message=render_to_string("core/mail/high_balance.txt", {"balance": amount}),
                     from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=config.FINANCE_EMAILS,
+                    recipient_list=settings.FINANCE_EMAILS,
                 )

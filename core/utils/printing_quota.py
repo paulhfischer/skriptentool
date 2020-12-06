@@ -1,4 +1,5 @@
 import requests
+from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import translation
@@ -10,8 +11,6 @@ from requests.exceptions import HTTPError
 from requests.models import HTTPBasicAuth
 
 from core.models.printingquota_log import PrintingQuotaLog
-from skriptentool import config
-from skriptentool import settings
 
 
 def get_balance(vendor, number):
@@ -26,7 +25,7 @@ def get_balance(vendor, number):
     try:
         request = requests.get(
             f"https://qpilot.rbg.tum.de:9779/balance/for-card-number/{number}",
-            auth=HTTPBasicAuth(config.QPILOT_USERNAME, config.QPILOT_PASSWORD),
+            auth=HTTPBasicAuth(settings.QPILOT_USERNAME, settings.QPILOT_PASSWORD),
             timeout=5,
         )
     except ConnectTimeout:
@@ -71,10 +70,10 @@ def add_balance(vendor, number, amount):
         request = requests.post(
             f"https://qpilot.rbg.tum.de:9779/transfer/for-card-number/{number}/create",
             data={
-                "reasonForTransfer": "Skriptentool | testing" if config.DEBUG else "Skriptentool",
+                "reasonForTransfer": "Skriptentool | testing" if settings.DEBUG else "Skriptentool",
                 "amountOfMoney": amount,
             },
-            auth=HTTPBasicAuth(config.QPILOT_USERNAME, config.QPILOT_PASSWORD),
+            auth=HTTPBasicAuth(settings.QPILOT_USERNAME, settings.QPILOT_PASSWORD),
             timeout=5,
         )
     except ConnectTimeout:
@@ -114,5 +113,5 @@ def add_balance(vendor, number, amount):
                 {"vendor": vendor, "number": number, "amount": amount},
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=config.REFERENT_EMAILS,
+            recipient_list=settings.REFERENT_EMAILS,
         )
