@@ -85,12 +85,14 @@ module.exports = (env, argv) => {
             ],
         };
 
-        config.plugins = [
-            ...config.plugins,
-            new webpack.ProgressPlugin({
-                percentBy: 'entries',
-            }),
-        ];
+        if (!process.env.CI) {
+            config.plugins = [
+                ...config.plugins,
+                new webpack.ProgressPlugin({
+                    percentBy: 'entries',
+                }),
+            ];
+        }
     }
 
     return config;
