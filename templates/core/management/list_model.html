@@ -7,7 +7,7 @@
 {% block extrascript %}
 <script>
     // return value of cell
-    function cellValue(cell) {
+    const cellValue = (cell) => {
         // get input in cell
         if (cell.find(' input').length) {
             const input = cell.find(' input');
@@ -18,39 +18,46 @@
 
                 case 'datetime-local':
                     if (input.val()) {
-                        let date, time;
+                        let date;
+                        let time;
 
                         switch ($('html')[0].lang) {
                             case 'en':
                                 // separate datetime
                                 date = input.val().split(' ')[0].split('-');
                                 time = input.val().split(' ')[1].split(':');
+                                break;
                             case 'de':
                                 // separate datetime
                                 date = input.val().split(' ')[0].split('.');
                                 time = input.val().split(' ')[1].split(':');
+                                break;
+                            default:
+                                /* eslint-disable-next-line no-alert */
+                                alert('unsupported language');
                         }
 
                         // create datetime
-                        const datetime = Date.parse(date[2] + '-' + date[1] + '-' + date[0] +
-                            'T' +
-                            (time[0] || '00') + ':' + (time[1] || '00') + ':' + (time[2] || '00'));
+                        const datetime = Date.parse(
+                            `${date[2]}-${date[1]}-${date[0]}T${time[0] || '00'}:${time[1] || '00'}:${
+                                time[2] || '00'
+                            }`,
+                        );
 
                         return datetime.toString();
-                    } else {
-                        // empty cell
-                        return '0';
                     }
+                    // empty cell
+                    return '0';
 
-                    default:
-                        return input.val()
+                default:
+                    return input.val();
             }
         } else if (cell.find(' select').length) {
             return cell.find(' select').val();
         } else {
             return '0';
         }
-    }
+    };
 
     $(window).on('load', () => {
         const sortButton = $('.sortable');
@@ -61,8 +68,9 @@
             const index = target.parent().children().index(target);
 
             // throw error if multiple table-bodies are found
-            if (tableBody.length == 1) {
+            if (tableBody.length === 1) {
                 const tableRows = tableBody.find('tr');
+                let order;
 
                 if (target.hasClass('asc')) {
                     // reset icons for all other buttons
@@ -86,22 +94,23 @@
                     order = 'asc';
                 }
 
-                tableRows.sort((a, b) => {
-                    a = cellValue($(a).find('td').eq(index));
-                    b = cellValue($(b).find('td').eq(index));
+                tableRows
+                    .sort((a, b) => {
+                        const aValue = cellValue($(a).find('td').eq(index));
+                        const bValue = cellValue($(b).find('td').eq(index));
 
-                    if (order == 'desc') {
-                        return b.localeCompare(a);
-                    } else {
-                        return a.localeCompare(b);
-                    }
-                }).appendTo(tableBody)
+                        if (order === 'desc') {
+                            return bValue.localeCompare(aValue);
+                        }
+                        return aValue.localeCompare(bValue);
+                    })
+                    .appendTo(tableBody);
             } else {
+                /* eslint-disable-next-line no-alert */
                 alert('{% trans "An error occured while sorting the table!" %}');
             }
         });
     });
-
 </script>
 {% endblock %}
 

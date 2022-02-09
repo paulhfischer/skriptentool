@@ -410,7 +410,7 @@ class LectureNote(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         update = not self._state.adding
 
-        super(LectureNote, self).save(force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
         # rename files if ean has changed and model not newly created
         if update and "ean" in self.changed_fields():

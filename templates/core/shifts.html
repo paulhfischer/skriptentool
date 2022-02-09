@@ -14,10 +14,9 @@
 <script>
     $(window).on('load', () => {
         $('#{{ form.semester.id_for_label }}').on('change', () => {
-            $(this).parent().submit()
+            $(this).parent().submit();
         });
     });
-
 </script>
 {% endblock %}
 

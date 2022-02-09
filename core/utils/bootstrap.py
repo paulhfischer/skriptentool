@@ -94,22 +94,19 @@ def field_renderer(field, style="default"):
         return text_value(field)
 
     # check if field-type is supported
-    if (
-        not isinstance(
-            widget,
-            (
-                CheckboxInput,
-                FileInput,
-                Select,
-                TextInput,
-                NumberInput,
-                EmailInput,
-                URLInput,
-                PasswordInput,
-            ),
-        )
-        or (style == "tabular" and isinstance(field.field.widget, FileInput))
-    ):
+    if not isinstance(
+        widget,
+        (
+            CheckboxInput,
+            FileInput,
+            Select,
+            TextInput,
+            NumberInput,
+            EmailInput,
+            URLInput,
+            PasswordInput,
+        ),
+    ) or (style == "tabular" and isinstance(field.field.widget, FileInput)):
         raise ImproperlyConfigured()
 
     # render errors

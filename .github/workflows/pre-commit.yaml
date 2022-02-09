@@ -1,51 +1,51 @@
 name: pre-commit
 
 on:
-    pull_request:
-    push:
-        branches:
-            - master
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
-    pre-commit:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Set up system
-              run: |
-                  sudo apt-get --assume-yes update
-                  sudo apt-get --assume-yes install gettext
-            - name: Checkout repository
-              uses: actions/checkout@v2
-            - name: Create config
-              run: |
-                  echo "$CONTENT" | base64 --decode > skriptentool/config.py
-              env:
-                  CONTENT: TE9DQUwgPSBUcnVlClNFQ1JFVF9LRVkgPSAiJW0zJEkmRzA0RWxSTW87bHBZJCwtNFhVSSp3Oy1LQkoiCkRFQlVHID0gVHJ1ZQpTU0wgPSBGYWxzZQpBTExPV0VEX0hPU1RTID0gW10KQURNSU5TID0gW10KU0VOREVSX0VNQUlMID0gIiIKRklOQU5DRV9FTUFJTFMgPSBbXQpSRUZFUkVOVF9FTUFJTFMgPSBbXQpEQVRBQkFTRV9QQVNTV09SRCA9ICIiClFQSUxPVF9VU0VSTkFNRSA9ICIiClFQSUxPVF9QQVNTV09SRCA9ICIiCg==
-            - name: Set up python
-              uses: actions/setup-python@v2
-              with:
-                  python-version: 3.8
-            - name: Load cache for python dependencies
-              uses: actions/cache@v2
-              with:
-                  path: ~/.cache/pip
-                  key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pip-
-            - name: Install python dependencies
-              run: |
-                  python -m pip install --upgrade pip
-                  python -m pip install pre-commit --requirement requirements.txt
-            - name: Install node dependencies
-              run: |
-                  npm ci
-            - name: Load cache for pre-commit
-              uses: actions/cache@v2
-              with:
-                  path: ~/.cache/pre-commit
-                  key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pre-commit-
-            - name: Run pre-commit
-              run: |
-                  pre-commit run --show-diff-on-failure --color=always --all-files
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up system
+        run: |
+          sudo apt-get --assume-yes update
+          sudo apt-get --assume-yes install gettext
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Create config
+        run: |
+          echo "$CONTENT" | base64 --decode > skriptentool/config.py
+        env:
+          CONTENT: TE9DQUwgPSBUcnVlClNFQ1JFVF9LRVkgPSAiJW0zJEkmRzA0RWxSTW87bHBZJCwtNFhVSSp3Oy1LQkoiCkRFQlVHID0gVHJ1ZQpTU0wgPSBGYWxzZQpBTExPV0VEX0hPU1RTID0gW10KQURNSU5TID0gW10KU0VOREVSX0VNQUlMID0gIiIKRklOQU5DRV9FTUFJTFMgPSBbXQpSRUZFUkVOVF9FTUFJTFMgPSBbXQpEQVRBQkFTRV9QQVNTV09SRCA9ICIiClFQSUxPVF9VU0VSTkFNRSA9ICIiClFQSUxPVF9QQVNTV09SRCA9ICIiCg==
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Load cache for python dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pre-commit --requirement requirements.txt
+      - name: Install node dependencies
+        run: |
+          npm ci
+      - name: Load cache for pre-commit
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pre-commit
+          key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pre-commit-
+      - name: Run pre-commit
+        run: |
+          pre-commit run --show-diff-on-failure --color=always --all-files

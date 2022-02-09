@@ -25,13 +25,12 @@
             }
         });
         eanAdd.on('input propertychange', (event) => {
-            eanRemove.prop('disabled', '' !== event.currentTarget.value);
+            eanRemove.prop('disabled', event.currentTarget.value !== '');
         });
         eanRemove.on('input propertychange', (event) => {
-            eanAdd.prop('disabled', '' !== event.currentTarget.value);
+            eanAdd.prop('disabled', event.currentTarget.value !== '');
         });
     });
-
 </script>
 {% endblock %}
 
