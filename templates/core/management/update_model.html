@@ -18,11 +18,10 @@
 
         fileField.on('change', (event) => {
             const fileName = event.target.files[0].name;
-            const fileLabel = $('label.custom-file-label[for=' + event.target.id + ']');
+            const fileLabel = $(`label.custom-file-label[for=${event.target.id}]`);
             fileLabel.text(fileName);
         });
     });
-
 </script>
 {% endblock %}
 

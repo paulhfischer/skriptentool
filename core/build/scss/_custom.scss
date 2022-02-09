@@ -1,6 +1,5 @@
 // colorize switch if not disabled
 .custom-switch {
-
     .custom-control-label:not(.disabled)::after {
         background-color: $primary;
     }
@@ -59,12 +58,12 @@ footer {
 // remove arrows on number fields
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+    appearance: none;
     margin: 0;
 }
 
 input[type="number"] {
-    -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 // add word-break for labels
@@ -134,7 +133,6 @@ td > select {
 // make inputs transparent in table
 td,
 th {
-
     input,
     select {
         background-color: inherit !important;
@@ -158,16 +156,14 @@ th {
 
 // extra small table styling
 .table-xsm {
-
     th,
     td {
-        padding: .15rem .75rem;
+        padding: 0.15rem 0.75rem;
     }
 }
 
 // remove border for formsets if used in card
 .card {
-
     .list-group-flush .list-group-item {
         border-top-width: 0;
     }
@@ -176,14 +172,13 @@ th {
 // fix padding for small inputs in tables
 td,
 th {
-
     input.form-control {
-        padding-left: .75rem;
-        padding-right: .75rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
     }
 
     select.custom-select {
-        padding-left: .75rem;
+        padding-left: 0.75rem;
     }
 }
 
@@ -236,7 +231,6 @@ th.sortable {
 
 // dropdown-select
 .dropdown-select {
-
     .custom-select {
         user-select: none;
     }
@@ -253,8 +247,8 @@ th.sortable {
     padding-bottom: 0 !important;
 
     .dropdown-header {
-        padding-left: .75rem !important;
-        padding-right: .75rem !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
     }
 
     .dropdown-options {
@@ -262,7 +256,7 @@ th.sortable {
         overflow-y: scroll;
 
         .dropdown-item {
-            padding: 0 .75rem !important;
+            padding: 0 0.75rem !important;
         }
     }
 }

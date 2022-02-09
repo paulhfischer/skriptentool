@@ -6,10 +6,9 @@
     $(window).on('load', () => {
         $('#addDepositModal').modal({
             backdrop: 'static',
-            keyboard: false
+            keyboard: false,
         });
     });
-
 </script>
 <div
     class="modal fade"
@@ -62,15 +61,15 @@
 {# popup for refund of deposit notes #}
 <script>
     $(window).on('load', () => {
-        $('#removeDepositModal').modal({
+        $('#removeDepositModal')
+            .modal({
                 backdrop: 'static',
-                keyboard: false
+                keyboard: false,
             })
             .on('shown.bs.modal', () => {
                 $('#id_deposit_number').focus();
             });
     });
-
 </script>
 <div
     class="modal fade"
@@ -118,10 +117,9 @@
     $(window).on('load', () => {
         $('#removeOldDepositModal').modal({
             backdrop: 'static',
-            keyboard: false
+            keyboard: false,
         });
     });
-
 </script>
 <div
     class="modal fade"
@@ -178,10 +176,9 @@
     $(window).on('load', () => {
         $('#addQuotaModal').modal({
             backdrop: 'static',
-            keyboard: false
+            keyboard: false,
         });
     });
-
 </script>
 <div
     class="modal fade"
@@ -239,10 +236,9 @@
     $(window).on('load', () => {
         $('#removeQuotaModal').modal({
             backdrop: 'static',
-            keyboard: false
+            keyboard: false,
         });
     });
-
 </script>
 <div
     class="modal fade"
