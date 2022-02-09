@@ -1,9 +1,9 @@
-/* eslint "import/no-extraneous-dependencies": off */
-/* eslint "import/no-unresolved": off */
 const path = require('path');
-const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
-const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
+
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const config = {
     entry: {
@@ -12,7 +12,6 @@ const config = {
 
     output: {
         path: path.resolve(__dirname, 'core/static/'),
-        filename: './js/[name].min.js',
     },
 
     module: {
@@ -21,25 +20,9 @@ const config = {
                 test: /\.scss/,
                 include: path.resolve(__dirname, 'core/build/scss/'),
                 exclude: [],
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: './css/[name].min.css',
-                        },
-                    },
-                    'extract-loader',
-                    'css-loader',
-                    'postcss-loader',
-                    'sass-loader',
-                ],
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
             },
         ],
-    },
-
-    resolve: {
-        modules: ['node_modules'],
-        extensions: ['.js', '.css', '.scss'],
     },
 
     performance: {
@@ -59,6 +42,9 @@ const config = {
     },
 
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: './css/[name].min.css',
+        }),
         new RemoveEmptyScriptsPlugin({
             silent: true,
         }),
@@ -74,13 +60,15 @@ module.exports = (env, argv) => {
         config.optimization = {
             minimize: true,
             minimizer: [
-                new TerserPlugin({
-                    terserOptions: {
-                        output: {
-                            comments: false,
-                        },
+                new CssMinimizerPlugin({
+                    minimizerOptions: {
+                        preset: [
+                            'default',
+                            {
+                                discardComments: { removeAll: true },
+                            },
+                        ],
                     },
-                    extractComments: false,
                 }),
             ],
         };
