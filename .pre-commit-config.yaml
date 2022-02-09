@@ -99,7 +99,7 @@ repos:
       hooks:
           - id: build core
             name: build core
-            entry: yarn run build:core
+            entry: npm run build:core
             language: node
             pass_filenames: false
             verbose: true
