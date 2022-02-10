@@ -44,7 +44,7 @@ def nonfield_errors_renderer(form):
 
         return mark_safe(html)  # nosec
 
-    return None
+    return ""
 
 
 def formset_errors_renderer(formset, model_name):
@@ -68,7 +68,7 @@ def formset_errors_renderer(formset, model_name):
             alert_class = " alert-secondary"
             html = _("Nothing saved, as no changes have been made.")
     else:
-        return None
+        return ""
 
     html = (
         f'<div class="alert alert-dismissible{alert_class}">'
