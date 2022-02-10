@@ -12,8 +12,8 @@ class DepositNote(models.Model):
         verbose_name_plural = _("deposit notes")
         ordering = ["number"]
 
-    number = models.CharField(
-        max_length=20,
+    number = models.PositiveIntegerField(
+        unique=True,
         verbose_name=_("number"),
     )
 
@@ -59,7 +59,7 @@ class DepositNote(models.Model):
     )
 
     def __str__(self):
-        return self.number
+        return str(self.number)
 
     @property
     def is_refunded(self):
