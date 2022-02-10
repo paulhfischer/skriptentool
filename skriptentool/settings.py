@@ -7,7 +7,7 @@ from skriptentool import config
 ###############
 # DIRECTORIES #
 ###############
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
@@ -100,6 +100,7 @@ MESSAGE_TAGS = {
     messages.WARNING: "warning",
     messages.ERROR: "danger",
 }
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 WSGI_APPLICATION = "skriptentool.wsgi.application"
 if config.LOCAL:
     DATABASES = {
@@ -134,7 +135,6 @@ if config.SSL:
 LANGUAGE_CODE = "de"
 TIME_ZONE = "Europe/Berlin"
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 LANGUAGES = [
     ("de", "German"),
