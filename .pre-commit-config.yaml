@@ -50,7 +50,7 @@ repos:
     rev: v2.31.0
     hooks:
       - id: pyupgrade
-        args: [--py37-plus]
+        args: [--py39-plus]
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:
@@ -103,7 +103,7 @@ repos:
         pass_filenames: false
       - id: django-compilemessages
         name: django-compilemessages
-        entry: ./manage.py compilemessages # TODO: add `--ignore="node_modules/*"`-flag (requires django>=3.0)
+        entry: ./manage.py compilemessages --ignore="node_modules/*"
         language: system
         pass_filenames: false
       - id: django-check
