@@ -7,9 +7,10 @@
 
 {% block extrascript %}
 <script
-    src="{% static 'js/select.js' %}"
+    src="{% static 'js/select.min.js' %}"
     data-search="{% trans 'search'|capfirst %}"
     id="select-script"
+    defer
 ></script>
 <script>
     $(window).on('load', () => {

@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
@@ -8,14 +9,31 @@ const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const config = {
     entry: {
         style: './core/build/scss/style.scss',
+        select: './core/build/ts/select.ts',
     },
 
     output: {
         path: path.resolve(__dirname, 'core/static/'),
+        filename: 'js/[name].min.js',
     },
 
     module: {
         rules: [
+            {
+                test: /\.ts$/,
+                include: path.resolve(__dirname, 'core/build/ts/'),
+                exclude: [],
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env', '@babel/preset-typescript'],
+                            plugins: ['@babel/plugin-transform-runtime'],
+                        },
+                    },
+                    'ts-loader',
+                ],
+            },
             {
                 test: /\.scss/,
                 include: path.resolve(__dirname, 'core/build/scss/'),
@@ -60,6 +78,14 @@ module.exports = (env, argv) => {
         config.optimization = {
             minimize: true,
             minimizer: [
+                new TerserPlugin({
+                    terserOptions: {
+                        output: {
+                            comments: false,
+                        },
+                    },
+                    extractComments: false,
+                }),
                 new CssMinimizerPlugin({
                     minimizerOptions: {
                         preset: [
