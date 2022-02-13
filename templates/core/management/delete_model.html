@@ -20,8 +20,7 @@
                 <formset class="list-group-item text-center">
                     <div class="alert alert-dismissible alert-danger mb-0">
                         {% blocktrans trimmed %}
-                        <strong>{{ object }}</strong> can't be deleted, as the object is linked to
-                        other objects!
+                        <strong>{{ object }}</strong> can't be deleted, as the object is linked to other objects!
                         {% endblocktrans %}
                     </div>
                 </formset>
@@ -61,8 +60,7 @@
                                 class="btn btn-primary btn-block"
                                 role="button"
                             >
-                                <i class="fas fa-trash-restore mr-2"></i>
-                                {% trans 'abort'|capfirst %}
+                                <i class="fas fa-trash-restore mr-2"></i>{% trans 'abort'|capfirst %}
                             </a>
                         </div>
                         <div class="col-1"></div>

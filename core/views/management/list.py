@@ -1,13 +1,21 @@
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.forms import BaseModelFormSet, ModelForm, modelformset_factory
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import Paginator
+from django.forms import BaseModelFormSet
+from django.forms import ModelForm
+from django.forms import modelformset_factory
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
 
-from core.models import LectureNote, User
+from core.models import LectureNote
+from core.models import User
 from core.utils.functions import get_model
-from core.utils.management import get_column_style, get_columns, get_disabled_columns, is_allowed
+from core.utils.management import get_column_style
+from core.utils.management import get_columns
+from core.utils.management import get_disabled_columns
+from core.utils.management import is_allowed
 
 
 def get_context(user, model):
@@ -78,12 +86,7 @@ def get_formset(user, form_model):
         def get_queryset(self):
             return super().get_queryset()
 
-    return modelformset_factory(
-        form_model,
-        ListModelForm,
-        extra=0,
-        formset=ListModelFormSet,
-    )
+    return modelformset_factory(form_model, ListModelForm, extra=0, formset=ListModelFormSet)
 
 
 def get_pagination(formset, request):

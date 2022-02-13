@@ -1,10 +1,5 @@
-/* eslint "import/no-extraneous-dependencies": off */
-/* eslint "import/no-unresolved": off */
-/* eslint "global-require": off */
+const Autoprefixer = require('autoprefixer');
+
 module.exports = {
-    plugins: [
-        require('autoprefixer'),
-        require('cssnano'),
-        require('postcss-discard-comments')({ removeAll: true }),
-    ],
+    plugins: [Autoprefixer],
 };

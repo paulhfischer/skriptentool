@@ -29,6 +29,7 @@
             class="row"
         >
             {% csrf_token %}
+
             <div class="input-group col-lg-5 spacer-b-md">
                 <div class="input-group-prepend">
                     <span class="input-group-text">
@@ -63,6 +64,7 @@
         <h2 class="spacer-b">{% trans 'cashbook'|capfirst %}</h2>
         <form method="post">
             {% csrf_token %}
+
             <div class="row">
                 <div class="col-lg-6 spacer-b-md">
                     <div class="input-group">

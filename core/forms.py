@@ -6,24 +6,40 @@ from django.utils.translation import gettext_lazy as _
 class SaleForm(forms.Form):
     ean_add = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            },
+        ),
     )
 
     ean_remove = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            },
+        ),
     )
 
     balance = forms.DecimalField(
         max_digits=6,
         decimal_places=2,
         required=False,
-        widget=forms.NumberInput(attrs={"class": "form-control text-right"}),
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control text-right",
+            },
+        ),
     )
 
     deposit_number = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            },
+        ),
     )
 
     account_number = forms.CharField(
@@ -57,7 +73,11 @@ class CashbookForm(forms.Form):
         max_digits=6,
         decimal_places=2,
         required=False,
-        widget=forms.NumberInput(attrs={"class": "form-control text-right"}),
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control text-right",
+            },
+        ),
     )
 
     comment = forms.CharField(
@@ -79,5 +99,9 @@ class ShiftsForm(forms.Form):
 
     semester = forms.ChoiceField(
         required=False,
-        widget=forms.Select(attrs={"class": "custom-select"}),
+        widget=forms.Select(
+            attrs={
+                "class": "custom-select",
+            },
+        ),
     )

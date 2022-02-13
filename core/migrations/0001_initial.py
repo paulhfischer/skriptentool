@@ -4,7 +4,8 @@ import django.core.validators
 import django.db.models.deletion
 import django.utils.timezone
 from django.conf import settings
-from django.db import migrations, models
+from django.db import migrations
+from django.db import models
 
 import core.models.products
 import core.models.user
@@ -32,7 +33,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "password",
-                    models.CharField(max_length=128, verbose_name="password"),
+                    models.CharField(
+                        max_length=128,
+                        verbose_name="password",
+                    ),
                 ),
                 (
                     "last_login",
@@ -49,8 +53,10 @@ class Migration(migrations.Migration):
                         unique=True,
                         validators=[
                             django.core.validators.RegexValidator(
-                                message="Lokale Benutzernamen müssen mit @ beginnen und dürfen nur "
-                                "Buchstaben enthalten.",
+                                message=(
+                                    "Lokale Benutzernamen müssen mit @ beginnen und dürfen nur "
+                                    "Buchstaben enthalten."
+                                ),
                                 regex="@[a-z]+",
                             ),
                         ],
@@ -59,31 +65,52 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "mail",
-                    models.EmailField(max_length=254, verbose_name="E-Mail-Adresse"),
+                    models.EmailField(
+                        max_length=254,
+                        verbose_name="E-Mail-Adresse",
+                    ),
                 ),
                 (
                     "first_name",
-                    models.CharField(max_length=256, verbose_name="Vorname"),
+                    models.CharField(
+                        max_length=256,
+                        verbose_name="Vorname",
+                    ),
                 ),
                 (
                     "last_name",
-                    models.CharField(max_length=256, verbose_name="Nachname"),
+                    models.CharField(
+                        max_length=256,
+                        verbose_name="Nachname",
+                    ),
                 ),
                 (
                     "vendor",
-                    models.BooleanField(default=False, verbose_name="Verkäufer"),
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Verkäufer",
+                    ),
                 ),
                 (
                     "referent",
-                    models.BooleanField(default=False, verbose_name="Referent"),
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Referent",
+                    ),
                 ),
                 (
                     "financier",
-                    models.BooleanField(default=False, verbose_name="Finanzer"),
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Finanzer",
+                    ),
                 ),
                 (
                     "admin",
-                    models.BooleanField(default=False, verbose_name="Admin"),
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Admin",
+                    ),
                 ),
             ],
             options={
@@ -109,11 +136,17 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    models.CharField(max_length=256, verbose_name="Name"),
+                    models.CharField(
+                        max_length=256,
+                        verbose_name="Name",
+                    ),
                 ),
                 (
                     "mail",
-                    models.EmailField(max_length=256, verbose_name="E-Mail Adresse"),
+                    models.EmailField(
+                        max_length=256,
+                        verbose_name="E-Mail Adresse",
+                    ),
                 ),
             ],
             options={
@@ -172,13 +205,18 @@ class Migration(migrations.Migration):
                     "ean",
                     models.CharField(
                         max_length=20,
-                        validators=[core.models.products.validate_ean],
+                        validators=[
+                            core.models.products.validate_ean,
+                        ],
                         verbose_name="EAN",
                     ),
                 ),
                 (
                     "name",
-                    models.CharField(max_length=256, verbose_name="Bezeichnung"),
+                    models.CharField(
+                        max_length=256,
+                        verbose_name="Bezeichnung",
+                    ),
                 ),
                 (
                     "price",
@@ -211,7 +249,9 @@ class Migration(migrations.Migration):
                     "ean",
                     models.CharField(
                         max_length=20,
-                        validators=[core.models.products.validate_ean],
+                        validators=[
+                            core.models.products.validate_ean,
+                        ],
                         verbose_name="EAN",
                     ),
                 ),
@@ -225,11 +265,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "pages",
-                    models.IntegerField(verbose_name="Seitenzahl"),
+                    models.IntegerField(
+                        verbose_name="Seitenzahl",
+                    ),
                 ),
                 (
                     "active",
-                    models.BooleanField(verbose_name="Steht zum Verkauf"),
+                    models.BooleanField(
+                        verbose_name="Steht zum Verkauf",
+                    ),
                 ),
             ],
             options={
@@ -267,11 +311,17 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "valid",
-                    models.BooleanField(default=False, verbose_name="Überprüft"),
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Überprüft",
+                    ),
                 ),
                 (
                     "payout",
-                    models.BooleanField(default=False, verbose_name="Getränke"),
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Getränke",
+                    ),
                 ),
                 (
                     "vendor",
@@ -304,13 +354,18 @@ class Migration(migrations.Migration):
                     "ean",
                     models.CharField(
                         max_length=20,
-                        validators=[core.models.products.validate_ean],
+                        validators=[
+                            core.models.products.validate_ean,
+                        ],
                         verbose_name="EAN",
                     ),
                 ),
                 (
                     "name",
-                    models.CharField(max_length=256, verbose_name="Skriptname"),
+                    models.CharField(
+                        max_length=256,
+                        verbose_name="Skriptname",
+                    ),
                 ),
                 (
                     "subject",
@@ -337,7 +392,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "study_grants",
-                    models.BooleanField(verbose_name="Studienzuschüsse"),
+                    models.BooleanField(
+                        verbose_name="Studienzuschüsse",
+                    ),
                 ),
                 (
                     "semester_start",
@@ -401,11 +458,16 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "active",
-                    models.BooleanField(verbose_name="Steht zum Verkauf"),
+                    models.BooleanField(
+                        verbose_name="Steht zum Verkauf",
+                    ),
                 ),
                 (
                     "stock",
-                    models.IntegerField(default=0, verbose_name="Bestand"),
+                    models.IntegerField(
+                        default=0,
+                        verbose_name="Bestand",
+                    ),
                 ),
                 (
                     "color",
@@ -453,7 +515,10 @@ class Migration(migrations.Migration):
                     "sides",
                     models.CharField(
                         blank=True,
-                        choices=[("simplex", "Einseitig"), ("duplex", "Doppelseitig")],
+                        choices=[
+                            ("simplex", "Einseitig"),
+                            ("duplex", "Doppelseitig"),
+                        ],
                         max_length=20,
                         null=True,
                         verbose_name="Seitigkeit",
@@ -553,7 +618,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "refundable",
-                    models.BooleanField(default=False, verbose_name="Erstattbar"),
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Erstattbar",
+                    ),
                 ),
                 (
                     "refunded_by",
@@ -605,7 +673,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "detail",
-                    models.CharField(max_length=20, verbose_name="Details"),
+                    models.CharField(
+                        max_length=20,
+                        verbose_name="Details",
+                    ),
                 ),
                 (
                     "amount",
@@ -644,7 +715,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "ean",
-                    models.CharField(max_length=20, verbose_name="EAN"),
+                    models.CharField(
+                        max_length=20,
+                        verbose_name="EAN",
+                    ),
                 ),
                 (
                     "type",
@@ -660,7 +734,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "quantity",
-                    models.IntegerField(verbose_name="Anzahl"),
+                    models.IntegerField(
+                        verbose_name="Anzahl",
+                    ),
                 ),
                 (
                     "cart",
@@ -706,7 +782,10 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "counted",
-                    models.BooleanField(default=False, verbose_name="Gezählt"),
+                    models.BooleanField(
+                        default=False,
+                        verbose_name="Gezählt",
+                    ),
                 ),
                 (
                     "type",

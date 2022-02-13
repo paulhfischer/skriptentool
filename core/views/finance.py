@@ -1,15 +1,18 @@
 import csv
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from itertools import chain
 
-from django.http import Http404, HttpResponse
+from django.http import Http404
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 
 from core.forms import CashbookForm
-from core.models import Balance, CashBookEntry
+from core.models import Balance
+from core.models import CashBookEntry
 
 
 def get_balances(start, end):
@@ -45,9 +48,7 @@ def finance(request):
         raise Http404
 
     start = timezone.make_aware(
-        datetime.fromisoformat(
-            (datetime.today().date() - timedelta(weeks=1)).strftime("%Y-%m-%d"),
-        ),
+        datetime.fromisoformat((datetime.today().date() - timedelta(weeks=1)).strftime("%Y-%m-%d")),
     )
     end = timezone.make_aware(
         datetime.fromisoformat(datetime.today().date().strftime("%Y-%m-%d")) + timedelta(days=1),
@@ -78,16 +79,10 @@ def finance(request):
         # update balance depending on action is deposit or withdrawal
         if update > 0:
             CashBookEntry.deposit(request.user, update, comment)
-            Balance.add_update(
-                request.user,
-                Balance.objects.latest("time").amount + update,
-            )
+            Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
         elif update < 0:
             CashBookEntry.withdrawal(request.user, update, comment)
-            Balance.add_update(
-                request.user,
-                Balance.objects.latest("time").amount + update,
-            )
+            Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
 
     # 'CSV-Export'-button triggered
     if action_csv:
@@ -99,9 +94,7 @@ def finance(request):
         # create csv-file
         writer = csv.writer(response)
         writer.writerow([_("time"), _("description"), _("price (in €)")])
-        for cash_book_entry in CashBookEntry.objects.filter(
-            time__range=[start, end],
-        ):
+        for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end]):
             writer.writerow(
                 [
                     cash_book_entry.time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -113,9 +106,7 @@ def finance(request):
 
     context = {
         # prepopulated values for time range
-        "cashbook_form": CashbookForm(
-            initial={"start": start, "end": end - timedelta(days=1)},
-        ),
+        "cashbook_form": CashbookForm(initial={"start": start, "end": end - timedelta(days=1)}),
         # cashbook entries in selected time range
         "cashbook": sorted(
             chain(get_cashbookentries(start, end), get_balances(start, end)),

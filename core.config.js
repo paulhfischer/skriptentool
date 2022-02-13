@@ -1,45 +1,46 @@
-/* eslint "import/no-extraneous-dependencies": off */
-/* eslint "import/no-unresolved": off */
 const path = require('path');
-const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
-const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
+
+const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const config = {
     entry: {
         style: './core/build/scss/style.scss',
+        select: './core/build/ts/select.ts',
     },
 
     output: {
         path: path.resolve(__dirname, 'core/static/'),
-        filename: './js/[name].min.js',
+        filename: 'js/[name].min.js',
     },
 
     module: {
         rules: [
             {
-                test: /\.scss/,
-                include: path.resolve(__dirname, 'core/build/scss/'),
+                test: /\.ts$/,
+                include: path.resolve(__dirname, 'core/build/ts/'),
                 exclude: [],
                 use: [
                     {
-                        loader: 'file-loader',
+                        loader: 'babel-loader',
                         options: {
-                            name: './css/[name].min.css',
+                            presets: ['@babel/preset-env', '@babel/preset-typescript'],
+                            plugins: ['@babel/plugin-transform-runtime'],
                         },
                     },
-                    'extract-loader',
-                    'css-loader',
-                    'postcss-loader',
-                    'sass-loader',
+                    'ts-loader',
                 ],
             },
+            {
+                test: /\.scss/,
+                include: path.resolve(__dirname, 'core/build/scss/'),
+                exclude: [],
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
+            },
         ],
-    },
-
-    resolve: {
-        modules: ['node_modules'],
-        extensions: ['.js', '.css', '.scss'],
     },
 
     performance: {
@@ -59,6 +60,9 @@ const config = {
     },
 
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: './css/[name].min.css',
+        }),
         new RemoveEmptyScriptsPlugin({
             silent: true,
         }),
@@ -82,15 +86,27 @@ module.exports = (env, argv) => {
                     },
                     extractComments: false,
                 }),
+                new CssMinimizerPlugin({
+                    minimizerOptions: {
+                        preset: [
+                            'default',
+                            {
+                                discardComments: { removeAll: true },
+                            },
+                        ],
+                    },
+                }),
             ],
         };
 
-        config.plugins = [
-            ...config.plugins,
-            new webpack.ProgressPlugin({
-                percentBy: 'entries',
-            }),
-        ];
+        if (!process.env.CI) {
+            config.plugins = [
+                ...config.plugins,
+                new webpack.ProgressPlugin({
+                    percentBy: 'entries',
+                }),
+            ];
+        }
     }
 
     return config;

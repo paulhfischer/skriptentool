@@ -1,7 +1,13 @@
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
-from core.models import Author, Deposit, DepositNote, LectureNote, PrintingQuota, Shift, User
+from core.models import Author
+from core.models import Deposit
+from core.models import DepositNote
+from core.models import LectureNote
+from core.models import PrintingQuota
+from core.models import Shift
+from core.models import User
 
 SETTINGS = {
     LectureNote: {

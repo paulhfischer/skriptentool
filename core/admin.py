@@ -10,7 +10,8 @@ from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
 from core.models import LectureNote
-from core.models.products import generate_cover, generate_order
+from core.models.products import generate_cover
+from core.models.products import generate_order
 
 admin.site.unregister(Group)
 

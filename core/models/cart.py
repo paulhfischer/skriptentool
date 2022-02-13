@@ -1,12 +1,18 @@
 from math import copysign
 
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
-from core.models import Balance, CashBookEntry, Shift, User, get_product, get_type
+from core.models import Balance
+from core.models import CashBookEntry
+from core.models import get_product
+from core.models import get_type
+from core.models import Shift
+from core.models import User
 
 
 class Cart(models.Model):
@@ -49,16 +55,9 @@ class Cart(models.Model):
 
         # add cashbookentry and end shift if cart is closed
         if reason == self.SALE and self.total != 0:
-            Balance.add_temp(
-                self.vendor,
-                Balance.objects.latest("time").amount + self.total,
-                False,
-            )
+            Balance.add_temp(self.vendor, Balance.objects.latest("time").amount + self.total, False)
         elif reason == self.CLOSING:
-            Balance.add_closing(
-                self.vendor,
-                Balance.objects.latest("time").amount + self.total,
-            )
+            Balance.add_closing(self.vendor, Balance.objects.latest("time").amount + self.total)
             Shift.end_shift(self.vendor)
 
         # remove cart
@@ -144,9 +143,7 @@ class CartItem(models.Model):
         verbose_name = _("item")
         verbose_name_plural = _("items")
         ordering = ["cart", "ean"]
-        constraints = [
-            models.UniqueConstraint(fields=["ean", "cart"], name="unique_cart_item"),
-        ]
+        constraints = [models.UniqueConstraint(fields=["ean", "cart"], name="unique_cart_item")]
 
     LECTURENOTE = "lecturenote"
     PRINTINGQUOTA = "printingquota"

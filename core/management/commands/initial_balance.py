@@ -1,6 +1,7 @@
 from django.core.management import BaseCommand
 
-from core.models import Balance, User
+from core.models import Balance
+from core.models import User
 
 
 class Command(BaseCommand):

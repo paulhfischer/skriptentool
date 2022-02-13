@@ -2,17 +2,15 @@ from contextlib import suppress
 
 from django.contrib.messages import get_messages
 from django.core.exceptions import ImproperlyConfigured
-from django.forms import (
-    BaseFormSet,
-    CheckboxInput,
-    EmailInput,
-    FileInput,
-    NumberInput,
-    PasswordInput,
-    Select,
-    TextInput,
-    URLInput,
-)
+from django.forms import BaseFormSet
+from django.forms import CheckboxInput
+from django.forms import EmailInput
+from django.forms import FileInput
+from django.forms import NumberInput
+from django.forms import PasswordInput
+from django.forms import Select
+from django.forms import TextInput
+from django.forms import URLInput
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -46,7 +44,7 @@ def nonfield_errors_renderer(form):
 
         return mark_safe(html)  # nosec
 
-    return None
+    return ""
 
 
 def formset_errors_renderer(formset, model_name):
@@ -65,14 +63,12 @@ def formset_errors_renderer(formset, model_name):
     elif formset.is_valid():
         if formset.has_changed():
             alert_class = " alert-success"
-            html = capfirst(
-                _("%(model_name)s successfully saved.") % {"model_name": model_name},
-            )
+            html = capfirst(_("%(model_name)s successfully saved.") % {"model_name": model_name})
         else:
             alert_class = " alert-secondary"
             html = _("Nothing saved, as no changes have been made.")
     else:
-        return None
+        return ""
 
     html = (
         f'<div class="alert alert-dismissible{alert_class}">'
@@ -98,22 +94,19 @@ def field_renderer(field, style="default"):
         return text_value(field)
 
     # check if field-type is supported
-    if (
-        not isinstance(
-            widget,
-            (
-                CheckboxInput,
-                FileInput,
-                Select,
-                TextInput,
-                NumberInput,
-                EmailInput,
-                URLInput,
-                PasswordInput,
-            ),
-        )
-        or (style == "tabular" and isinstance(field.field.widget, FileInput))
-    ):
+    if not isinstance(
+        widget,
+        (
+            CheckboxInput,
+            FileInput,
+            Select,
+            TextInput,
+            NumberInput,
+            EmailInput,
+            URLInput,
+            PasswordInput,
+        ),
+    ) or (style == "tabular" and isinstance(field.field.widget, FileInput)):
         raise ImproperlyConfigured()
 
     # render errors
@@ -122,7 +115,7 @@ def field_renderer(field, style="default"):
         invalid_feedback = ""
         for error in field.errors:
             invalid_feedback += (
-                '<div class="invalid-feedback">' f"{conditional_escape(text_value(error))}" "</div>"
+                f'<div class="invalid-feedback">{conditional_escape(text_value(error))}</div>'
             )
     else:
         validation = ""
@@ -169,10 +162,7 @@ def field_renderer(field, style="default"):
 
         # set placeholder if field is not disabled
         if not field.field.disabled:
-            widget.attrs["placeholder"] = widget.attrs.get(
-                "placeholder",
-                text_value(field.label),
-            )
+            widget.attrs["placeholder"] = widget.attrs.get("placeholder", text_value(field.label))
 
     # modify input-types
     # currently disabled, as django does not return rfc3339-formatted date for inputs

@@ -7,9 +7,10 @@
 
 {% block extrascript %}
 <script
-    src="{% static 'select.js' %}"
+    src="{% static 'js/select.min.js' %}"
     data-search="{% trans 'search'|capfirst %}"
     id="select-script"
+    defer
 ></script>
 <script>
     // update label of file-upload-field after file has been selected
@@ -18,11 +19,10 @@
 
         fileField.on('change', (event) => {
             const fileName = event.target.files[0].name;
-            const fileLabel = $('label.custom-file-label[for=' + event.target.id + ']');
+            const fileLabel = $(`label.custom-file-label[for=${event.target.id}]`);
             fileLabel.text(fileName);
         });
     });
-
 </script>
 {% endblock %}
 
@@ -65,7 +65,6 @@
                     {% endfor %}
                 </formset>
                 {% endfor %}
-
                 <formset class="list-group-item">
                     <div class="row">
                         <div class="col-3 col-sm-2">
@@ -85,7 +84,6 @@
                                 <i class="fas fa-save"></i>
                             </button>
                         </div>
-
                         {% if delete_url %}
                         <div class="col-3 col-sm-2 offset-sm-1">
                             <a

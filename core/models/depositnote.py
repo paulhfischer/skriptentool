@@ -12,8 +12,8 @@ class DepositNote(models.Model):
         verbose_name_plural = _("deposit notes")
         ordering = ["number"]
 
-    number = models.CharField(
-        max_length=20,
+    number = models.PositiveIntegerField(
+        unique=True,
         verbose_name=_("number"),
     )
 
@@ -59,7 +59,7 @@ class DepositNote(models.Model):
     )
 
     def __str__(self):
-        return self.number
+        return str(self.number)
 
     @property
     def is_refunded(self):
@@ -71,9 +71,7 @@ class DepositNote(models.Model):
 
     @classmethod
     def refunded(cls, number):
-        if DepositNote.exists(number) and DepositNote.objects.get(number=number).refunded_time:
-            return True
-        return False
+        return DepositNote.exists(number) and DepositNote.objects.get(number=number).refunded_time
 
     @classmethod
     def is_refundable(cls, number):
@@ -97,8 +95,16 @@ class DepositNote(models.Model):
             return str(1500)
 
     permissions = {
-        "list": {"is_referent": "__all__"},
-        "create": {"is_referent": "__all__"},
-        "update": {"is_referent": ["sold_by", "refunded_by", "refundable"]},
-        "delete": ["is_referent"],
+        "list": {
+            "is_referent": "__all__",
+        },
+        "create": {
+            "is_referent": "__all__",
+        },
+        "update": {
+            "is_referent": ["sold_by", "refunded_by", "refundable"],
+        },
+        "delete": [
+            "is_referent",
+        ],
     }

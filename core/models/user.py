@@ -1,4 +1,5 @@
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.base_user import BaseUserManager
 from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import models
@@ -38,15 +39,15 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, username, mail, first_name, last_name, password):
         self.create_user(
-            username,
-            mail,
-            first_name,
-            last_name,
-            password,
-            True,
-            True,
-            True,
-            True,
+            username=username,
+            mail=mail,
+            first_name=first_name,
+            last_name=last_name,
+            password=password,
+            vendor=True,
+            financier=True,
+            referent=True,
+            admin=True,
         )
 
 
@@ -68,9 +69,7 @@ class User(AbstractBaseUser):
         validators=[
             RegexValidator(
                 regex="@[a-z]+",
-                message=_(
-                    'Local usernames have to start with "@" and may only contain letters.',
-                ),
+                message=_('Local usernames have to start with "@" and may only contain letters.'),
             ),
         ],
         verbose_name=_("username"),
@@ -117,13 +116,7 @@ class User(AbstractBaseUser):
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.mail], **kwargs)
 
-    def save(
-        self,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None,
-    ):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.admin:
             self.vendor = True
             self.referent = True
@@ -171,5 +164,7 @@ class User(AbstractBaseUser):
             "is_financier": ["financier"],
             "is_admin": ["admin"],
         },
-        "delete": ["is_admin"],
+        "delete": [
+            "is_admin",
+        ],
     }

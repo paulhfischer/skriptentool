@@ -3,9 +3,11 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import translation
-from django.utils.text import capfirst, format_lazy
+from django.utils.text import capfirst
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
-from requests.exceptions import ConnectTimeout, HTTPError
+from requests.exceptions import ConnectTimeout
+from requests.exceptions import HTTPError
 from requests.models import HTTPBasicAuth
 
 from core.models.printingquota_log import PrintingQuotaLog

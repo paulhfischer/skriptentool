@@ -5,7 +5,6 @@
     <div class="card-body">
         <form method="post">
             {% csrf_token %}
-
             {# alerts #}
             {% if not vendor and cart %}
             <div class="alert alert-danger">
@@ -14,17 +13,14 @@
                 {% endblocktrans %}
             </div>
             {% endif %}
-
             {% if can_next %}
             <div class="alert alert-warning {% if vendor %}mb-0{% endif %}">
                 {% trans 'Sale process still running' %}
             </div>
             {% endif %}
-
             {% if can_count %}
             <div class="alert alert-warning mb-0">{% trans "Register isn't counted" %}</div>
             {% endif %}
-
 
             {# buttons #}
             {% if can_close %}
@@ -37,7 +33,6 @@
                 {% trans 'end sale'|capfirst %}
             </button>
             {% endif %}
-
             {% if can_next and not vendor %}
             <button
                 type="submit"
@@ -48,7 +43,6 @@
                 {% trans 'close cart'|capfirst %}
             </button>
             {% endif %}
-
             {% if can_open %}
             <button
                 type="submit"

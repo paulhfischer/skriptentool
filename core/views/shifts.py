@@ -17,14 +17,14 @@ def semester_choices(user):
         first = timezone.now()
 
     if first.month in range(4, 10):
-        start = "S" + str(first.year)
+        start = f"S{first.year}"
     else:
-        start = "W" + str(first.year - 1)
+        start = f"W{first.year - 1}"
 
     if timezone.now().month in range(4, 10):
-        end = "S" + str(timezone.now().year)
+        end = f"S{timezone.now().year}"
     else:
-        end = "W" + str(timezone.now().year - 1)
+        end = f"W{timezone.now().year - 1}"
 
     # return choices
     return get_semesters(start, end)

@@ -1,7 +1,8 @@
 import re
 import subprocess  # nosec
 
-from django.apps import AppConfig, apps
+from django.apps import AppConfig
+from django.apps import apps
 from django.http import Http404
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -80,7 +81,7 @@ def get_semesters(start, end):
     if start.startswith("S"):
         choices.append(
             (
-                "S" + str(int(start[1:])),
+                f"S{int(start[1:])}",
                 format_lazy("{} {}", _("summer term"), str(int(start[1:]))),
             ),
         )
@@ -90,16 +91,11 @@ def get_semesters(start, end):
         choices.extend(
             [
                 (
-                    "W" + str(year),
-                    format_lazy(
-                        "{} {} / {}",
-                        _("winter term"),
-                        str(year),
-                        str(year + 1),
-                    ),
+                    f"W{year}",
+                    format_lazy("{} {} / {}", _("winter term"), str(year), str(year + 1)),
                 ),
                 (
-                    "S" + str(year + 1),
+                    f"S{year + 1}",
                     format_lazy("{} {}", _("summer term"), str(year + 1)),
                 ),
             ],
@@ -109,7 +105,7 @@ def get_semesters(start, end):
     if end.startswith("W"):
         choices.append(
             (
-                "W" + str(int(end[1:])),
+                f"W{int(end[1:])}",
                 format_lazy(
                     "{} {} / {}",
                     _("winter term"),

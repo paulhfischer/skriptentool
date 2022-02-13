@@ -5,9 +5,17 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from core.forms import SaleForm
-from core.models import Balance, Cart, CartItem, DepositNote, Shift, User, get_product, get_type
+from core.models import Balance
+from core.models import Cart
+from core.models import CartItem
+from core.models import DepositNote
+from core.models import get_product
+from core.models import get_type
+from core.models import Shift
+from core.models import User
 from core.models.products import PrintingQuota
-from core.utils.printing_quota import add_balance, get_balance
+from core.utils.printing_quota import add_balance
+from core.utils.printing_quota import get_balance
 
 
 def sale(request):
@@ -93,9 +101,7 @@ def sale(request):
     # exception if other user already performed action but page has not been refreshed
     elif can_next and action_next:
         try:
-            User.objects.get(username=request.POST["next"]).cart.close(
-                reason="sale",
-            )
+            User.objects.get(username=request.POST["next"]).cart.close(reason="sale")
             Cart(vendor=User.objects.get(username=request.POST["next"])).save()
         except ObjectDoesNotExist:
             pass
@@ -183,12 +189,9 @@ def sale(request):
             if DepositNote.is_refundable(deposit_number):
                 # check if depositnote has already been refunded
                 if DepositNote.refunded(deposit_number):
-                    error = (
-                        _(
-                            "The deposit note %(num)s has alredy been refunded.",
-                        )
-                        % {"num": deposit_number}
-                    )
+                    error = _("The deposit note %(num)s has alredy been refunded.") % {
+                        "num": deposit_number,
+                    }
                 else:
                     DepositNote.refund(deposit_number, request.user)
                     cart.remove(deposit_ean)
@@ -199,12 +202,9 @@ def sale(request):
             remove_old_deposit_number = deposit_number
             remove_old_deposit_ean = deposit_ean
         else:
-            error = (
-                _(
-                    "The deposit note %(num)s can only be refunded by a referent.",
-                )
-                % {"num": deposit_number}
-            )
+            error = _("The deposit note %(num)s can only be refunded by a referent.") % {
+                "num": deposit_number,
+            }
 
     # depositnote not in system should be refunded
     elif can_order and action_remove_old_deposit and request.user.referent:
@@ -269,9 +269,7 @@ def sale(request):
         or vendor
         and Balance.objects.latest("time").counted,
         "balance": str(Balance.objects.latest("time").amount),
-        "form": SaleForm(
-            initial={"balance": Balance.objects.latest("time").amount},
-        ),
+        "form": SaleForm(initial={"balance": Balance.objects.latest("time").amount}),
         "vendor": vendor,
         "items": CartItem.objects.filter(cart=cart),
         "cart": cart,

@@ -4,7 +4,8 @@ import django.core.validators
 import django.db.models.deletion
 import django.utils.timezone
 from django.conf import settings
-from django.db import migrations, models
+from django.db import migrations
+from django.db import models
 
 import core.models.products
 import skriptentool.storage
@@ -105,31 +106,21 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "users",
             },
         ),
-        migrations.AddField(
-            model_name="cashbookentry",
-            name="type",
-            field=models.CharField(
-                choices=[
-                    ("correction", "correction"),
-                    ("withdrawal", "withdrawal"),
-                    ("deposit", "deposit"),
-                    ("sale", "sale"),
-                ],
-                default="sale",
-                max_length=20,
-                verbose_name="type",
-            ),
-            preserve_default=False,
-        ),
         migrations.AlterField(
             model_name="author",
             name="mail",
-            field=models.EmailField(max_length=256, verbose_name="mail"),
+            field=models.EmailField(
+                max_length=256,
+                verbose_name="mail",
+            ),
         ),
         migrations.AlterField(
             model_name="author",
             name="name",
-            field=models.CharField(max_length=256, verbose_name="name"),
+            field=models.CharField(
+                max_length=256,
+                verbose_name="name",
+            ),
         ),
         migrations.AlterField(
             model_name="balance",
@@ -143,7 +134,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="balance",
             name="counted",
-            field=models.BooleanField(default=False, verbose_name="counted"),
+            field=models.BooleanField(
+                default=False,
+                verbose_name="counted",
+            ),
         ),
         migrations.AlterField(
             model_name="balance",
@@ -205,7 +199,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="cartitem",
             name="quantity",
-            field=models.IntegerField(verbose_name="quantity"),
+            field=models.IntegerField(
+                verbose_name="quantity",
+            ),
         ),
         migrations.AlterField(
             model_name="cartitem",
@@ -247,6 +243,20 @@ class Migration(migrations.Migration):
                 verbose_name="time",
             ),
         ),
+        migrations.AddField(
+            model_name="cashbookentry",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("correction", "correction"),
+                    ("withdrawal", "withdrawal"),
+                    ("deposit", "deposit"),
+                    ("sale", "sale"),
+                ],
+                max_length=20,
+                verbose_name="type",
+            ),
+        ),
         migrations.AlterField(
             model_name="cashbookentry",
             name="user",
@@ -259,7 +269,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="deposit",
             name="name",
-            field=models.CharField(max_length=256, verbose_name="designation"),
+            field=models.CharField(
+                max_length=256,
+                verbose_name="designation",
+            ),
         ),
         migrations.AlterField(
             model_name="deposit",
@@ -273,7 +286,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="depositnote",
             name="number",
-            field=models.CharField(max_length=20, verbose_name="number"),
+            field=models.CharField(
+                max_length=20,
+                verbose_name="number",
+            ),
         ),
         migrations.AlterField(
             model_name="depositnote",
@@ -287,7 +303,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="depositnote",
             name="refundable",
-            field=models.BooleanField(default=False, verbose_name="refundable"),
+            field=models.BooleanField(
+                default=False,
+                verbose_name="refundable",
+            ),
         ),
         migrations.AlterField(
             model_name="depositnote",
@@ -334,7 +353,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="lecturenote",
             name="active",
-            field=models.BooleanField(verbose_name="for sale"),
+            field=models.BooleanField(
+                verbose_name="for sale",
+            ),
         ),
         migrations.AlterField(
             model_name="lecturenote",
@@ -395,9 +416,7 @@ class Migration(migrations.Migration):
                 storage=skriptentool.storage.OverwriteStorage(),
                 upload_to=core.models.products.get_filename,
                 validators=[
-                    django.core.validators.FileExtensionValidator(
-                        allowed_extensions=["pdf"],
-                    ),
+                    django.core.validators.FileExtensionValidator(allowed_extensions=["pdf"]),
                 ],
                 verbose_name="PDF file",
             ),
@@ -405,7 +424,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="lecturenote",
             name="name",
-            field=models.CharField(max_length=256, verbose_name="designation"),
+            field=models.CharField(
+                max_length=256,
+                verbose_name="designation",
+            ),
         ),
         migrations.AlterField(
             model_name="lecturenote",
@@ -427,7 +449,9 @@ class Migration(migrations.Migration):
             field=models.DecimalField(
                 decimal_places=2,
                 max_digits=5,
-                validators=[django.core.validators.MinValueValidator(Decimal("0"))],
+                validators=[
+                    django.core.validators.MinValueValidator(Decimal("0")),
+                ],
                 verbose_name="price (in €)",
             ),
         ),
@@ -508,7 +532,10 @@ class Migration(migrations.Migration):
             name="sides",
             field=models.CharField(
                 blank=True,
-                choices=[("simplex", "one-sided"), ("duplex", "two-sided")],
+                choices=[
+                    ("simplex", "one-sided"),
+                    ("duplex", "two-sided"),
+                ],
                 max_length=20,
                 null=True,
                 verbose_name="sides",
@@ -517,18 +544,27 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="lecturenote",
             name="stock",
-            field=models.IntegerField(default=0, verbose_name="stock"),
+            field=models.IntegerField(
+                default=0,
+                verbose_name="stock",
+            ),
         ),
         migrations.AlterField(
             model_name="lecturenote",
             name="study_grants",
-            field=models.BooleanField(verbose_name="study grants"),
+            field=models.BooleanField(
+                verbose_name="study grants",
+            ),
         ),
         migrations.AlterField(
             model_name="lecturenote",
             name="subject",
             field=models.CharField(
-                choices=[("M", "mathematics"), ("P", "physics"), ("I", "informatics")],
+                choices=[
+                    ("M", "mathematics"),
+                    ("P", "physics"),
+                    ("I", "informatics"),
+                ],
                 max_length=1,
                 verbose_name="subject",
             ),
@@ -536,12 +572,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="printingquota",
             name="active",
-            field=models.BooleanField(verbose_name="for sale"),
+            field=models.BooleanField(
+                verbose_name="for sale",
+            ),
         ),
         migrations.AlterField(
             model_name="printingquota",
             name="pages",
-            field=models.IntegerField(verbose_name="number of pages"),
+            field=models.IntegerField(
+                verbose_name="number of pages",
+            ),
         ),
         migrations.AlterField(
             model_name="printingquota",
@@ -555,12 +595,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="shift",
             name="payout",
-            field=models.BooleanField(default=False, verbose_name="beverages"),
+            field=models.BooleanField(
+                default=False,
+                verbose_name="beverages",
+            ),
         ),
         migrations.AlterField(
             model_name="shift",
             name="time_end",
-            field=models.DateTimeField(blank=True, null=True, verbose_name="end time"),
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name="end time",
+            ),
         ),
         migrations.AlterField(
             model_name="shift",
@@ -573,7 +620,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="shift",
             name="valid",
-            field=models.BooleanField(default=False, verbose_name="reviewed"),
+            field=models.BooleanField(
+                default=False,
+                verbose_name="reviewed",
+            ),
         ),
         migrations.AlterField(
             model_name="shift",
@@ -587,32 +637,50 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="admin",
-            field=models.BooleanField(default=False, verbose_name="admin"),
+            field=models.BooleanField(
+                default=False,
+                verbose_name="admin",
+            ),
         ),
         migrations.AlterField(
             model_name="user",
             name="financier",
-            field=models.BooleanField(default=False, verbose_name="financier"),
+            field=models.BooleanField(
+                default=False,
+                verbose_name="financier",
+            ),
         ),
         migrations.AlterField(
             model_name="user",
             name="first_name",
-            field=models.CharField(max_length=256, verbose_name="first name"),
+            field=models.CharField(
+                max_length=256,
+                verbose_name="first name",
+            ),
         ),
         migrations.AlterField(
             model_name="user",
             name="last_name",
-            field=models.CharField(max_length=256, verbose_name="last name"),
+            field=models.CharField(
+                max_length=256,
+                verbose_name="last name",
+            ),
         ),
         migrations.AlterField(
             model_name="user",
             name="mail",
-            field=models.EmailField(max_length=254, verbose_name="mail"),
+            field=models.EmailField(
+                max_length=254,
+                verbose_name="mail",
+            ),
         ),
         migrations.AlterField(
             model_name="user",
             name="referent",
-            field=models.BooleanField(default=False, verbose_name="referent"),
+            field=models.BooleanField(
+                default=False,
+                verbose_name="referent",
+            ),
         ),
         migrations.AlterField(
             model_name="user",
@@ -622,8 +690,9 @@ class Migration(migrations.Migration):
                 unique=True,
                 validators=[
                     django.core.validators.RegexValidator(
-                        message='Local usernames have to start with "@" and may only contain '
-                        "letters.",
+                        message=(
+                            'Local usernames have to start with "@" and may only contain letters.'
+                        ),
                         regex="@[a-z]+",
                     ),
                 ],
@@ -633,6 +702,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="vendor",
-            field=models.BooleanField(default=False, verbose_name="vendor"),
+            field=models.BooleanField(
+                default=False,
+                verbose_name="vendor",
+            ),
         ),
     ]

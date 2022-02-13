@@ -7,8 +7,7 @@ from skriptentool import config
 ###############
 # DIRECTORIES #
 ###############
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
@@ -26,7 +25,6 @@ OUTPUT_DIR = os.path.join(MEDIA_ROOT, "druck")
 ########
 # URLS #
 ########
-
 ROOT_URLCONF = "skriptentool.urls"
 STATIC_URL = "/static/"
 LOGIN_REDIRECT_URL = "core:catalogue"
@@ -36,7 +34,6 @@ MEDIA_URL = "/media/"
 ########
 # MAIL #
 ########
-
 if config.LOCAL:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 else:
@@ -44,7 +41,7 @@ else:
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_PASSWORD = ""  # nosec
 DEFAULT_FROM_EMAIL = config.SENDER_EMAIL
 SERVER_EMAIL = config.SENDER_EMAIL
 FINANCE_EMAILS = config.FINANCE_EMAILS
@@ -59,7 +56,6 @@ QPILOT_PASSWORD = config.QPILOT_PASSWORD
 ############
 # SETTINGS #
 ############
-
 SECRET_KEY = config.SECRET_KEY
 DEBUG = config.DEBUG
 ALLOWED_HOSTS = ["localhost"] + config.ALLOWED_HOSTS
@@ -104,6 +100,7 @@ MESSAGE_TAGS = {
     messages.WARNING: "warning",
     messages.ERROR: "danger",
 }
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 WSGI_APPLICATION = "skriptentool.wsgi.application"
 if config.LOCAL:
     DATABASES = {
@@ -135,32 +132,27 @@ if config.SSL:
 ###############
 # TRANSLATION #
 ###############
-
+LANGUAGE_CODE = "de"
+TIME_ZONE = "Europe/Berlin"
+USE_I18N = True
+USE_TZ = True
 LANGUAGES = [
     ("de", "German"),
     ("en", "English"),
 ]
-LANGUAGE_CODE = "de"
-TIME_ZONE = "Europe/Berlin"
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
 LOCALE_PATHS = [os.path.join(BASE_DIR, "locale/")]
 MIDDLEWARE += ["django.middleware.locale.LocaleMiddleware"]
 
 ####################
 # AUTHENTIFICATION #
 ####################
-
-AUTH_USER_MODEL = "core.User"
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+AUTH_USER_MODEL = "core.User"
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]

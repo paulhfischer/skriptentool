@@ -4,15 +4,20 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import intcomma
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.core.validators import FileExtensionValidator, MinValueValidator
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
 
 from core.models import Author
-from core.utils.functions import get_pdf_page_count, get_semesters, tex_escape, xml_escape
+from core.utils.functions import get_pdf_page_count
+from core.utils.functions import get_semesters
+from core.utils.functions import tex_escape
+from core.utils.functions import xml_escape
 from skriptentool.storage import OverwriteStorage
 
 
@@ -26,9 +31,7 @@ def get_product(ean):
     elif Deposit.objects.filter(ean=ean).exists():
         return Deposit.objects.get(ean=ean)
 
-    raise ObjectDoesNotExist(
-        _("There is no article matching the EAN %(ean)s.") % {"ean": ean},
-    )
+    raise ObjectDoesNotExist(_("There is no article matching the EAN %(ean)s.") % {"ean": ean})
 
 
 # return model type from ean
@@ -67,10 +70,7 @@ def generate_cover(lecturenote):
             .replace("_ean_", tex_escape(lecturenote.ean))
         )
 
-        with open(
-            os.path.join(settings.COVERS_DIR, lecturenote.ean + ".tex"),
-            "w+",
-        ) as f:
+        with open(os.path.join(settings.COVERS_DIR, f"{lecturenote.ean}.tex"), "w+") as f:
             f.write(content)
 
         # run bash script to generate cover
@@ -103,10 +103,7 @@ def generate_order(lecturenote):
             template.replace("_name_", xml_escape(lecturenote.name))
             .replace("_number_", xml_escape(lecturenote.ean))
             .replace("_color_", xml_escape(lecturenote.get_color_display() or ""))
-            .replace(
-                "_papersize_",
-                xml_escape(lecturenote.get_papersize_display() or ""),
-            )
+            .replace("_papersize_", xml_escape(lecturenote.get_papersize_display() or ""))
             .replace("_sides_", xml_escape(lecturenote.get_sides_display() or ""))
             .replace("_amount_", xml_escape(""))
             .replace("_subject_", xml_escape(lecturenote.get_subject_display()))
@@ -114,10 +111,7 @@ def generate_order(lecturenote):
             .replace("_author_", xml_escape(""))
         )
 
-        with open(
-            os.path.join(settings.ORDERS_DIR, lecturenote.ean + ".xfdf"),
-            "w+",
-        ) as f:
+        with open(os.path.join(settings.ORDERS_DIR, f"{lecturenote.ean}.xfdf"), "w+") as f:
             f.write(content)
 
         # run bash script to generate order
@@ -153,7 +147,7 @@ def update_files(ean_old, ean_new, lecturenote):
     # change path in model if rename successfull
     if process.returncode == 0:
         lecturenote.file = os.path.relpath(
-            os.path.join(settings.LECTURE_NOTES_DIR, ean_new + ".pdf"),
+            os.path.join(settings.LECTURE_NOTES_DIR, f"{ean_new}.pdf"),
             settings.MEDIA_ROOT,
         )
         super(LectureNote, lecturenote).save()
@@ -166,7 +160,7 @@ def update_files(ean_old, ean_new, lecturenote):
 def get_filename(instance, filename):
     return os.path.join(
         os.path.relpath(settings.LECTURE_NOTES_DIR, settings.MEDIA_ROOT),
-        instance.ean + ".pdf",
+        f"{instance.ean}.pdf",
     )
 
 
@@ -222,17 +216,25 @@ class Deposit(models.Model):
     )
 
     def __str__(self):
-        return self.name + " (" + self.ean + ")"
+        return f"{self.name} ({self.ean})"
 
     def clean_fields(self, exclude=None):
         # overwrite validation function to check if ean is unique accros all products
         ean_unique(self, Deposit, exclude)
 
     permissions = {
-        "list": {"is_referent": "__all__"},
-        "create": {"is_referent": "__all__"},
-        "update": {"is_referent": "__all__"},
-        "delete": ["is_referent"],
+        "list": {
+            "is_referent": "__all__",
+        },
+        "create": {
+            "is_referent": "__all__",
+        },
+        "update": {
+            "is_referent": "__all__",
+        },
+        "delete": [
+            "is_referent",
+        ],
     }
 
 
@@ -388,7 +390,7 @@ class LectureNote(models.Model):
     )
 
     def __str__(self):
-        return self.name + " (" + self.ean + ")"
+        return f"{self.name} ({self.ean})"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -401,23 +403,14 @@ class LectureNote(models.Model):
         # get list of changed fields
         changed_fields = []
         for field in self._meta.get_fields():
-            if getattr(self, field.name) != getattr(
-                self,
-                f"__original_{field.name}",
-            ):
+            if getattr(self, field.name) != getattr(self, f"__original_{field.name}"):
                 changed_fields.append(field.name)
         return changed_fields
 
-    def save(
-        self,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None,
-    ):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         update = not self._state.adding
 
-        super(LectureNote, self).save(force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
         # rename files if ean has changed and model not newly created
         if update and "ean" in self.changed_fields():
@@ -460,10 +453,18 @@ class LectureNote(models.Model):
         ean_unique(self, LectureNote, exclude)
 
     permissions = {
-        "list": {"is_referent": "__all__"},
-        "create": {"is_referent": "__all__"},
-        "update": {"is_referent": "__all__"},
-        "delete": ["is_referent"],
+        "list": {
+            "is_referent": "__all__",
+        },
+        "create": {
+            "is_referent": "__all__",
+        },
+        "update": {
+            "is_referent": "__all__",
+        },
+        "delete": [
+            "is_referent",
+        ],
     }
 
 
@@ -494,7 +495,7 @@ class PrintingQuota(models.Model):
     )
 
     def __str__(self):
-        return self.name + " (" + self.ean + ")"
+        return f"{self.name} ({self.ean})"
 
     def clean_fields(self, exclude=None):
         # overwrite validation function to check if ean is unique across all products
@@ -505,8 +506,16 @@ class PrintingQuota(models.Model):
         return _("%(num)d pages") % {"num": self.pages}
 
     permissions = {
-        "list": {"is_referent": "__all__"},
-        "create": {"is_referent": "__all__"},
-        "update": {"is_referent": "__all__"},
-        "delete": ["is_referent"],
+        "list": {
+            "is_referent": "__all__",
+        },
+        "create": {
+            "is_referent": "__all__",
+        },
+        "update": {
+            "is_referent": "__all__",
+        },
+        "delete": [
+            "is_referent",
+        ],
     }

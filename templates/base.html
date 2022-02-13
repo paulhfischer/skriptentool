@@ -159,11 +159,9 @@
                                 {% trans 'deposits'|capfirst %}
                             </a>
                             {% endif %}
-
                             {% if request.user.referent and request.user.financier %}
                             <div class="dropdown-divider"></div>
                             {% endif %}
-
                             {% if request.user.financier %}
                             <a
                                 class="dropdown-item{% if management_finance in request.path %} active{% endif %}"
@@ -172,7 +170,6 @@
                                 {% trans 'cashbook'|capfirst %}
                             </a>
                             {% endif %}
-
                             {% if request.user.referent or request.user.financier %}
                             <div class="dropdown-divider"></div>
                             <a

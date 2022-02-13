@@ -1,28 +1,25 @@
-# Skriptentool der [Fachschaft Mathematik/Physik/Informatik](https://mpi.fs.tum.de)
+# [Skriptentool](https://skripten.mpi.fs.tum.de/) der [Fachschaft Mathematik/Physik/Informatik](https://mpi.fs.tum.de)
 
 ## Konfiguration
 
-Die Datei `config.py` muss im Ordner `Skriptentool` angelegt werden:
+Die Datei `config.py` muss im Ordner `skriptentool` angelegt werden:
 
 ```python
-LOCAL = False
-SECRET_KEY = "****************"
-DEBUG = False
-SSL = True
-ALLOWED_HOSTS = ["skripten.mpi.fs.tum.de"]
-ADMINS = [("hertle@fs.tum.de", "hertle@fs.tum.de"), ("paul.fischer@fs.tum.de", "paul.fischer@fs.tum.de")]
-SENDER_EMAIL = "skripten@fs.tum.de"
-FINANCE_EMAILS = ["finanz@fs.tum.de"]
-REFERENT_EMAILS = ["skripten-owner@fs.tum.de"]
-QPILOT_USERNAME = "fsmpi"
-QPILOT_PASSWORD = "****************"
-DATABASE_PASSWORD = "****************"
+LOCAL = # Boolean, die angibt, ob das Tool lokal genutzt werden soll
+SECRET_KEY = # Secret Key (https://docs.djangoproject.com/en/2.2/ref/settings/#secret-key)
+DEBUG = # Boolean, die Angibt, ob sich das Tool im Debug-Modus befinden soll (https://docs.djangoproject.com/en/2.2/ref/settings/#debug)
+SSL = # Boolean, die angibt, ob das Tool über SSL erreicht werden soll (andere Verbindungen werden blockiert)
+ALLOWED_HOSTS = # Liste der FQDNs, über die das Tool erreicht werden soll (https://docs.djangoproject.com/en/2.2/ref/settings/#allowed-hosts)
+ADMINS = # Liste mit Personen, die E-Mail Benachrichtigungen bei Fehlern erhalten sollen (https://docs.djangoproject.com/en/2.2/ref/settings/#admins)
+SENDER_EMAIL = # E-Mail Adresse, über die das Tool Benachrichtigungen versendet (https://docs.djangoproject.com/en/2.2/ref/settings/#default-from-email)
+FINANCE_EMAILS = # Liste mit E-Mail Adressen, die Benachrichtigungen erhalten sollen, die Finanzer betreffen
+REFERENT_EMAILS = # Liste mit E-Mail Adressen, die Benachrichtigungen erhalten sollen, die Referenten betreffen
+DATABASE_PASSWORD = # Datenbankpasswort (Benutzername: skriptentool) (https://docs.djangoproject.com/en/2.2/ref/settings/#password)
+QPILOT_USERNAME = # Benutzername des Druckkontingent-Accounts
+QPILOT_PASSWORD = # Passwort des Druckkontingent-Accounts
 ```
 
 ## Bedienungsanleitung
-
-Das Skriptentool findet sich unter [skripten.mpi.fs.tum.de](https://skripten.mpi.fs.tum.de), die
-Anmeldung erfolgt mit dem Fachschaftsaccount.
 
 ### Verkäufer
 

@@ -1,11 +1,9 @@
 from django import template
 
-from core.utils.bootstrap import (
-    field_renderer,
-    formset_errors_renderer,
-    messages_renderer,
-    nonfield_errors_renderer,
-)
+from core.utils.bootstrap import field_renderer
+from core.utils.bootstrap import formset_errors_renderer
+from core.utils.bootstrap import messages_renderer
+from core.utils.bootstrap import nonfield_errors_renderer
 
 register = template.Library()
 

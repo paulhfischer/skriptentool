@@ -2,7 +2,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
-from django.utils import timezone, translation
+from django.utils import timezone
+from django.utils import translation
 from django.utils.formats import date_format
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
@@ -84,10 +85,9 @@ class CashBookEntry(models.Model):
     def correction(cls, user, amount):
         CashBookEntry(user=user, type=cls.CORRECTION, amount=amount).save()
 
-        # send email if balance is too high
         with translation.override(settings.LANGUAGE_CODE):
             send_mail(
-                subject=format_lazy("[Skriptentool] {}", _("High balance")),
+                subject=format_lazy("[Skriptentool] {}", _("Correction")),
                 message=render_to_string(
                     "core/mail/correction.txt",
                     {"user": user, "amount": amount},
@@ -98,12 +98,7 @@ class CashBookEntry(models.Model):
 
     @classmethod
     def withdrawal(cls, user, amount, comment):
-        CashBookEntry(
-            user=user,
-            type=cls.WITHDRAWAL,
-            detail=comment,
-            amount=amount,
-        ).save()
+        CashBookEntry(user=user, type=cls.WITHDRAWAL, detail=comment, amount=amount).save()
 
     @classmethod
     def deposit(cls, user, amount, comment):

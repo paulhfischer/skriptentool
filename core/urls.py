@@ -1,7 +1,10 @@
 from django.urls import path
 
 from core import views
-from core.views import CreateModelView, DeleteModelView, ListModelView, UpdateModelView
+from core.views import CreateModelView
+from core.views import DeleteModelView
+from core.views import ListModelView
+from core.views import UpdateModelView
 
 app_name = "core"
 

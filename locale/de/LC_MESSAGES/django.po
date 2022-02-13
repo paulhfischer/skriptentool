@@ -1,11 +1,10 @@
 # This file is distributed under the same license as the skriptentool package.
-# Paul Fischer <paul.fischer@tum.de>, 2020.
+# Paul Fischer <paul.fischer@mailbox.org>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: Skriptentool\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2020-10-25 15:00+0200\n"
-"Last-Translator: Paul Fischer <paul.fischer@tum.de>\n"
+"Last-Translator: Paul Fischer <paul.fischer@mailbox.org>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -185,8 +184,8 @@ msgid "detail"
 msgstr "Details"
 
 #: core/models/cashbookentry.py
-msgid "High balance"
-msgstr "Hoher Kassenstand"
+msgid "Correction"
+msgstr "Korrektur"
 
 #: core/models/depositnote.py
 msgid "deposit note"

@@ -1,4 +1,5 @@
-from django.db import migrations, models
+from django.db import migrations
+from django.db import models
 
 
 class Migration(migrations.Migration):
@@ -11,6 +12,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="cashbookentry",
             name="detail",
-            field=models.CharField(max_length=256, verbose_name="Details"),
+            field=models.CharField(
+                max_length=256,
+                verbose_name="Details",
+            ),
         ),
     ]

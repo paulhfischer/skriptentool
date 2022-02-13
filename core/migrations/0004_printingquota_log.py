@@ -1,7 +1,8 @@
 import django.db.models.deletion
 import django.utils.timezone
 from django.conf import settings
-from django.db import migrations, models
+from django.db import migrations
+from django.db import models
 
 
 class Migration(migrations.Migration):
@@ -25,15 +26,25 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "time",
-                    models.DateTimeField(default=django.utils.timezone.now, verbose_name="time"),
+                    models.DateTimeField(
+                        default=django.utils.timezone.now,
+                        verbose_name="time",
+                    ),
                 ),
                 (
                     "account",
-                    models.CharField(max_length=10, verbose_name="account"),
+                    models.CharField(
+                        max_length=10,
+                        verbose_name="account",
+                    ),
                 ),
                 (
                     "amount",
-                    models.IntegerField(blank=True, null=True, verbose_name="amount"),
+                    models.IntegerField(
+                        blank=True,
+                        null=True,
+                        verbose_name="amount",
+                    ),
                 ),
                 (
                     "type",

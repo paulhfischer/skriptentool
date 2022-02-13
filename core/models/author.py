@@ -22,8 +22,16 @@ class Author(models.Model):
         return self.name
 
     permissions = {
-        "list": {"is_referent": "__all__"},
-        "create": {"is_referent": "__all__"},
-        "update": {"is_referent": "__all__"},
-        "delete": ["is_referent"],
+        "list": {
+            "is_referent": "__all__",
+        },
+        "create": {
+            "is_referent": "__all__",
+        },
+        "update": {
+            "is_referent": "__all__",
+        },
+        "delete": [
+            "is_referent",
+        ],
     }

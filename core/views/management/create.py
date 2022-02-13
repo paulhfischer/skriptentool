@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib import messages
 from django.contrib.auth import password_validation
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm
+from django.forms import ValidationError
 from django.http import Http404
 from django.urls import reverse
 from django.utils.text import capfirst
@@ -10,7 +11,9 @@ from django.views.generic import CreateView
 
 from core.models import User
 from core.utils.functions import get_model
-from core.utils.management import get_fields, get_fieldsets, is_allowed
+from core.utils.management import get_fields
+from core.utils.management import get_fieldsets
+from core.utils.management import is_allowed
 
 
 def get_context(user, model):

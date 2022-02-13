@@ -8,7 +8,10 @@ from django.views.generic import UpdateView
 
 from core.models import User
 from core.utils.functions import get_model
-from core.utils.management import get_disabled_fields, get_fields, get_fieldsets, is_allowed
+from core.utils.management import get_disabled_fields
+from core.utils.management import get_fields
+from core.utils.management import get_fieldsets
+from core.utils.management import is_allowed
 
 
 def get_context(user, model, pk):
@@ -16,10 +19,7 @@ def get_context(user, model, pk):
         "verbose_name": model._meta.verbose_name,
         "mode": "update",
         "abort_url": reverse("core:management_list", args=[model.__name__.lower()]),
-        "delete_url": reverse(
-            "core:management_delete",
-            args=[model.__name__.lower(), pk],
-        )
+        "delete_url": reverse("core:management_delete", args=[model.__name__.lower(), pk])
         if is_allowed(user, model, "delete")
         else None,
         "fieldsets": get_fieldsets(user, model),
@@ -80,11 +80,7 @@ class UpdateModelView(UpdateView):
 
         context = super().get_context_data(**kwargs)
         context.update(
-            get_context(
-                self.request.user,
-                get_model(self.kwargs["model"]),
-                self.kwargs["pk"],
-            ),
+            get_context(self.request.user, get_model(self.kwargs["model"]), self.kwargs["pk"]),
         )
         return context
 

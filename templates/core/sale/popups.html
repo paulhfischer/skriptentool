@@ -1,15 +1,14 @@
 {% load i18n %}
 
 {% if add_deposit_ean %}
-{# popup if deposit note required #}
+{# popup for sale of deposit notes #}
 <script>
     $(window).on('load', () => {
         $('#addDepositModal').modal({
             backdrop: 'static',
-            keyboard: false
+            keyboard: false,
         });
     });
-
 </script>
 <div
     class="modal fade"
@@ -28,6 +27,7 @@
             <div class="modal-body">
                 <form method="post">
                     {% csrf_token %}
+
                     <div class="row">
                         <div class="col-6">
                             <button
@@ -58,18 +58,18 @@
 {% endif %}
 
 {% if remove_deposit_ean %}
-{# popup for refund of deposit note #}
+{# popup for refund of deposit notes #}
 <script>
     $(window).on('load', () => {
-        $('#removeDepositModal').modal({
+        $('#removeDepositModal')
+            .modal({
                 backdrop: 'static',
-                keyboard: false
+                keyboard: false,
             })
             .on('shown.bs.modal', () => {
                 $('#id_deposit_number').focus();
             });
     });
-
 </script>
 <div
     class="modal fade"
@@ -112,15 +112,14 @@
 {% endif %}
 
 {% if remove_old_deposit_ean %}
-{# popup for refund of old deposit note #}
+{# popup for refund of old deposit notes #}
 <script>
     $(window).on('load', () => {
         $('#removeOldDepositModal').modal({
             backdrop: 'static',
-            keyboard: false
+            keyboard: false,
         });
     });
-
 </script>
 <div
     class="modal fade"
@@ -177,10 +176,9 @@
     $(window).on('load', () => {
         $('#addQuotaModal').modal({
             backdrop: 'static',
-            keyboard: false
+            keyboard: false,
         });
     });
-
 </script>
 <div
     class="modal fade"
@@ -233,15 +231,14 @@
 {% endif %}
 
 {% if remove_quota_ean %}
-{# popup for adding printing quota #}
+{# popup for removing printing quota #}
 <script>
     $(window).on('load', () => {
         $('#removeQuotaModal').modal({
             backdrop: 'static',
-            keyboard: false
+            keyboard: false,
         });
     });
-
 </script>
 <div
     class="modal fade"

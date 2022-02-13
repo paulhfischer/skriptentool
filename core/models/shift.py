@@ -45,32 +45,17 @@ class Shift(models.Model):
             return str(
                 _("%(date)s (%(time_start)s until %(time_end)s)")
                 % {
-                    "date": date_format(
-                        timezone.localtime(self.time_start),
-                        "SHORT_DATE_FORMAT",
-                    ),
-                    "time_start": date_format(
-                        timezone.localtime(self.time_start),
-                        "TIME_FORMAT",
-                    ),
-                    "time_end": date_format(
-                        timezone.localtime(self.time_end),
-                        "TIME_FORMAT",
-                    ),
+                    "date": date_format(timezone.localtime(self.time_start), "SHORT_DATE_FORMAT"),
+                    "time_start": date_format(timezone.localtime(self.time_start), "TIME_FORMAT"),
+                    "time_end": date_format(timezone.localtime(self.time_end), "TIME_FORMAT"),
                 },
             )
         else:
             return str(
                 _("%(date)s (%(time_start)s until now)")
                 % {
-                    "date": date_format(
-                        timezone.localtime(self.time_start),
-                        "SHORT_DATE_FORMAT",
-                    ),
-                    "time_start": date_format(
-                        timezone.localtime(self.time_start),
-                        "TIME_FORMAT",
-                    ),
+                    "date": date_format(timezone.localtime(self.time_start), "SHORT_DATE_FORMAT"),
+                    "time_start": date_format(timezone.localtime(self.time_start), "TIME_FORMAT"),
                 },
             )
 
@@ -85,10 +70,14 @@ class Shift(models.Model):
             "is_referent": "__all__",
             "is_financier": "__all__",
         },
-        "create": {"is_admin": "__all__"},
+        "create": {
+            "is_admin": "__all__",
+        },
         "update": {
             "is_referent": ["vendor", "valid"],
             "is_financier": ["payout"],
         },
-        "delete": ["is_referent"],
+        "delete": [
+            "is_referent",
+        ],
     }
