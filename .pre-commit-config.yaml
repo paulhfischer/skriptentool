@@ -28,8 +28,8 @@ repos:
     rev: v1.2.0
     hooks:
       - id: lint
-  - repo: https://github.com/paulhfischer/eslint-config-javascript
-    rev: v1.2.0
+  - repo: https://github.com/paulhfischer/eslint-config-typescript
+    rev: v1.1.0
     hooks:
       - id: lint
   - repo: https://github.com/thibaudcolas/curlylint
