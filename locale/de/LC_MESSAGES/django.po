@@ -78,8 +78,8 @@ msgid "user"
 msgstr "Benutzer"
 
 #: core/models/balance.py core/models/cashbookentry.py
-#: core/models/printingquota_log.py core/views/finance.py
-#: templates/core/finance.html templates/core/shifts.html
+#: core/models/printingquota_log.py templates/core/finance.html
+#: templates/core/shifts.html
 msgid "time"
 msgstr "Zeitpunkt"
 
@@ -289,7 +289,7 @@ msgstr "EANs dürfen nur aus Zahlen bestehen."
 msgid "An article with this EAN already exists."
 msgstr "Ein Artikel mit dieser EAN existiert bereits."
 
-#: core/models/products.py templates/base.html
+#: core/models/products.py core/views/finance.py templates/base.html
 msgid "deposits"
 msgstr "Kautionen"
 
@@ -301,7 +301,7 @@ msgstr "Bezeichnung"
 msgid "deposit amount (in €)"
 msgstr "Kautionsbetrag (in €)"
 
-#: core/models/products.py templates/base.html
+#: core/models/products.py core/views/finance.py templates/base.html
 msgid "lecture notes"
 msgstr "Skripten"
 
@@ -412,8 +412,7 @@ msgstr "doppelseitig"
 msgid "subject"
 msgstr "Studienfach"
 
-#: core/models/products.py core/views/finance.py
-#: templates/core/sale/sale_process.html
+#: core/models/products.py templates/core/sale/sale_process.html
 msgid "price (in €)"
 msgstr "Preis (in €)"
 
@@ -457,7 +456,7 @@ msgstr "Anmerkungen für den Druck"
 msgid "PDF file"
 msgstr "PDF-Datei"
 
-#: core/models/products.py templates/base.html
+#: core/models/products.py core/views/finance.py templates/base.html
 msgid "printing quotas"
 msgstr "Druckkontingente"
 
@@ -588,9 +587,17 @@ msgstr "Druckkontingent gebucht"
 msgid "cashbook"
 msgstr "Kassenbuch"
 
-#: core/views/finance.py templates/core/finance.html
-msgid "description"
-msgstr "Beschreibung"
+#: core/views/finance.py
+msgid "date"
+msgstr "Datum"
+
+#: core/views/finance.py
+msgid "corrections"
+msgstr "Korrekturen"
+
+#: core/views/finance.py
+msgid "transactions"
+msgstr "Transaktionen"
 
 #: core/views/management/create.py
 msgid "password"
@@ -705,6 +712,10 @@ msgstr "aktualisieren"
 #: templates/core/finance.html
 msgid "export CSV"
 msgstr "CSV exportieren"
+
+#: templates/core/finance.html
+msgid "description"
+msgstr "Beschreibung"
 
 #: templates/core/mail/admin_log.txt
 #, python-format
