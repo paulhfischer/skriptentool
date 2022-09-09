@@ -52,8 +52,8 @@
         "webpack-remove-empty-scripts": "^0.7.3"
     },
     "devDependencies": {
-        "@paulhfischer/eslint-config-typescript": "^1.1.0",
-        "@paulhfischer/prettier-config": "1.1.0",
-        "@paulhfischer/stylelint-config": "1.2.0"
+        "@paulhfischer/eslint-config-typescript": "^1.14.5",
+        "@paulhfischer/prettier-config": "1.5.0",
+        "@paulhfischer/stylelint-config": "1.5.2"
     }
 }
