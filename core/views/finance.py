@@ -1,4 +1,5 @@
 import csv
+from collections import Counter
 from datetime import datetime
 from datetime import timedelta
 from itertools import chain
@@ -13,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from core.forms import CashbookForm
 from core.models import Balance
 from core.models import CashBookEntry
+from core.models.products import get_type
 
 
 def get_balances(start, end):
@@ -91,17 +93,55 @@ def finance(request):
             'attatchment; filename="{}.csv"',
             _("cashbook"),
         )
-        # create csv-file
+
+        cash_book_entries = CashBookEntry.objects.filter(time__range=[start, end])
+
         writer = csv.writer(response)
-        writer.writerow([_("time"), _("description"), _("price (in €)")])
-        for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end]):
+        writer.writerow(
+            [
+                _("date"),
+                _("lecture notes"),
+                _("deposits"),
+                _("printing quotas"),
+                _("corrections"),
+                _("transactions"),
+            ],
+        )
+        for day in set(cash_book_entries.values_list("time__date", flat=True)):
+            counter = Counter()
+            for cash_book_entry in cash_book_entries.filter(time__date=day):
+                if cash_book_entry.type == CashBookEntry.SALE:
+                    type = get_type(cash_book_entry.detail)
+                    if type == "lecturenote":
+                        counter["lecture notes"] += cash_book_entry.amount
+                        continue
+                    if type == "deposit":
+                        counter["deposits"] += cash_book_entry.amount
+                        continue
+                    if type == "printingquota":
+                        counter["printing quotas"] += cash_book_entry.amount
+                        continue
+                if cash_book_entry.type == CashBookEntry.CORRECTION:
+                    counter["corrections"] += cash_book_entry.amount
+                    continue
+                if cash_book_entry.type == CashBookEntry.WITHDRAWAL:
+                    counter["transactions"] += cash_book_entry.amount
+                    continue
+                if cash_book_entry.type == CashBookEntry.DEPOSIT:
+                    counter["transactions"] += cash_book_entry.amount
+                    continue
+
             writer.writerow(
                 [
-                    cash_book_entry.time.strftime("%Y-%m-%d %H:%M:%S"),
-                    cash_book_entry.text,
-                    cash_book_entry.amount,
+                    day.strftime("%Y-%m-%d"),
+                    counter["lecture notes"],
+                    counter["deposits"],
+                    counter["printing quotas"],
+                    counter["corrections"],
+                    counter["transactions"],
                 ],
             )
+
         return response
 
     context = {
