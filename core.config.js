@@ -40,6 +40,13 @@ const config = {
                 exclude: [],
                 use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
             },
+            {
+                test: /\.(woff|woff2)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'fonts/[hash][ext][query]',
+                },
+            },
         ],
     },
 
