@@ -77,7 +77,6 @@ class UpdateModelView(UpdateView):
     template_name = "core/management/update_model.html"
 
     def get_context_data(self, **kwargs):
-
         context = super().get_context_data(**kwargs)
         context.update(
             get_context(self.request.user, get_model(self.kwargs["model"]), self.kwargs["pk"]),

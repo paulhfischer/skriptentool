@@ -12,7 +12,6 @@ import skriptentool.storage
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0002_cashbookentry_comments"),
     ]

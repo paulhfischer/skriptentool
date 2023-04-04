@@ -50,14 +50,14 @@ class Shift(models.Model):
                     "time_end": date_format(timezone.localtime(self.time_end), "TIME_FORMAT"),
                 },
             )
-        else:
-            return str(
-                _("%(date)s (%(time_start)s until now)")
-                % {
-                    "date": date_format(timezone.localtime(self.time_start), "SHORT_DATE_FORMAT"),
-                    "time_start": date_format(timezone.localtime(self.time_start), "TIME_FORMAT"),
-                },
-            )
+
+        return str(
+            _("%(date)s (%(time_start)s until now)")
+            % {
+                "date": date_format(timezone.localtime(self.time_start), "SHORT_DATE_FORMAT"),
+                "time_start": date_format(timezone.localtime(self.time_start), "TIME_FORMAT"),
+            },
+        )
 
     @classmethod
     def end_shift(cls, user):

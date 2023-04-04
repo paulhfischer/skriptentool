@@ -21,8 +21,8 @@ from django.utils.translation import gettext_lazy as _
 def text_value(value):
     if value:
         return force_str(value)
-    else:
-        return ""
+
+    return ""
 
 
 def nonfield_errors_renderer(form):
