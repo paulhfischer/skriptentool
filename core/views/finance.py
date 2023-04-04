@@ -26,7 +26,7 @@ def get_balances(start, end):
         "amount",
         "type",
     ):
-        type_display = {k: v for k, v in Balance.TYPES}[balance[-1]]
+        type_display = dict(Balance.TYPES)[balance[-1]]
         balances.append(list(balance[:-1]) + [type_display])
     return balances
 
