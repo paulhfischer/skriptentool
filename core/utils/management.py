@@ -229,5 +229,5 @@ def is_allowed(user, model, action):
         return user.is_authenticated and any(
             group in model.permissions.get("delete") for group in user.groups
         )
-    else:
-        return user.is_authenticated and _get_allowed_fields(user, model, action)
+
+    return user.is_authenticated and _get_allowed_fields(user, model, action)

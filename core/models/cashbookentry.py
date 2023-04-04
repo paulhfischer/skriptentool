@@ -66,17 +66,20 @@ class CashBookEntry(models.Model):
     def text(self):
         if self.type == self.CORRECTION:
             return _("correction")
-        elif self.type == self.WITHDRAWAL:
+
+        if self.type == self.WITHDRAWAL:
             return (
                 format_lazy("{} ({})", _("withdrawal"), self.detail)
                 if self.detail
                 else _("withdrawal")
             )
-        elif self.type == self.DEPOSIT:
+
+        if self.type == self.DEPOSIT:
             return (
                 format_lazy("{} ({})", _("deposit"), self.detail) if self.detail else _("deposit")
             )
-        elif self.type == self.SALE:
+
+        if self.type == self.SALE:
             return format_lazy("{}: {}", _("EAN"), self.detail)
 
         raise TypeError

@@ -26,9 +26,11 @@ def get_product(ean):
     ean = str(ean)
     if LectureNote.objects.filter(ean=ean).exists():
         return LectureNote.objects.get(ean=ean)
-    elif PrintingQuota.objects.filter(ean=ean).exists():
+
+    if PrintingQuota.objects.filter(ean=ean).exists():
         return PrintingQuota.objects.get(ean=ean)
-    elif Deposit.objects.filter(ean=ean).exists():
+
+    if Deposit.objects.filter(ean=ean).exists():
         return Deposit.objects.get(ean=ean)
 
     raise ObjectDoesNotExist(_("There is no article matching the EAN %(ean)s.") % {"ean": ean})
@@ -42,7 +44,6 @@ def get_type(ean):
 def generate_cover(lecturenote):
     # switch to default language
     with translation.override(settings.LANGUAGE_CODE):
-
         # generate semester-string (depending on range or single-semester)
         if lecturenote.semester_end:
             semester = _(
@@ -93,7 +94,6 @@ def generate_cover(lecturenote):
 def generate_order(lecturenote):
     # switch to default language
     with translation.override(settings.LANGUAGE_CODE):
-
         # open xfdf-template for orders
         with open(settings.ORDER_TEMPLATE_CONTENT_FILE) as f:
             template = f.read()
@@ -433,7 +433,6 @@ class LectureNote(models.Model):
             ]
             for item in self.changed_fields()
         ):
-
             errors = generate_cover(self)
             if errors:
                 raise ValidationError(errors)
@@ -443,7 +442,6 @@ class LectureNote(models.Model):
             item in ["ean", "color", "papersize", "sides", "subject", "printnotes"]
             for item in self.changed_fields()
         ):
-
             errors = generate_order(self)
             if errors:
                 raise ValidationError(errors)
