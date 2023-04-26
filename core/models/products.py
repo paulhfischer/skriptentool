@@ -32,6 +32,9 @@ def get_product(ean):
 
     if Deposit.objects.filter(ean=ean).exists():
         return Deposit.objects.get(ean=ean)
+        
+    if Labcoat.objects.filter(ean=ean).exists():
+        return Labcoat.objects.get(ean=ean)
 
     raise ObjectDoesNotExist(_("There is no article matching the EAN %(ean)s.") % {"ean": ean})
 
@@ -183,6 +186,7 @@ def ean_unique(obj, model, exclude):
         LectureNote.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists()
         or PrintingQuota.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists()
         or Deposit.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists()
+        or Labcoat.objects.exclude(pk=obj.pk).filter(ean=obj.ean).exists()
     ):
         errors.update({"ean": [_("An article with this EAN already exists.")]})
 
@@ -502,6 +506,84 @@ class PrintingQuota(models.Model):
     @property
     def name(self):
         return _("%(num)d pages") % {"num": self.pages}
+
+    permissions = {
+        "list": {
+            "is_referent": "__all__",
+        },
+        "create": {
+            "is_referent": "__all__",
+        },
+        "update": {
+            "is_referent": "__all__",
+        },
+        "delete": [
+            "is_referent",
+        ],
+    }
+
+
+class Labcoat(models.Model):
+    class Meta():
+        verbose_name = _("labcoat")
+        verbose_name_plural = _("labcoats")
+        ordering = ["ean"]
+        
+    SIZES = [
+        ("34", "34"),
+        ("36", "36"),
+        ("38", "38"),
+        ("40", "40"),
+        ("42", "42"),
+        ("44", "44"),
+        ("46", "46"),
+        ("48", "48"),
+        ("50", "50"),
+        ("52", "52"),
+        ("54", "54"),
+        ("56", "56"),
+        ("58", "58"),
+    ]
+    
+    ean = models.CharField(
+        max_length=20,
+        validators=[validate_ean],
+        verbose_name=_("EAN"),
+    )
+    
+    price = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        verbose_name=_("price (in €)"),
+    )
+    
+    stock = models.IntegerField(
+        default=0,
+        verbose_name=_("stock"),
+    )
+    
+    active = models.BooleanField(
+        verbose_name=_("for sale"),
+    )
+    
+    size = models.CharField(
+        max_length=20,
+        choices=SIZES,
+        blank=True,
+        null=True,
+        verbose_name=_("size"),
+    )
+    
+    def __str__(self):
+        return f"{self.name} ({self.ean})"
+
+    def clean_fields(self, exclude=None):
+        # overwrite validation function to check if ean is unique across all products
+        ean_unique(self, Labcoat, exclude)
+
+    @property
+    def name(self):
+        return _("size %(str)s") % {"str": self.size}
 
     permissions = {
         "list": {

@@ -9,6 +9,7 @@ from .balance import Balance
 from .products import LectureNote
 from .products import PrintingQuota
 from .products import Deposit
+from .products import Labcoat
 from .products import get_product
 from .products import get_type
 from .cart import Cart
@@ -26,6 +27,7 @@ __all__ = [
     "LectureNote",
     "PrintingQuota",
     "Deposit",
+    "Labcoat",
     "get_product",
     "get_type",
     "Cart",

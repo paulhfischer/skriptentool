@@ -103,6 +103,7 @@ def finance(request):
                 _("lecture notes"),
                 _("deposits"),
                 _("printing quotas"),
+                _("labcoats"),
                 _("corrections"),
                 _("transactions"),
             ],
@@ -121,6 +122,9 @@ def finance(request):
                     if type == "printingquota":
                         counter["printing quotas"] += cash_book_entry.amount
                         continue
+                    if type == "labcoat":
+                        counter["labcoats"] += cash_book_entry.amount
+                        continue
                 if cash_book_entry.type == CashBookEntry.CORRECTION:
                     counter["corrections"] += cash_book_entry.amount
                     continue
@@ -137,6 +141,7 @@ def finance(request):
                     counter["lecture notes"],
                     counter["deposits"],
                     counter["printing quotas"],
+                    counter["labcoats"],
                     counter["corrections"],
                     counter["transactions"],
                 ],

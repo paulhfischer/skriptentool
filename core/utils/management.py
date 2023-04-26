@@ -6,6 +6,7 @@ from core.models import Deposit
 from core.models import DepositNote
 from core.models import LectureNote
 from core.models import PrintingQuota
+from core.models import Labcoat
 from core.models import Shift
 from core.models import User
 
@@ -94,6 +95,21 @@ SETTINGS = {
         ],
         "columns": {
             "fields": ["ean", "pages", "price", "active"],
+        },
+    },
+    Labcoat: {
+        "fieldsets": [
+            {
+                "legend": None,
+                "fields": ["ean", "stock", "active"],
+            },
+            {
+                "legend":_("properties"),
+                "fields": ["price", "size"],
+            },
+        ],
+        "columns": {
+            "fields": ["ean", "stock",  "active", "price", "size"],
         },
     },
     Shift: {

@@ -12,6 +12,7 @@
 {% url 'core:management_list' 'shift' as management_shift %}
 {% url 'core:management_list' 'printingquota' as management_printingquota %}
 {% url 'core:management_list' 'deposit' as management_deposit %}
+{% url 'core:management_list' 'labcoat' as management_labcoat %}
 {% url 'core:management_list' 'user' as management_user %}
 
 {% get_current_language as LANGUAGE_CODE %}
@@ -157,6 +158,12 @@
                                 href="{{ management_deposit }}"
                             >
                                 {% trans 'deposits'|capfirst %}
+                            </a>
+							<a
+                                class="dropdown-item{% if management_deposit in request.path %} active{% endif %}"
+                                href="{{ management_labcoat }}"
+                            >
+                                {% trans 'labcoats'|capfirst %}
                             </a>
                             {% endif %}
                             {% if request.user.referent and request.user.financier %}
