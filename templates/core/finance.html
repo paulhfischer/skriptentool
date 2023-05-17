@@ -7,7 +7,7 @@
 {% block content %}
 <div class="card spacer-b">
     <h2 class="card-header">
-        {% trans 'management'|capfirst %}
+        {% trans 'management' %}
         <div class="input-group w-auto float-lg-right spacer-t-md">
             <div class="input-group-prepend">
                 <span class="input-group-text">{% trans 'balance'|capfirst %}</span>
@@ -22,6 +22,14 @@
                 <span class="input-group-text">€</span>
             </div>
         </div>
+		<div class="card w-auto float-lg-right spacer-t-md">
+			<a
+				class="btn btn-block btn-primary"
+				href="{% url "core:management_finance" next_location %}"
+			>
+				{% trans location|capfirst %} - {% trans 'click to change' %}
+			</a>
+		</div>				
     </h2>
     <div class="card-body">
         <form

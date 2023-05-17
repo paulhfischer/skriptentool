@@ -25,7 +25,7 @@ urlpatterns = [
         name="shifts",
     ),
     path(
-        "management/finance/",
+        "management/finance/<str:location>",
         views.finance,
         name="management_finance",
     ),

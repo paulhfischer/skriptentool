@@ -60,6 +60,14 @@ class User(AbstractBaseUser):
     EMAIL_FIELD = "mail"
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["mail", "first_name", "last_name"]
+    
+    MI = "MI"
+    CH = "CH"
+    
+    LOCATIONS = [
+        (MI, _("MI")),
+        (CH, _("CH")),
+    ]
 
     objects = UserManager()
 
@@ -87,6 +95,13 @@ class User(AbstractBaseUser):
     last_name = models.CharField(
         max_length=256,
         verbose_name=_("last name"),
+    )
+    
+    default_location = models.CharField(
+    max_length=20,
+    choices=LOCATIONS,
+    default=MI,
+    verbose_name=_("default location"),
     )
 
     vendor = models.BooleanField(

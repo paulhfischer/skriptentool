@@ -30,6 +30,14 @@ class Balance(models.Model):
         (CLOSING, _("closing")),
         (TEMPORARY, _("temporary")),
     ]
+    
+    MI = "MI"
+    CH = "CH"
+    
+    LOCATIONS = [
+        (MI, _("MI")),
+        (CH, _("CH")),
+    ]
 
     user = models.ForeignKey(
         User,
@@ -58,6 +66,13 @@ class Balance(models.Model):
         choices=TYPES,
         verbose_name=_("type"),
     )
+    
+    location = models.CharField(
+        max_length=20,
+        choices=LOCATIONS,
+        default=MI,
+        verbose_name=_("location"),
+    )
 
     def __str__(self):
         return date_format(timezone.localtime(self.time), "SHORT_DATETIME_FORMAT")
@@ -67,7 +82,7 @@ class Balance(models.Model):
         return self.type == self.OPENING
 
     @classmethod
-    def count_latest(cls, user, amount):
+    def count_latest(cls, user, amount, location=location):
         # set counted of the latest model instance to true if counted amount is correct, add
         # correction otherwise
         latest = Balance.objects.latest("time")
@@ -76,38 +91,39 @@ class Balance(models.Model):
             latest.save()
 
             # remove all temporary balances
-            Balance.objects.filter(type=cls.TEMPORARY).exclude(pk=latest.pk).delete()
+            Balance.objects.filter(type=cls.TEMPORARY, location=location).exclude(pk=latest.pk).delete()
         else:
-            CashBookEntry.correction(user, amount - latest.amount)
+            CashBookEntry.correction(user, amount - latest.amount, location)
 
             latest.counted = True
             latest.amount = amount
             latest.save()
 
             # remove all temporary balances
-            Balance.objects.filter(type=cls.TEMPORARY).exclude(pk=latest.pk).delete()
+            Balance.objects.filter(type=cls.TEMPORARY, location=location).exclude(pk=latest.pk).delete()
 
     @classmethod
-    def add_temp(cls, user, amount, counted):
-        Balance(user=user, amount=amount, counted=counted, type=cls.TEMPORARY).save()
+    def add_temp(cls, user, amount, counted, location):
+        Balance(user=user, amount=amount, counted=counted, type=cls.TEMPORARY, location=location).save()
 
     @classmethod
-    def add_update(cls, user, amount):
+    def add_update(cls, user, amount, location):
         Balance.objects.filter(type=cls.TEMPORARY).delete()
-        Balance(user=user, amount=amount, counted=True, type=cls.TEMPORARY).save()
+        Balance(user=user, amount=amount, counted=True, type=cls.TEMPORARY, location=location).save()
 
     @classmethod
-    def add_opening(cls, user):
+    def add_opening(cls, user, location):
         Balance(
             user=user,
             amount=Balance.objects.latest("time").amount,
             counted=False,
             type=cls.OPENING,
+            location=location,
         ).save()
 
     @classmethod
-    def add_closing(cls, user, amount):
-        Balance(user=user, amount=amount, counted=True, type=cls.CLOSING).save()
+    def add_closing(cls, user, amount, location):
+        Balance(user=user, amount=amount, counted=True, type=cls.CLOSING, location=location).save()
         Balance.objects.filter(type=cls.TEMPORARY).delete()
 
         # send email if balance is too high

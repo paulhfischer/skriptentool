@@ -350,9 +350,14 @@ class LectureNote(models.Model):
         verbose_name=pgettext_lazy("security deposit", "deposit"),
     )
 
-    stock = models.IntegerField(
+    stock_MI = models.IntegerField(
         default=0,
-        verbose_name=_("stock"),
+        verbose_name=_("stock (MI)"),
+    )
+    
+    stock_CH = models.IntegerField(
+        default=0,
+        verbose_name=_("stock (CH)"),
     )
 
     color = models.CharField(
@@ -495,6 +500,11 @@ class PrintingQuota(models.Model):
     active = models.BooleanField(
         verbose_name=_("for sale"),
     )
+    
+    qpilot = models.BooleanField(
+        verbose_name=_("Qpilot connection"),
+        default=True,
+    )
 
     def __str__(self):
         return f"{self.name} ({self.ean})"
@@ -557,9 +567,14 @@ class Labcoat(models.Model):
         verbose_name=_("price (in €)"),
     )
     
-    stock = models.IntegerField(
+    stock_MI = models.IntegerField(
         default=0,
-        verbose_name=_("stock"),
+        verbose_name=_("stock (MI)"),
+    )
+    
+    stock_CH = models.IntegerField(
+        default=0,
+        verbose_name=_("stock (CH)"),
     )
     
     active = models.BooleanField(

@@ -17,10 +17,10 @@ from core.models import CashBookEntry
 from core.models.products import get_type
 
 
-def get_balances(start, end):
+def get_balances(start, end, location):
     # convert choices field to display_value
     balances = []
-    for balance in Balance.objects.filter(time__range=[start, end]).values_list(
+    for balance in Balance.objects.filter(time__range=[start, end], location=location).values_list(
         "time",
         "user",
         "amount",
@@ -31,9 +31,9 @@ def get_balances(start, end):
     return balances
 
 
-def get_cashbookentries(start, end):
+def get_cashbookentries(start, end, location):
     values = []
-    for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end]):
+    for cash_book_entry in CashBookEntry.objects.filter(time__range=[start, end], location=location):
         values.append(
             (
                 cash_book_entry.time,
@@ -45,9 +45,14 @@ def get_cashbookentries(start, end):
     return values
 
 
-def finance(request):
+def finance(request, location: str):
     if not request.user.is_authenticated or not request.user.financier:
         raise Http404
+        
+    if location == "MI":
+        next_location="CH"
+    if location == "CH":
+        next_location="MI"
 
     start = timezone.make_aware(
         datetime.fromisoformat((datetime.today().date() - timedelta(weeks=1)).strftime("%Y-%m-%d")),
@@ -80,11 +85,11 @@ def finance(request):
 
         # update balance depending on action is deposit or withdrawal
         if update > 0:
-            CashBookEntry.deposit(request.user, update, comment)
-            Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
+            CashBookEntry.deposit(request.user, update, comment, location)
+            Balance.add_update(request.user, Balance.objects.latest("time").amount + update, location)
         elif update < 0:
-            CashBookEntry.withdrawal(request.user, update, comment)
-            Balance.add_update(request.user, Balance.objects.latest("time").amount + update)
+            CashBookEntry.withdrawal(request.user, update, comment, location)
+            Balance.add_update(request.user, Balance.objects.latest("time").amount + update, location)
 
     # 'CSV-Export'-button triggered
     if action_csv:
@@ -94,7 +99,7 @@ def finance(request):
             _("cashbook"),
         )
 
-        cash_book_entries = CashBookEntry.objects.filter(time__range=[start, end])
+        cash_book_entries = CashBookEntry.objects.filter(time__range=[start, end], location=location)
 
         writer = csv.writer(response)
         writer.writerow(
@@ -150,16 +155,19 @@ def finance(request):
         return response
 
     context = {
+        #location
+        "location": location,
         # prepopulated values for time range
         "cashbook_form": CashbookForm(initial={"start": start, "end": end - timedelta(days=1)}),
         # cashbook entries in selected time range
         "cashbook": sorted(
-            chain(get_cashbookentries(start, end), get_balances(start, end)),
+            chain(get_cashbookentries(start, end, location), get_balances(start, end, location)),
             key=lambda x: x[0],
             reverse=True,
         ),
         # current balance
-        "balance": str(Balance.objects.latest("time").amount),
+        "balance": str(Balance.objects.filter(location=location).latest("time").amount),
+        "next_location": next_location
     }
 
     return render(request, "core/finance.html", context)

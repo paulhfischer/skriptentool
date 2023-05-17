@@ -12,6 +12,14 @@ class Shift(models.Model):
         verbose_name_plural = _("sales shifts")
         ordering = ["-time_start"]
 
+    MI = "MI"
+    CH = "CH"
+    
+    LOCATIONS = [
+        (MI, _("MI")),
+        (CH, _("CH")),
+    ]
+
     time_start = models.DateTimeField(
         default=timezone.now,
         verbose_name=_("start time"),
@@ -38,6 +46,13 @@ class Shift(models.Model):
         default=False,
         verbose_name=_("beverages"),
     )
+    
+    location = models.CharField(
+        max_length=20,
+        choices=LOCATIONS,
+        default=MI,
+        verbose_name=_("location"),
+    )
 
     # generate displayname (depending on range or single-semester)
     def __str__(self):
@@ -60,8 +75,8 @@ class Shift(models.Model):
         )
 
     @classmethod
-    def end_shift(cls, user):
-        shift = Shift.objects.filter(vendor=user).latest("time_start")
+    def end_shift(cls, user, location):
+        shift = Shift.objects.filter(vendor=user, location=location).latest("time_start")
         shift.time_end = timezone.now()
         shift.save()
 
@@ -74,7 +89,7 @@ class Shift(models.Model):
             "is_admin": "__all__",
         },
         "update": {
-            "is_referent": ["vendor", "valid"],
+            "is_referent": ["vendor", "location", "valid"],
             "is_financier": ["payout"],
         },
         "delete": [

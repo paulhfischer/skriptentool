@@ -15,7 +15,7 @@ SETTINGS = {
         "fieldsets": [
             {
                 "legend": None,
-                "fields": ["ean", "stock", "active"],
+                "fields": ["ean", "stock_MI", "stock_CH", "active"],
             },
             {
                 "legend": _("properties"),
@@ -36,11 +36,11 @@ SETTINGS = {
             },
         ],
         "columns": {
-            "fields": ["ean", "name", "subject", "active", "stock", "printnotes"],
+            "fields": ["ean", "name", "subject", "active", "stock_MI", "stock_CH", "printnotes"],
             "styles": {
                 "ean": ["width: 100px"],
                 "active": ["width: 75px"],
-                "stock": ["width: 50px"],
+                "stock_MI": ["width: 50px"],
                 "printnotes": ["width: 200px"],
             },
         },
@@ -90,18 +90,18 @@ SETTINGS = {
         "fieldsets": [
             {
                 "legend": None,
-                "fields": ["ean", "pages", "price", "active"],
+                "fields": ["ean", "pages", "price", "active", "qpilot"],
             },
         ],
         "columns": {
-            "fields": ["ean", "pages", "price", "active"],
+            "fields": ["ean", "pages", "price", "active", "qpilot"],
         },
     },
     Labcoat: {
         "fieldsets": [
             {
                 "legend": None,
-                "fields": ["ean", "stock", "active"],
+                "fields": ["ean", "stock_MI", "stock_CH", "active"],
             },
             {
                 "legend":_("properties"),
@@ -109,18 +109,18 @@ SETTINGS = {
             },
         ],
         "columns": {
-            "fields": ["ean", "stock",  "active", "price", "size"],
+            "fields": ["ean", "stock_MI",  "stock_CH", "active", "price", "size"],
         },
     },
     Shift: {
         "fieldsets": [
             {
                 "legend": None,
-                "fields": ["time_start", "time_end", "vendor", "valid", "payout"],
+                "fields": ["time_start", "time_end", "vendor", "location", "valid", "payout"],
             },
         ],
         "columns": {
-            "fields": ["time_start", "time_end", "vendor", "valid", "payout"],
+            "fields": ["time_start", "time_end", "vendor","location", "valid", "payout"],
         },
     },
     User: {
@@ -131,6 +131,7 @@ SETTINGS = {
                     "first_name",
                     "last_name",
                     "username",
+                    "default_location",
                     "mail",
                     "password",
                     "password_repeat",
@@ -142,7 +143,7 @@ SETTINGS = {
             },
         ],
         "columns": {
-            "fields": ["username", "vendor", "referent", "financier", "admin"],
+            "fields": ["username", "default_location", "vendor", "referent", "financier", "admin"],
         },
     },
 }

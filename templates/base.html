@@ -5,7 +5,7 @@
 {% url 'core:catalogue' as catalogue_url %}
 {% url 'core:sale' as sale_url %}
 {% url 'core:shifts' as shifts_url %}
-{% url 'core:management_finance' as management_finance %}
+{% url 'core:management_finance' 'MI' as management_finance %}
 {% url 'core:management_list' 'lecturenote' as management_lecturenote %}
 {% url 'core:management_list' 'author' as management_author%}
 {% url 'core:management_list' 'depositnote' as management_depositnote %}
@@ -160,7 +160,7 @@
                                 {% trans 'deposits'|capfirst %}
                             </a>
 							<a
-                                class="dropdown-item{% if management_deposit in request.path %} active{% endif %}"
+                                class="dropdown-item{% if management_labcoat in request.path %} active{% endif %}"
                                 href="{{ management_labcoat }}"
                             >
                                 {% trans 'labcoats'|capfirst %}

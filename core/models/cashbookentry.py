@@ -28,6 +28,14 @@ class CashBookEntry(models.Model):
         (DEPOSIT, _("deposit")),
         (SALE, _("sale")),
     ]
+    
+    MI = "MI"
+    CH = "CH"
+    
+    LOCATIONS = [
+        (MI, _("MI")),
+        (CH, _("CH")),
+    ]
 
     user = models.ForeignKey(
         User,
@@ -58,6 +66,13 @@ class CashBookEntry(models.Model):
         decimal_places=2,
         verbose_name=_("amount (in €)"),
     )
+    
+    location = models.CharField(
+        max_length=20,
+        choices=LOCATIONS,
+        default=MI,
+        verbose_name=_("location"),
+    )
 
     def __str__(self):
         return date_format(timezone.localtime(self.time), "SHORT_DATETIME_FORMAT")
@@ -85,8 +100,8 @@ class CashBookEntry(models.Model):
         raise TypeError
 
     @classmethod
-    def correction(cls, user, amount):
-        CashBookEntry(user=user, type=cls.CORRECTION, amount=amount).save()
+    def correction(cls, user, amount, location):
+        CashBookEntry(user=user, type=cls.CORRECTION, amount=amount, location=location).save()
 
         with translation.override(settings.LANGUAGE_CODE):
             send_mail(
@@ -100,13 +115,13 @@ class CashBookEntry(models.Model):
             )
 
     @classmethod
-    def withdrawal(cls, user, amount, comment):
-        CashBookEntry(user=user, type=cls.WITHDRAWAL, detail=comment, amount=amount).save()
+    def withdrawal(cls, user, amount, comment, location):
+        CashBookEntry(user=user, type=cls.WITHDRAWAL, detail=comment, amount=amount, location=location).save()
 
     @classmethod
-    def deposit(cls, user, amount, comment):
-        CashBookEntry(user=user, type=cls.DEPOSIT, detail=comment, amount=amount).save()
+    def deposit(cls, user, amount, comment, location):
+        CashBookEntry(user=user, type=cls.DEPOSIT, detail=comment, amount=amount, location=location).save()
 
     @classmethod
-    def sale(cls, user, ean, amount):
-        CashBookEntry(user=user, type=cls.SALE, detail=ean, amount=amount).save()
+    def sale(cls, user, ean, amount, location):
+        CashBookEntry(user=user, type=cls.SALE, detail=ean, amount=amount, location=location).save()

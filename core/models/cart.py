@@ -24,6 +24,14 @@ class Cart(models.Model):
     CLOSING = "closing"
     SALE = "sale"
 
+    MI = "MI"
+    CH = "CH"
+    
+    LOCATIONS = [
+        (MI, _("MI")),
+        (CH, _("CH")),
+    ]
+
     vendor = models.OneToOneField(
         User,
         on_delete=models.PROTECT,
@@ -34,31 +42,39 @@ class Cart(models.Model):
         default=timezone.now,
         verbose_name=_("time of creation"),
     )
+    
+    location = models.CharField(
+        max_length=20,
+        choices=LOCATIONS,
+        default=MI,
+        verbose_name=_("location"),
+    )
 
     def __str__(self):
         return str(self.vendor)
 
     def clean(self):
         # verify that only one cart can be created
-        if self.objects.count() > 0 and self.pk != self.objects.get().pk:
+        if self.objects.filter(location=self.vendor.default_location).count() > 0 and self.pk != self.objects.filter(location=self.vendor.default_location).get().pk:
             raise ValidationError(_("There can only be one sale at a time."))
 
     def close(self, reason=CLOSING):
         # add sale entry to cashbook for every item in cart
-        for cart_item in CartItem.objects.filter(cart=self):
+        for cart_item in CartItem.objects.filter(cart=self, location=self.vendor.default_location):
             for _i in range(abs(cart_item.quantity)):
                 CashBookEntry.sale(
                     self.vendor,
                     cart_item.ean,
                     copysign(cart_item.price_single, cart_item.quantity),
+                    self.vendor.default_location,
                 )
 
         # add cashbookentry and end shift if cart is closed
         if reason == self.SALE and self.total != 0:
-            Balance.add_temp(self.vendor, Balance.objects.latest("time").amount + self.total, False)
+            Balance.add_temp(self.vendor, Balance.objects.latest("time").amount + self.total, False, self.vendor.default_location)
         elif reason == self.CLOSING:
-            Balance.add_closing(self.vendor, Balance.objects.latest("time").amount + self.total)
-            Shift.end_shift(self.vendor)
+            Balance.add_closing(self.vendor, Balance.objects.latest("time").amount + self.total, self.vendor.default_location)
+            Shift.end_shift(self.vendor, self.vendor.default_location)
 
         # remove cart
         self.delete()
@@ -68,7 +84,7 @@ class Cart(models.Model):
         if product.active:
             # increase quanity of cartitem if already exists, create new otherwise
             try:
-                cart_item = CartItem.objects.get(ean=ean, cart=self)
+                cart_item = CartItem.objects.get(ean=ean, cart=self, location=self.vendor.default_location)
 
                 # delete item if quantity would be '0'
                 if cart_item.quantity == -1:
@@ -79,17 +95,25 @@ class Cart(models.Model):
 
                 # update stock if attribute exists
                 try:
-                    product.stock -= 1
-                    product.save()
+                    if self.vendor.default_location == "MI":
+                        product.stock_MI -= 1
+                        product.save()
+                    if self.vendor.default_location == "CH":
+                        product.stock_CH -= 1
+                        product.save()                        
                 except AttributeError:
                     pass
             except ObjectDoesNotExist:
-                CartItem(ean=ean, quantity=1, type=get_type(ean), cart=self).save()
+                CartItem(ean=ean, quantity=1, type=get_type(ean), cart=self, location=self.vendor.default_location).save()
 
                 # update stock if attribute exists
                 try:
-                    product.stock -= 1
-                    product.save()
+                    if self.vendor.default_location == "MI":
+                        product.stock_MI -= 1
+                        product.save()
+                    if self.vendor.default_location == "CH":
+                        product.stock_CH -= 1
+                        product.save()         
                 except AttributeError:
                     pass
 
@@ -98,7 +122,7 @@ class Cart(models.Model):
         if product.active:
             # decrease quanity of cartitem if already exists, create new otherwise
             try:
-                cart_item = CartItem.objects.get(ean=ean, cart=self)
+                cart_item = CartItem.objects.get(ean=ean, cart=self, location=self.vendor.default_location)
 
                 # delete item if quantity would be '0'
                 if cart_item.quantity == 1:
@@ -109,30 +133,38 @@ class Cart(models.Model):
 
                 # update stock if attribute exists
                 try:
-                    product.stock += 1
-                    product.save()
+                    if self.vendor.default_location == "MI":
+                        product.stock_MI += 1
+                        product.save()
+                    if self.vendor.default_location == "CH":
+                        product.stock_CH += 1
+                        product.save()         
                 except AttributeError:
                     pass
             except ObjectDoesNotExist:
-                CartItem(ean=ean, quantity=-1, type=get_type(ean), cart=self).save()
+                CartItem(ean=ean, quantity=-1, type=get_type(ean), cart=self, location=self.vendor.default_location).save()
 
                 # update stock if attribute exists
                 try:
-                    product.stock += 1
-                    product.save()
+                    if self.vendor.default_location == "MI":
+                        product.stock_MI += 1
+                        product.save()
+                    if self.vendor.default_location == "CH":
+                        product.stock_CH += 1
+                        product.save()  
                 except AttributeError:
                     pass
 
     @property
     def is_empty(self):
-        return not CartItem.objects.filter(cart=self).exists()
+        return not CartItem.objects.filter(cart=self, location=self.vendor.default_location).exists()
 
     @property
     def total(self):
         # count total balance of cart (sum up price of all cart items)
         total = 0
         if not self.is_empty:
-            cart_items = CartItem.objects.filter(cart=self)
+            cart_items = CartItem.objects.filter(cart=self, location=self.vendor.default_location)
             for item in cart_items:
                 total += item.price_total
         return total
@@ -154,6 +186,14 @@ class CartItem(models.Model):
         (PRINTINGQUOTA, _("printing quota")),
         (DEPOSIT, pgettext_lazy("security deposit", "deposit")),
     ]
+    
+    MI = "MI"
+    CH = "CH"
+    
+    LOCATIONS = [
+        (MI, _("MI")),
+        (CH, _("CH")),
+    ]
 
     ean = models.CharField(
         max_length=20,
@@ -174,6 +214,13 @@ class CartItem(models.Model):
         Cart,
         on_delete=models.CASCADE,
         verbose_name=_("cart"),
+    )
+    
+    location = models.CharField(
+        max_length=20,
+        choices=LOCATIONS,
+        default=MI,
+        verbose_name=_("location"),
     )
 
     def __str__(self):
