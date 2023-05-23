@@ -82,10 +82,10 @@ class Balance(models.Model):
         return self.type == self.OPENING
 
     @classmethod
-    def count_latest(cls, user, amount, location=location):
+    def count_latest(cls, user, amount, location):
         # set counted of the latest model instance to true if counted amount is correct, add
         # correction otherwise
-        latest = Balance.objects.latest("time")
+        latest = Balance.objects.filter(location=location).latest("time")
         if latest.amount == amount:
             latest.counted = True
             latest.save()
@@ -108,14 +108,14 @@ class Balance(models.Model):
 
     @classmethod
     def add_update(cls, user, amount, location):
-        Balance.objects.filter(type=cls.TEMPORARY).delete()
+        Balance.objects.filter(type=cls.TEMPORARY, location=location).delete()
         Balance(user=user, amount=amount, counted=True, type=cls.TEMPORARY, location=location).save()
 
     @classmethod
     def add_opening(cls, user, location):
         Balance(
             user=user,
-            amount=Balance.objects.latest("time").amount,
+            amount=Balance.objects.filter(location=location).latest("time").amount,
             counted=False,
             type=cls.OPENING,
             location=location,
@@ -124,7 +124,7 @@ class Balance(models.Model):
     @classmethod
     def add_closing(cls, user, amount, location):
         Balance(user=user, amount=amount, counted=True, type=cls.CLOSING, location=location).save()
-        Balance.objects.filter(type=cls.TEMPORARY).delete()
+        Balance.objects.filter(type=cls.TEMPORARY, location=location).delete()
 
         # send email if balance is too high
         if amount >= 1000:

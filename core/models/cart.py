@@ -71,9 +71,9 @@ class Cart(models.Model):
 
         # add cashbookentry and end shift if cart is closed
         if reason == self.SALE and self.total != 0:
-            Balance.add_temp(self.vendor, Balance.objects.latest("time").amount + self.total, False, self.vendor.default_location)
+            Balance.add_temp(self.vendor, Balance.objects.filter(location=self.vendor.default_location).latest("time").amount + self.total, False, self.vendor.default_location)
         elif reason == self.CLOSING:
-            Balance.add_closing(self.vendor, Balance.objects.latest("time").amount + self.total, self.vendor.default_location)
+            Balance.add_closing(self.vendor, Balance.objects.filter(location=self.vendor.default_location).latest("time").amount + self.total, self.vendor.default_location)
             Shift.end_shift(self.vendor, self.vendor.default_location)
 
         # remove cart

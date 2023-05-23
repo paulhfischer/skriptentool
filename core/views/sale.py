@@ -23,18 +23,18 @@ def sale(request):
         raise Http404
 
     form = SaleForm(request.POST)
+    
+    #check users location
+    location = request.user.default_location
 
     # get current cart, return false otherwise (needed for permissions logic)
-    cart = Cart.objects.first()
+    cart = Cart.objects.filter(location=location).first()
 
     # check if cart is empty
     empty = getattr(cart, "is_empty", False)
 
     # check if user is vendor of cart
     vendor = hasattr(request.user, "cart")
-    
-    #check users location
-    location = request.user.default_location
 
     # prepolpulate variables
     error = (
@@ -50,15 +50,15 @@ def sale(request):
     ) = add_quota_ean = remove_quota_ean = new_account_balance = product_ean = qpilot = None
 
     # permissions for front- and backend-check
-    can_count = not Balance.objects.latest("time").counted and empty
-    can_close = Balance.objects.latest("time").counted and empty
+    can_count = not Balance.objects.filter(location=location).latest("time").counted and empty
+    can_close = Balance.objects.filter(location=location).latest("time").counted and empty
     can_next = cart and not empty
-    can_open = Balance.objects.latest("time").counted and not cart
+    can_open = Balance.objects.filter(location=location).latest("time").counted and not cart
     can_order = (
         vendor
-        and not Balance.objects.latest("time").is_opening
+        and not Balance.objects.filter(location=location).latest("time").is_opening
         or vendor
-        and Balance.objects.latest("time").counted
+        and Balance.objects.filter(location=location).latest("time").counted
     )
 
     # button triggers
@@ -93,7 +93,7 @@ def sale(request):
 
     # count balance
     if can_count and action_count:
-        Balance().count_latest(request.user, form.cleaned_data["balance"])
+        Balance().count_latest(request.user, form.cleaned_data["balance"], location)
 
     # close cart
     # exception if other user already performed action but page has not been refreshed
@@ -105,13 +105,13 @@ def sale(request):
     elif can_next and action_next:
         try:
             User.objects.get(username=request.POST["next"]).cart.close(reason="sale")
-            Cart(vendor=User.objects.get(username=request.POST["next"])).save()
+            Cart(vendor=User.objects.get(username=request.POST["next"]), location=location).save()
         except ObjectDoesNotExist:
             pass
 
     # open sale
     elif can_open and action_open:
-        Cart(vendor=request.user).save()
+        Cart(vendor=request.user, location=location).save()
         Balance().add_opening(request.user, location=location)
         Shift(vendor=request.user, location=location).save()
 
@@ -265,25 +265,27 @@ def sale(request):
             cart.add(quota_ean)
 
     # cart could be modified in other methods, therefor refresh variables
-    cart = Cart.objects.first() or False
+    location = request.user.default_location
+    cart = Cart.objects.filter(location=location).first() or False
     empty = getattr(cart, "is_empty", False)
     vendor = getattr(cart, "vendor", False) == request.user
+    balance = Balance.objects.filter(location=location).latest("time").amount
 
     # Generate Context
     context = {
         "location": location,
-        "can_count": not Balance.objects.latest("time").counted and empty,
-        "can_close": Balance.objects.latest("time").counted and empty,
+        "can_count": not Balance.objects.filter(location=location).latest("time").counted and empty,
+        "can_close": Balance.objects.filter(location=location).latest("time").counted and empty,
         "can_next": cart and not empty,
-        "can_open": Balance.objects.latest("time").counted and not cart,
+        "can_open": Balance.objects.filter(location=location).latest("time").counted and not cart,
         "can_order": vendor
-        and not Balance.objects.latest("time").is_opening
+        and not Balance.objects.filter(location=location).latest("time").is_opening
         or vendor
-        and Balance.objects.latest("time").counted,
-        "balance": str(Balance.objects.filter(location=location).latest("time").amount),
-        "form": SaleForm(initial={"balance": Balance.objects.latest("time").amount}),
+        and Balance.objects.filter(location=location).latest("time").counted,
+        "balance": str(balance),
+        "form": SaleForm(initial={"balance": balance}),
         "vendor": vendor,
-        "items": CartItem.objects.filter(cart=cart),
+        "items": CartItem.objects.filter(location=location, cart=cart),
         "cart": cart,
         "error": error,
         "add_deposit_ean": add_deposit_ean,
