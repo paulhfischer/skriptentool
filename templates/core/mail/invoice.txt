@@ -1,0 +1,15 @@
+{% load i18n %}{% blocktrans %}Hello,
+
+an invoice has to be created:
+
+Address:
+{{ address }}
+
+Date:
+{{ date }}
+
+Vendor:
+{{ vendor }}
+
+Regards,
+Your Skriptentool{% endblocktrans %}
