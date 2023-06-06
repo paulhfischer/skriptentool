@@ -289,3 +289,64 @@
     </div>
 </div>
 {% endif %}
+
+{% if invoice_request %}
+{# popup for entering invoice address #}
+<script>
+    $(window).on('load', () => {
+        $('#InvoiceAddressModal').modal({
+            backdrop: 'static',
+            keyboard: false,
+        });
+    });
+</script>
+<div
+    class="modal fade"
+    id="InvoiceAddressModal"
+    tabindex="-1"
+    role="dialog"
+>
+    <div
+        class="modal-dialog"
+        role="document"
+    >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    {% trans 'Enter invoice address' %}
+                </h2>
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                >
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form.address_form }}
+                        </div>
+                        <div class="col-6">
+                            <button
+                                type="submit"
+                                name="invoice"
+                                value="{{ user }}"
+                                class="btn btn-primary btn-block"
+                            >
+                                {% trans 'confirm'|capfirst %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+

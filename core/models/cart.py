@@ -23,6 +23,7 @@ class Cart(models.Model):
 
     CLOSING = "closing"
     SALE = "sale"
+    INVOICE = "invoice"
 
     MI = "MI"
     CH = "CH"
@@ -60,18 +61,30 @@ class Cart(models.Model):
 
     def close(self, reason=CLOSING):
         # add sale entry to cashbook for every item in cart
-        for cart_item in CartItem.objects.filter(cart=self, location=self.vendor.default_location):
-            for _i in range(abs(cart_item.quantity)):
-                CashBookEntry.sale(
-                    self.vendor,
-                    cart_item.ean,
-                    copysign(cart_item.price_single, cart_item.quantity),
-                    self.vendor.default_location,
-                )
+        if reason == self.INVOICE:
+            for cart_item in CartItem.objects.filter(cart=self, location=self.vendor.default_location):
+                for _i in range(abs(cart_item.quantity)):
+                    CashBookEntry.sale(
+                        self.vendor,
+                        cart_item.ean,
+                        0,
+                        self.vendor.default_location,
+                    )        
+        else:
+            for cart_item in CartItem.objects.filter(cart=self, location=self.vendor.default_location):
+                for _i in range(abs(cart_item.quantity)):
+                    CashBookEntry.sale(
+                        self.vendor,
+                        cart_item.ean,
+                        copysign(cart_item.price_single, cart_item.quantity),
+                        self.vendor.default_location,
+                    )
 
         # add cashbookentry and end shift if cart is closed
         if reason == self.SALE and self.total != 0:
             Balance.add_temp(self.vendor, Balance.objects.filter(location=self.vendor.default_location).latest("time").amount + self.total, False, self.vendor.default_location)
+        elif reason == self.INVOICE and self.total != 0:
+            Balance.add_temp(self.vendor, Balance.objects.filter(location=self.vendor.default_location).latest("time").amount, False, self.vendor.default_location)
         elif reason == self.CLOSING:
             Balance.add_closing(self.vendor, Balance.objects.filter(location=self.vendor.default_location).latest("time").amount + self.total, self.vendor.default_location)
             Shift.end_shift(self.vendor, self.vendor.default_location)
@@ -180,11 +193,13 @@ class CartItem(models.Model):
     LECTURENOTE = "lecturenote"
     PRINTINGQUOTA = "printingquota"
     DEPOSIT = "deposit"
+    LABCOAT = "labcaot"
 
     TYPES = [
         (LECTURENOTE, _("lecture note")),
         (PRINTINGQUOTA, _("printing quota")),
         (DEPOSIT, pgettext_lazy("security deposit", "deposit")),
+        (LABCOAT, _("labcoat")),
     ]
     
     MI = "MI"

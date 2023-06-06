@@ -12,12 +12,28 @@
                 {% csrf_token %}
 
                 <button
+					type="submit"
+					name="next"
+					class="btn btn-primary btn-block"
+					value="{{ user }}"
+				>
+					{% trans 'close'|capfirst %}
+				</button>
+			</form>
+				
+			<form
+                method="post"
+                class="float-right my-auto"
+            >
+                {% csrf_token %}
+				
+				<button
                     type="submit"
-                    name="next"
+                    name="invoice_form"
                     class="btn btn-primary btn-block"
                     value="{{ user }}"
                 >
-                    {% trans 'close'|capfirst %}
+                    {% trans 'invoice'|capfirst %}
                 </button>
             </form>
             {% endif %}

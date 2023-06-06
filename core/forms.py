@@ -46,6 +46,16 @@ class SaleForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
+    
+    address_form = forms.CharField(
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Organisation \nSuborganisation \nFull Name \nStreet Number \nPostcode City"),
+            },
+        ),
+    )
 
 
 class CashbookForm(forms.Form):

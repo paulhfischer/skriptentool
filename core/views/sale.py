@@ -1,7 +1,17 @@
+import csv
+from io import StringIO
+from datetime import datetime
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import EmailMessage
+from django.core.mail import send_mail
 from django.http import Http404
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils import translation
+from django.utils.text import capfirst
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 
 from core.forms import SaleForm
@@ -47,7 +57,7 @@ def sale(request):
         remove_old_deposit_number
     ) = (
         new_deposit_number
-    ) = add_quota_ean = remove_quota_ean = new_account_balance = product_ean = qpilot = None
+    ) = invoice_request = add_quota_ean = remove_quota_ean = new_account_balance = product_ean = qpilot = None
 
     # permissions for front- and backend-check
     can_count = not Balance.objects.filter(location=location).latest("time").counted and empty
@@ -69,6 +79,17 @@ def sale(request):
     action_order = "order" in request.POST and form.is_valid()
     action_has_deposit = "has_deposit" in request.POST and request.POST["has_deposit"]
     action_add_deposit = "add_deposit" in request.POST and request.POST["add_deposit"]
+    #action_invoice = ("invoice" in request.POST and request.POST["invoice"] and form.is_valid() and form.cleaned_data["address_form"])
+    action_invoice = (
+        "invoice" in request.POST
+        and request.POST["invoice"]
+        and form.is_valid()
+        and form.cleaned_data["address_form"]    
+    )
+    action_invoice_form = (
+        "invoice_form" in request.POST
+        and request.POST["invoice_form"]
+    )
     action_remove_deposit = (
         "remove_deposit" in request.POST
         and request.POST["remove_deposit"]
@@ -106,6 +127,57 @@ def sale(request):
         try:
             User.objects.get(username=request.POST["next"]).cart.close(reason="sale")
             Cart(vendor=User.objects.get(username=request.POST["next"]), location=location).save()
+        except ObjectDoesNotExist:
+            pass
+    
+    #trigger invoice address form
+    elif can_next and action_invoice_form:
+        try:
+            invoice_request=True
+        except ObjectDoesNotExist:
+            pass
+            
+    #close cart, but with invoice and open next
+    elif can_next and action_invoice:
+        try:
+            address=form.cleaned_data["address_form"] 
+            date=datetime.today().strftime('%Y-%m-%d')
+            vendor=User.objects.get(username=request.POST["invoice"])     
+            
+            csvfile = StringIO()
+            writer = csv.writer(csvfile)
+            writer.writerow(
+                [
+                    _("Information"),
+                    _("Amount"),
+                    _("Unitprice"),
+                    _("MwSt"),
+                    _("Total"),
+                ],
+            )
+            for cart_item in CartItem.objects.filter(cart=cart, location=location):
+                writer.writerow(
+                    [
+                        get_type(cart_item) + " " + cart_item.name,
+                        cart_item.quantity,
+                        cart_item.price_single,
+                        "19",
+                        cart_item.price_total,
+                    ],
+                )
+
+            cart.close(reason="invoice")
+            Cart(vendor=vendor, location=location).save()            
+        
+            with translation.override(settings.LANGUAGE_CODE):
+                email = EmailMessage(
+                        format_lazy("[Skriptentool] {}", capfirst(_("invoice"))),
+                        render_to_string("core/mail/invoice.txt", {"address": address, "date": str(date), "vendor": vendor}),
+                        settings.DEFAULT_FROM_EMAIL,
+                        settings.FINANCE_EMAILS,
+                    )
+                email.attach('invoice.csv', csvfile.getvalue(), 'text/csv')
+                email.send()
         except ObjectDoesNotExist:
             pass
 
@@ -293,6 +365,7 @@ def sale(request):
         "remove_old_deposit_ean": remove_old_deposit_ean,
         "remove_old_deposit_number": remove_old_deposit_number,
         "new_deposit_number": new_deposit_number,
+        "invoice_request": invoice_request,
         "remove_quota_ean": remove_quota_ean,
         "add_quota_ean": add_quota_ean,
         "new_account_balance": new_account_balance,
