@@ -178,7 +178,7 @@ class User(AbstractBaseUser):
         },
         "create": {},
         "update": {
-            "is_referent": ["vendor", "referent"],
+            "is_referent": ["vendor", "referent", "default_location"],
             "is_financier": ["financier"],
             "is_admin": ["admin"],
         },
