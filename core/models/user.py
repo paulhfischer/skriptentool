@@ -20,6 +20,7 @@ class UserManager(BaseUserManager):
         financier,
         referent,
         admin,
+        default_location,
     ):
         user = self.model(
             username=username,
@@ -30,6 +31,7 @@ class UserManager(BaseUserManager):
             financier=financier,
             referent=referent,
             admin=admin,
+            default_location=default_location,
         )
 
         user.set_password(password)
@@ -37,7 +39,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, username, mail, first_name, last_name, password):
+    def create_superuser(self, username, mail, first_name, last_name, password, default_location):
         self.create_user(
             username=username,
             mail=mail,
@@ -48,6 +50,7 @@ class UserManager(BaseUserManager):
             financier=True,
             referent=True,
             admin=True,
+            default_location=default_location,
         )
 
 
