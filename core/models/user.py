@@ -39,7 +39,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, username, mail, first_name, last_name, password, default_location):
+    def create_superuser(self, username, mail, first_name, last_name, password):
         self.create_user(
             username=username,
             mail=mail,
@@ -50,7 +50,7 @@ class UserManager(BaseUserManager):
             financier=True,
             referent=True,
             admin=True,
-            default_location=default_location,
+            default_location='MI',
         )
 
 

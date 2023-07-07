@@ -37,6 +37,65 @@
                 {% blocktrans %}Edit {{ verbose_name }}{% endblocktrans %}
                 {% endif %}
             </h2>
+            <div class="list-group list-group-flush">
+                <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#eanlogic" onclick=""s>
+                    {% blocktrans %}View EAN logic{% endblocktrans %}
+                </button>
+                <div id="eanlogic" class="collapse">
+                    <table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
+                      <caption class="pb-0">EAN: <code>AFSJJTNN</code></caption
+                      <tr>
+                          <th>{% trans 'abbreviation'|capfirst %}</th>
+                          <th>{% trans 'meaning'|capfirst %}</th>
+                      </tr>
+                      <tr>
+                          <td rowspan="4">{% blocktrans %}<code>A</code> (Product){% endblocktrans %}</td>
+                          <td>{% blocktrans %}<code>0</code>: Lecturenote{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>1</code>: Deposit{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>7</code>: Labcoat{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>9</code>: Printing Quota{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td rowspan="4">{% blocktrans %}<code>F</code> (Subject){% endblocktrans %}</code></td>
+                          <td>{% blocktrans %}<code>0</code>: Informatics{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>1</code>: Mathematics{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>2</code>: Physics{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>3</code>: Chemistry{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td rowspan="2">{% blocktrans %}<code>S</code> (Semester){% endblocktrans %}</code></td>
+                          <td>{% blocktrans %}<code>1</code>: Winter{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>2</code>: Summer{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>JJ</code> (Year){% endblocktrans %}</code></td>
+                          <td>{% blocktrans %}Abbreviated year{% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>T</code> (Part){% endblocktrans %}</code></td>
+                          <td>{% blocktrans %}Part number (default <code>0</code>){% endblocktrans %}</td>
+                      </tr>
+                      <tr>
+                          <td>{% blocktrans %}<code>NN</code> (Number){% endblocktrans %}</code></td>
+                          <td>{% blocktrans %}Consecutive number{% endblocktrans %}</td>
+                      </tr>
+                  </table>
+                </div>
+            </div>
             <form
                 method="post"
                 enctype="multipart/form-data"

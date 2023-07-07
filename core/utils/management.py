@@ -41,6 +41,7 @@ SETTINGS = {
                 "ean": ["width: 100px"],
                 "active": ["width: 75px"],
                 "stock_MI": ["width: 50px"],
+                "stock_CH": ["width: 50px"],
                 "printnotes": ["width: 200px"],
             },
         },
