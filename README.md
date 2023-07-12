@@ -40,6 +40,7 @@ QPILOT_PASSWORD = # Passwort des Druckkontingent-Accounts
     dies erst nach Ende eines Semesters. Sollte etwas nicht passen, bitte an einen
     Skriptenreferenten wenden.
 
+
 ### Referent
 
 -   Zusätzlich zu den Funktionen eines normalen Verkäufers hat man als Referent noch Zugriff auf
