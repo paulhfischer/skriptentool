@@ -48,6 +48,7 @@ QPILOT_PASSWORD = # Passwort des Druckkontingent-Accounts
 -   In der `Verwaltung` gibt es unterschiedliche Objekte, die bearbeitet oder angesehen werden
     können:
 
+
 **Autoren**
 
 -   Hier findet sich eine Auflistung aller Autoren inkulsive ihrer E-Mail-Adressen.
