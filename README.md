@@ -1,4 +1,4 @@
-# [Skriptentool](https://skripten.mpi.fs.tum.de/) der [Fachschaft Mathematik/Physik/Informatik](https://mpi.fs.tum.de)
+# [Skriptentool](https://skripten.mpic.fs.tum.de/) der [Fachschaft MPIC](https://mpic.fs.tum.de)
 
 ## Konfiguration
 
