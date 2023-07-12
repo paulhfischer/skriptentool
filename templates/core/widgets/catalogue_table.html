@@ -12,7 +12,7 @@
         <td>{{ lecturenote.name }}</td>
         <td class="text-right">{{ lecturenote.price }} €</td>
         <td class="text-right">
-            {% if lecturenote.stock > 0 %}
+            {% if lecturenote.stock_MI > 0 %}
             {% blocktrans with stock=lecturenote.stock_MI %}{{ stock }} copies{% endblocktrans %}
             {% else %}
             {% trans 'sold out' %}
