@@ -94,6 +94,7 @@ QPILOT_PASSWORD = # Passwort des Druckkontingent-Accounts
     übernommen werden, werden autmatisch generiert. **In diesen muss bei einer Bestellung noch die
     Anzahl der Skripte sowie der Auftraggeber nachgetragen werden!**
 
+
 **Verkaufsschichten**
 
 -   Hier findet sich eine Auflistung aller Verkaufsschichten mit Verkäufer, Startzeitpunkt,
