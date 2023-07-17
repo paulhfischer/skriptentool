@@ -24,11 +24,25 @@ msgstr "Deckblätter generieren"
 msgid "Changes in admin interface"
 msgstr "Änderungen im Admin-Interface"
 
-#: core/forms.py:57 core/forms.py:67
+#: core/forms.py:55
+msgid ""
+"Organisation \n"
+"Suborganisation \n"
+"Full Name \n"
+"Street Number \n"
+"Postcode City"
+msgstr ""
+"Organisation \n"
+"Suborganisation \n"
+"Voller Name \n"
+"Straße Nummer \n"
+"PLZ Stadt"
+
+#: core/forms.py:67 core/forms.py:77
 msgid "YYYY-MM-DD"
 msgstr "TT.MM.JJJJ"
 
-#: core/forms.py:89
+#: core/forms.py:99
 msgid "optional comment"
 msgstr "optionaler Kommentar"
 
@@ -44,12 +58,12 @@ msgstr "Autoren"
 msgid "name"
 msgstr "Name"
 
-#: core/models/author.py:18 core/models/user.py:79
+#: core/models/author.py:18 core/models/user.py:90
 msgid "mail"
 msgstr "E-Mail-Adresse"
 
 #: core/models/balance.py:18 templates/core/finance.html:13
-#: templates/core/finance.html:111 templates/core/sale/balance.html:4
+#: templates/core/finance.html:119 templates/core/sale/balance.html:4
 msgid "balance"
 msgstr "Kassenstand"
 
@@ -61,47 +75,66 @@ msgstr "Kassenstände"
 msgid "initial"
 msgstr "Ersteinlage"
 
-#: core/models/balance.py:29 templates/core/finance.html:115
+#: core/models/balance.py:29 templates/core/finance.html:123
 msgid "opening"
 msgstr "Kassenöffnung"
 
-#: core/models/balance.py:30 templates/core/finance.html:116
+#: core/models/balance.py:30 templates/core/finance.html:124
 msgid "closing"
 msgstr "Kassenschluss"
 
-#: core/models/balance.py:31 templates/core/finance.html:117
+#: core/models/balance.py:31 templates/core/finance.html:125
 msgid "temporary"
 msgstr "Zwischenstand"
 
-#: core/models/balance.py:37 core/models/user.py:56
+#: core/models/balance.py:38 core/models/cart.py:32 core/models/cart.py:209
+#: core/models/cashbookentry.py:36 core/models/shift.py:19
+#: core/models/user.py:71
+msgid "MI"
+msgstr "MI"
+
+#: core/models/balance.py:39 core/models/cart.py:33 core/models/cart.py:210
+#: core/models/cashbookentry.py:37 core/models/shift.py:20
+#: core/models/user.py:72
+msgid "CH"
+msgstr "CH"
+
+#: core/models/balance.py:45 core/models/user.py:59
 msgid "user"
 msgstr "Benutzer"
 
-#: core/models/balance.py:42 core/models/cashbookentry.py:40
-#: core/models/printingquota_log.py:45 templates/core/finance.html:109
+#: core/models/balance.py:50 core/models/cashbookentry.py:48
+#: core/models/printingquota_log.py:45 templates/core/finance.html:117
 #: templates/core/shifts.html:44
 msgid "time"
 msgstr "Zeitpunkt"
 
-#: core/models/balance.py:48 core/models/cashbookentry.py:59
+#: core/models/balance.py:56 core/models/cashbookentry.py:67
 msgid "amount (in €)"
 msgstr "Betrag (in €)"
 
-#: core/models/balance.py:53
+#: core/models/balance.py:61
 msgid "counted"
 msgstr "gezählt"
 
-#: core/models/balance.py:59 core/models/cart.py:166
-#: core/models/cashbookentry.py:46 core/models/printingquota_log.py:62
-#: templates/core/sale/sale_process.html:73
+#: core/models/balance.py:67 core/models/cart.py:221
+#: core/models/cashbookentry.py:54 core/models/printingquota_log.py:62
+#: templates/core/sale/sale_process.html:89
 msgid "type"
 msgstr "Art"
 
-#: core/models/balance.py:117
+#: core/models/balance.py:74 core/models/cart.py:51 core/models/cart.py:238
+#: core/models/cashbookentry.py:74 core/models/shift.py:54
+#, fuzzy
+#| msgid "correction"
+msgid "location"
+msgstr "Korrektur"
+
+#: core/models/balance.py:133
 msgid "high balance"
 msgstr "hoher Kassenstand"
 
-#: core/models/cart.py:20 core/models/cart.py:176
+#: core/models/cart.py:20 core/models/cart.py:231
 #: templates/core/sale/sale_process.html:6
 msgid "cart"
 msgstr "Verkaufsvorgang"
@@ -110,48 +143,52 @@ msgstr "Verkaufsvorgang"
 msgid "carts"
 msgstr "Verkaufsvorgänge"
 
-#: core/models/cart.py:30 core/models/shift.py:29 core/models/user.py:94
+#: core/models/cart.py:39 core/models/shift.py:37 core/models/user.py:112
 msgid "vendor"
 msgstr "Verkäufer"
 
-#: core/models/cart.py:35
+#: core/models/cart.py:44
 msgid "time of creation"
 msgstr "Erstellzeitpunkt"
 
-#: core/models/cart.py:44
+#: core/models/cart.py:60
 msgid "There can only be one sale at a time."
 msgstr "Es darf nur ein Verkauf gleichzeitig stattfinden."
 
-#: core/models/cart.py:143
+#: core/models/cart.py:188
 msgid "item"
 msgstr "Artikel"
 
-#: core/models/cart.py:144
+#: core/models/cart.py:189
 msgid "items"
 msgstr "Artikel"
 
-#: core/models/cart.py:153 core/models/products.py:247
+#: core/models/cart.py:199 core/models/products.py:247
 msgid "lecture note"
 msgstr "Skript"
 
-#: core/models/cart.py:154 core/models/products.py:475
+#: core/models/cart.py:200 core/models/products.py:480
 msgid "printing quota"
 msgstr "Druckkontingent"
 
-#: core/models/cart.py:155 core/models/products.py:199
+#: core/models/cart.py:201 core/models/products.py:199
 #: core/models/products.py:350
 msgctxt "security deposit"
 msgid "deposit"
 msgstr "Kaution"
 
-#: core/models/cart.py:160 core/models/cashbookentry.py:83
+#: core/models/cart.py:202 core/models/products.py:538
+msgid "labcoat"
+msgstr "Kittel"
+
+#: core/models/cart.py:215 core/models/cashbookentry.py:98
 #: core/models/products.py:207 core/models/products.py:294
-#: core/models/products.py:482 core/models/products.py:551
-#: templates/core/sale/sale_process.html:71
+#: core/models/products.py:487 core/models/products.py:561
+#: templates/core/sale/sale_process.html:87
 msgid "EAN"
 msgstr "EAN"
 
-#: core/models/cart.py:170
+#: core/models/cart.py:225
 msgid "quantity"
 msgstr "Anzahl"
 
@@ -163,36 +200,36 @@ msgstr "Kassenbucheintrag"
 msgid "cash book entries"
 msgstr "Kassenbucheinträge"
 
-#: core/models/cashbookentry.py:26 core/models/cashbookentry.py:68
-#: templates/core/finance.html:118
+#: core/models/cashbookentry.py:26 core/models/cashbookentry.py:83
+#: templates/core/finance.html:126
 msgid "correction"
 msgstr "Korrektur"
 
-#: core/models/cashbookentry.py:27 core/models/cashbookentry.py:72
-#: core/models/cashbookentry.py:74 templates/core/finance.html:36
-#: templates/core/finance.html:120
+#: core/models/cashbookentry.py:27 core/models/cashbookentry.py:87
+#: core/models/cashbookentry.py:89 templates/core/finance.html:44
+#: templates/core/finance.html:128
 msgid "withdrawal"
 msgstr "Entnahme"
 
-#: core/models/cashbookentry.py:28 core/models/cashbookentry.py:79
-#: templates/core/finance.html:36 templates/core/finance.html:119
+#: core/models/cashbookentry.py:28 core/models/cashbookentry.py:94
+#: templates/core/finance.html:44 templates/core/finance.html:127
 msgid "deposit"
 msgstr "Einlage"
 
-#: core/models/cashbookentry.py:29 core/utils/management.py:77
+#: core/models/cashbookentry.py:29 core/utils/management.py:78
 #: templates/base.html:96 templates/core/sale.html:5
 msgid "sale"
 msgstr "Verkauf"
 
-#: core/models/cashbookentry.py:35 core/models/printingquota_log.py:40
+#: core/models/cashbookentry.py:43 core/models/printingquota_log.py:40
 msgid "creator"
 msgstr "Ersteller"
 
-#: core/models/cashbookentry.py:53
+#: core/models/cashbookentry.py:61
 msgid "detail"
 msgstr "Details"
 
-#: core/models/cashbookentry.py:93
+#: core/models/cashbookentry.py:108
 msgid "Correction"
 msgstr "Korrektur"
 
@@ -272,7 +309,7 @@ msgstr "hinzufügen"
 msgid "account"
 msgstr "Account"
 
-#: core/models/printingquota_log.py:56 templates/core/sale/sale_process.html:75
+#: core/models/printingquota_log.py:56 templates/core/sale/sale_process.html:91
 msgid "amount"
 msgstr "Anzahl"
 
@@ -298,13 +335,13 @@ msgstr "EANs dürfen nur aus Zahlen bestehen."
 msgid "An article with this EAN already exists."
 msgstr "Ein Artikel mit dieser EAN existiert bereits."
 
-#: core/models/products.py:200 core/views/finance.py:104
+#: core/models/products.py:200 core/views/finance.py:109
 #: templates/base.html:160
 msgid "deposits"
 msgstr "Kautionen"
 
 #: core/models/products.py:213 core/models/products.py:299
-#: templates/core/sale/sale_process.html:72
+#: templates/core/sale/sale_process.html:88
 msgid "designation"
 msgstr "Bezeichnung"
 
@@ -312,7 +349,7 @@ msgstr "Bezeichnung"
 msgid "deposit amount (in €)"
 msgstr "Kautionsbetrag (in €)"
 
-#: core/models/products.py:248 core/views/finance.py:103
+#: core/models/products.py:248 core/views/finance.py:108
 #: templates/base.html:130
 msgid "lecture notes"
 msgstr "Skripten"
@@ -424,8 +461,8 @@ msgstr "doppelseitig"
 msgid "subject"
 msgstr "Studienfach"
 
-#: core/models/products.py:312 core/models/products.py:488
-#: core/models/products.py:557 templates/core/sale/sale_process.html:74
+#: core/models/products.py:312 core/models/products.py:493
+#: core/models/products.py:567 templates/core/sale/sale_process.html:90
 msgid "price (in €)"
 msgstr "Preis (in €)"
 
@@ -441,63 +478,71 @@ msgstr "Semester (von)"
 msgid "semester (end)"
 msgstr "Semester (bis)"
 
-#: core/models/products.py:342 core/models/products.py:496
-#: core/models/products.py:566
+#: core/models/products.py:342 core/models/products.py:501
+#: core/models/products.py:581
 msgid "for sale"
 msgstr "steht zum Verkauf"
 
-#: core/models/products.py:355 core/models/products.py:562
-msgid "stock"
-msgstr "Bestand"
+#: core/models/products.py:355 core/models/products.py:572
+#, fuzzy
+#| msgid "stock"
+msgid "stock (MI)"
+msgstr "Bestand (MI)"
 
-#: core/models/products.py:363
+#: core/models/products.py:360 core/models/products.py:577
+#, fuzzy
+#| msgid "stock"
+msgid "stock (CH)"
+msgstr "Bestand (CH)"
+
+#: core/models/products.py:368
 msgid "color of cover"
 msgstr "Deckblattfarbe"
 
-#: core/models/products.py:371
+#: core/models/products.py:376
 msgid "papersize"
 msgstr "Papiergröße"
 
-#: core/models/products.py:379
+#: core/models/products.py:384
 msgid "sides"
 msgstr "Seitigkeit"
 
-#: core/models/products.py:386
+#: core/models/products.py:391
 msgid "notes for printing"
 msgstr "Anmerkungen für den Druck"
 
-#: core/models/products.py:393
+#: core/models/products.py:398
 msgid "PDF file"
 msgstr "PDF-Datei"
 
-#: core/models/products.py:476 core/views/finance.py:105
+#: core/models/products.py:481 core/views/finance.py:110
 #: templates/base.html:154
 msgid "printing quotas"
 msgstr "Druckkontingente"
 
-#: core/models/products.py:492
+#: core/models/products.py:497
 msgid "number of pages"
 msgstr "Seitenzahl"
 
-#: core/models/products.py:508
+#: core/models/products.py:505
+msgid "Qpilot connection"
+msgstr "Qpilot-Anbindung"
+
+#: core/models/products.py:518
 #, python-format
 msgid "%(num)d pages"
 msgstr "%(num)d Seiten"
 
-#: core/models/products.py:528
-msgid "labcoat"
-msgstr "Kittel"
-
-#: core/models/products.py:529 core/views/finance.py:106
+#: core/models/products.py:539 core/views/finance.py:111
 #: templates/base.html:166
 msgid "labcoats"
 msgstr "Kittel"
 
-#: core/models/products.py:574
+#: core/models/products.py:589
 msgid "size"
 msgstr "Größe"
 
-#: core/models/products.py:586
+#: core/models/products.py:601
 #, python-format
 msgid "size %(str)s"
 msgstr "Größe %(str)s"
@@ -510,63 +555,67 @@ msgstr "Verkaufsschicht"
 msgid "sales shifts"
 msgstr "Verkaufsschichten"
 
-#: core/models/shift.py:17
+#: core/models/shift.py:25
 msgid "start time"
 msgstr "Beginn"
 
-#: core/models/shift.py:23
+#: core/models/shift.py:31
 msgid "end time"
 msgstr "Ende"
 
-#: core/models/shift.py:34 templates/core/shifts.html:45
+#: core/models/shift.py:42 templates/core/shifts.html:45
 msgid "reviewed"
 msgstr "überprüft"
 
-#: core/models/shift.py:39 templates/core/shifts.html:46
+#: core/models/shift.py:47 templates/core/shifts.html:46
 msgid "beverages"
 msgstr "Getränke"
 
-#: core/models/shift.py:46
+#: core/models/shift.py:61
 #, python-format
 msgid "%(date)s (%(time_start)s until %(time_end)s)"
 msgstr "%(date)s (%(time_start)s bis %(time_end)s)"
 
-#: core/models/shift.py:55
+#: core/models/shift.py:70
 #, python-format
 msgid "%(date)s (%(time_start)s until now)"
 msgstr "%(date)s (%(time_start)s bis jetzt)"
 
-#: core/models/user.py:57 templates/base.html:186
+#: core/models/user.py:60 templates/base.html:186
 msgid "users"
 msgstr "Benutzer"
 
-#: core/models/user.py:72
+#: core/models/user.py:83
 msgid "Local usernames have to start with \"@\" and may only contain letters."
 msgstr ""
 "Lokale Benutzernamen müssen mit \"@\" beginnen und dürfen nur Buchstaben "
 "enthalten."
 
-#: core/models/user.py:75 templates/core/finance.html:110
+#: core/models/user.py:86 templates/core/finance.html:118
 msgid "username"
 msgstr "Benutzername"
 
-#: core/models/user.py:84
+#: core/models/user.py:95
 msgid "first name"
 msgstr "Vorname"
 
-#: core/models/user.py:89
+#: core/models/user.py:100
 msgid "last name"
 msgstr "Nachname"
 
-#: core/models/user.py:99
+#: core/models/user.py:107
+msgid "default location"
+msgstr "Standard-Ort"
+
+#: core/models/user.py:117
 msgid "referent"
 msgstr "Referent"
 
-#: core/models/user.py:104
+#: core/models/user.py:122
 msgid "financier"
 msgstr "Finanzer"
 
-#: core/models/user.py:109
+#: core/models/user.py:127
 msgid "admin"
 msgstr "Administrator"
 
@@ -591,7 +640,7 @@ msgstr "Sommersemester"
 msgid "winter term"
 msgstr "Wintersemester"
 
-#: core/utils/management.py:21 core/utils/management.py:107
+#: core/utils/management.py:21 core/utils/management.py:108
 msgid "properties"
 msgstr "Eigenschaften"
 
@@ -599,16 +648,16 @@ msgstr "Eigenschaften"
 msgid "print settings"
 msgstr "Druckeinstellungen"
 
-#: core/utils/management.py:81
+#: core/utils/management.py:82
 msgctxt "noun"
 msgid "refund"
 msgstr "Erstattung"
 
-#: core/utils/management.py:129
+#: core/utils/management.py:130
 msgid "user data"
 msgstr "Benutzerdaten"
 
-#: core/utils/management.py:140
+#: core/utils/management.py:142
 msgid "permissions"
 msgstr "Berechtigungen"
 
@@ -616,20 +665,20 @@ msgstr "Berechtigungen"
 msgid "printing quota booked"
 msgstr "Druckkontingent gebucht"
 
-#: core/views/finance.py:94 templates/base.html:177
-#: templates/core/finance.html:5 templates/core/finance.html:64
+#: core/views/finance.py:99 templates/base.html:177
+#: templates/core/finance.html:5 templates/core/finance.html:72
 msgid "cashbook"
 msgstr "Kassenbuch"
 
-#: core/views/finance.py:102
+#: core/views/finance.py:107
 msgid "date"
 msgstr "Datum"
 
-#: core/views/finance.py:107
+#: core/views/finance.py:112
 msgid "corrections"
 msgstr "Korrekturen"
 
-#: core/views/finance.py:108
+#: core/views/finance.py:113
 msgid "transactions"
 msgstr "Transaktionen"
 
@@ -660,28 +709,60 @@ msgstr "<strong>%(object_name)s</strong> erfolgreich gelöscht."
 msgid "<strong>%(object_name)s</strong> successfully saved."
 msgstr "<strong>%(object_name)s</strong> erfolgreich gespeichert."
 
-#: core/views/sale.py:127
+#: core/views/sale.py:151
+#, fuzzy
+#| msgid "informatics"
+msgid "Information"
+msgstr "Information"
+
+#: core/views/sale.py:152
+#, fuzzy
+#| msgid "amount"
+msgid "Amount"
+msgstr "Anzahl"
+
+#: core/views/sale.py:153
+#, fuzzy
+#| msgid "price"
+msgid "Unitprice"
+msgstr "Preis"
+
+#: core/views/sale.py:154
+msgid "MwSt"
+msgstr "USt"
+
+#: core/views/sale.py:155
+#, fuzzy
+#| msgid "total"
+msgid "Total"
+msgstr "Summe"
+
+#: core/views/sale.py:174 templates/core/sale/sale_process.html:36
+msgid "invoice"
+msgstr "Rechnung"
+
+#: core/views/sale.py:202
 msgid "Deposit notes can only be sold with a lecture note."
 msgstr "Kautionsscheine können nur mit Skript verkauft werden."
 
-#: core/views/sale.py:141
+#: core/views/sale.py:216
 msgid "This item isn't for sale."
 msgstr "Dieser Artikel steht nicht zum Verkauf."
 
-#: core/views/sale.py:143 core/views/sale.py:160
+#: core/views/sale.py:218 core/views/sale.py:235
 msgid "This item doesn't exist."
 msgstr "Dieser Artikel existiert nicht."
 
-#: core/views/sale.py:192
+#: core/views/sale.py:267
 #, python-format
 msgid "The deposit note %(num)s has alredy been refunded."
 msgstr "Der Kautionsschein %(num)s wurde bereits erstattet."
 
-#: core/views/sale.py:199
+#: core/views/sale.py:274
 msgid "This deposit note mustn't be refunded yet."
 msgstr "Dieser Kautionsschein darf noch nicht erstattet werden."
 
-#: core/views/sale.py:205
+#: core/views/sale.py:280
 #, python-format
 msgid "The deposit note %(num)s can only be refunded by a referent."
 msgstr ""
@@ -724,31 +805,35 @@ msgstr "Datenschutz"
 msgid "about"
 msgstr "über diese Software"
 
-#: templates/core/finance.html:46
+#: templates/core/finance.html:30
+msgid "click to change"
+msgstr "klicken zum Wechseln"
+
+#: templates/core/finance.html:54
 msgid "comment"
 msgstr "Kommentar"
 
-#: templates/core/finance.html:56
+#: templates/core/finance.html:64
 msgid "book"
 msgstr "buchen"
 
-#: templates/core/finance.html:72
+#: templates/core/finance.html:80
 msgid "from"
 msgstr "vom"
 
-#: templates/core/finance.html:76
+#: templates/core/finance.html:84
 msgid "until"
 msgstr "bis zum"
 
-#: templates/core/finance.html:89
+#: templates/core/finance.html:97
 msgid "refresh"
 msgstr "aktualisieren"
 
-#: templates/core/finance.html:98
+#: templates/core/finance.html:106
 msgid "export CSV"
 msgstr "CSV exportieren"
 
-#: templates/core/finance.html:112
+#: templates/core/finance.html:120
 msgid "description"
 msgstr "Beschreibung"
 
@@ -812,6 +897,42 @@ msgstr ""
 "\n"
 "Liebe Grüße,\n"
 "Euer Skriptentool"
+
+#: templates/core/mail/invoice.txt:1
+#, python-format
+msgid ""
+"Hello,\n"
+"\n"
+"an invoice has to be created:\n"
+"\n"
+"Address:\n"
+"%(address)s\n"
+"\n"
+"Date:\n"
+"%(date)s\n"
+"\n"
+"Vendor:\n"
+"%(vendor)s\n"
+"\n"
+"Regards,\n"
+"Your Skriptentool"
+msgstr ""
+"Hi,\n"
+"\n"
+"eine Rechnung muss erstellt werden:\n"
+"\n"
+"Adresse:\n"
+"%(address)s\n"
+"\n"
+"Datum:\n"
+"%(date)s\n"
+"\n"
+"Verkäufer:\n"
+"%(vendor)s\n"
+"\n"
+"Viele Grüße,\n"
+"\n"
+"Dein Sriptentool"
 
 #: templates/core/mail/printing_quota_booked.txt:1
 #, python-format
@@ -909,8 +1030,103 @@ msgstr "%(verbose_name)s hinzufügen"
 msgid "Edit %(verbose_name)s"
 msgstr "%(verbose_name)s bearbeiten"
 
+#: templates/core/management/update_model.html:42
+msgid "View EAN logic"
+msgstr "Zeige EAN-Logik an"
+
+#: templates/core/management/update_model.html:48
+#, fuzzy
+#| msgid "designation"
+msgid "abbreviation"
+msgstr "Bezeichnung"
+
+#: templates/core/management/update_model.html:49
+#, fuzzy
+#| msgid "opening"
+msgid "meaning"
+msgstr "Kassenöffnung"
+
+#: templates/core/management/update_model.html:52
+msgid "<code>A</code> (Product)"
+msgstr "<code>A</code> (Produkt)"
+
+#: templates/core/management/update_model.html:53
+msgid "<code>0</code>: Lecturenote"
+msgstr "<code>0</code>: Skript"
+
+#: templates/core/management/update_model.html:56
+msgid "<code>1</code>: Deposit"
+msgstr "<code>1</code>: Kaution"
+
+#: templates/core/management/update_model.html:59
+msgid "<code>7</code>: Labcoat"
+msgstr "<code>7</code>: Kittel"
+
+#: templates/core/management/update_model.html:62
+msgid "<code>9</code>: Printing Quota"
+msgstr "<code>9</code>: Druckguthaben"
+
+#: templates/core/management/update_model.html:65
+msgid "<code>F</code> (Subject)"
+msgstr "<code>F</code> (Studienfach)"
+
+#: templates/core/management/update_model.html:66
+msgid "<code>0</code>: Informatics"
+msgstr "<code>0</code>: Informatik"
+
+#: templates/core/management/update_model.html:69
+msgid "<code>1</code>: Mathematics"
+msgstr "<code>1</code>: Mathematik"
+
+#: templates/core/management/update_model.html:72
+msgid "<code>2</code>: Physics"
+msgstr "<code>2</code>: Physik"
+
+#: templates/core/management/update_model.html:75
+msgid "<code>3</code>: Chemistry"
+msgstr "<code>3</code>: Chemie"
+
+#: templates/core/management/update_model.html:78
+msgid "<code>S</code> (Semester)"
+msgstr "<code>S</code> (Semester)"
+
+#: templates/core/management/update_model.html:79
+msgid "<code>1</code>: Winter"
+msgstr "<code>1</code>: Winter"
+
+#: templates/core/management/update_model.html:82
+msgid "<code>2</code>: Summer"
+msgstr "<code>2</code>: Sommer"
+
+#: templates/core/management/update_model.html:85
+msgid "<code>JJ</code> (Year)"
+msgstr "<code>JJ</code> (Jahr)"
+
+#: templates/core/management/update_model.html:86
+msgid "Abbreviated year"
+msgstr "Abgekürztes Jahr"
+
+#: templates/core/management/update_model.html:89
+msgid "<code>T</code> (Part)"
+msgstr "<code>T</code> (Teil)"
+
+#: templates/core/management/update_model.html:90
+msgid "Part number (default <code>0</code>)"
+msgstr "Teilenummer (standard <code>0</code>)"
+
+#: templates/core/management/update_model.html:93
+msgid "<code>NN</code> (Number)"
+msgstr "<code>NN</code> (Nummer)"
+
+#: templates/core/management/update_model.html:94
+#, fuzzy
+#| msgid "Enter account number"
+msgid "Consecutive number"
+msgstr "Accountnummer eingeben"
+
 #: templates/core/sale/balance.html:21 templates/core/sale/popups.html:103
 #: templates/core/sale/popups.html:222 templates/core/sale/popups.html:282
+#: templates/core/sale/popups.html:342
 msgid "confirm"
 msgstr "bestätigen"
 
@@ -981,23 +1197,27 @@ msgstr "erstatten"
 msgid "Enter account number"
 msgstr "Accountnummer eingeben"
 
+#: templates/core/sale/popups.html:316
+msgid "Enter invoice address"
+msgstr "Rechnungsadresse eingeben"
+
 #: templates/core/sale/sale_process.html:20
 msgid "close"
 msgstr "abschließen"
 
-#: templates/core/sale/sale_process.html:49
+#: templates/core/sale/sale_process.html:65
 #, python-format
 msgid "Number of new deposit note: <strong>%(number)s</strong>"
 msgstr "Neue Kautionsscheinnummer: <strong>%(number)s</strong>"
 
-#: templates/core/sale/sale_process.html:63
+#: templates/core/sale/sale_process.html:79
 #, python-format
 msgid ""
 "Balance: <strong>%(old_balance)s</strong> → <strong>%(new_balance)s</strong>"
 msgstr ""
 "Saldo: <strong>%(old_balance)s</strong> → <strong>%(new_balance)s</strong>"
 
-#: templates/core/sale/sale_process.html:76
+#: templates/core/sale/sale_process.html:92
 msgid "total"
 msgstr "Summe"
 
