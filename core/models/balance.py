@@ -131,7 +131,7 @@ class Balance(models.Model):
             with translation.override(settings.LANGUAGE_CODE):
                 send_mail(
                     subject=format_lazy("[Skriptentool] {}", capfirst(_("high balance"))),
-                    message=render_to_string("core/mail/high_balance.txt", {"balance": amount}),
+                    message=render_to_string("core/mail/high_balance.txt", {"balance": amount, "location": location}),
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=settings.FINANCE_EMAILS,
                 )
