@@ -27,8 +27,10 @@ OUTPUT_DIR = os.path.join(MEDIA_ROOT, "druck")
 ########
 ROOT_URLCONF = "skriptentool.urls"
 STATIC_URL = "/static/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "core:catalogue"
 LOGOUT_REDIRECT_URL = "core:catalogue"
+LOGIN_REDIRECT_URL_FAILURE = "/login/failed"
 MEDIA_URL = "/media/"
 
 ########
@@ -67,6 +69,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "mozilla_django_oidc",
+    "django_compref_keycloak",
     "core.apps.CoreConfig",
 ]
 MIDDLEWARE = [
@@ -77,6 +81,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "mozilla_django_oidc.middleware.SessionRefresh",
 ]
 TEMPLATES = [
     {
@@ -154,5 +159,75 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 AUTH_USER_MODEL = "core.User"
 AUTHENTICATION_BACKENDS = [
+    "django_compref_keycloak.backend.CompRefKeycloakAuthenticationBackend"
     "django.contrib.auth.backends.ModelBackend",
 ]
+
+####################
+#     KEYCLOAK     #
+####################
+# realm is either federated-tum.de or fs.tum.de - provided by CompRef
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://auth.fs.tum.de/auth/realms/federated-tum.de/protocol/openid-connect/auth"
+OIDC_OP_TOKEN_ENDPOINT = "https://auth.fs.tum.de/auth/realms/federated-tum.de/protocol/openid-connect/token"
+OIDC_OP_USER_ENDPOINT = "https://auth.fs.tum.de/auth/realms/federated-tum.de/protocol/openid-connect/userinfo"
+OIDC_OP_JWKS_ENDPOINT = "https://auth.fs.tum.de/auth/realms/federated-tum.de/protocol/openid-connect/certs"
+
+# We have OpenID Connect clients configured for testing.
+# It is okay to put their secrets to internal git repositories, but not to public ones!
+# These test clients only accept http://localhost:8000 as redirect URL.
+OIDC_RP_CLIENT_ID = "..."  # provided by CompRef and overwritten for prod deployment
+OIDC_RP_CLIENT_SECRET = "..."  # provided by CompRef and overwritten for prod deployment
+
+OIDC_RP_SIGN_ALGO = "RS256"
+OIDC_STORE_ID_TOKEN = True
+ALLOW_LOGOUT_GET_METHOD = True
+OIDC_USERNAME_ALGO = "django_compref_keycloak.backend.generate_username"
+OIDC_OP_LOGOUT_URL_METHOD = "django_compref_keycloak.backend.logout_url"
+
+# Allowed federated identity providers
+# fs.tum.de accounts
+COMPREF_KEYCLOAK_FEDERATED_IDP = {
+   # for fs.tum.de realm
+   "fs.tum.de-internal": {
+      # allow login with fs.tum.de account?
+      "enabled": True,
+      # restrict login to LDAP groups (empty = allow everyone)
+      "active_groups": [],
+      # grant staff privileges for these LDAP groups (empty = is_staff is not touched, also not removed!)
+      "staff_groups": ["compref", "skripten"],
+      # grant superuser privileges for these LDAP groups (empty = is_superuser is not touched, also not removed!)
+      "superuser_groups": ["compref", "skripten-admins"],
+      # sync LDAP groups to Django groups
+      "sync_groups": True,
+   },
+   # for federated-tum.de realm
+   "fs.tum.de": {
+      # allow login with fs.tum.de account?
+      "enabled": False,
+      # restrict login to LDAP groups (empty = allow everyone)
+      "active_groups": [],
+      # grant staff privileges for these LDAP groups (empty = is_staff is not touched, also not removed!)
+      "staff_groups": [],
+      # grant superuser privileges for these LDAP groups (empty = is_superuser is not touched, also not removed!)
+      "superuser_groups": [],
+      # sync LDAP groups to Django groups
+      "sync_groups": False,
+   },
+   "shibboleth.tum.de": {
+      "enabled": False,  # allow login with TUM account?
+      "active": {
+         # affiliations: student, alum, employee (more values possible - these are the important ones)
+         # empty = allow everyone and following settings are ignored!
+         "affiliations": [],
+
+         # we can restrict the school for students (empty = allow every student)
+         # only checked if "student" is included in affiliations
+         "org_student": [],
+
+         # we can restrict the school for employees (empty = allow every employee)
+         # only checked if "employee" is included in affiliations
+         "org_employee": [],
+      }
+      # note: is_staff/superuser are not touched (= also not set to False)
+   }
+}
