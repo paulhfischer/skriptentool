@@ -86,10 +86,10 @@ def finance(request, location: str):
         # update balance depending on action is deposit or withdrawal
         if update > 0:
             CashBookEntry.deposit(request.user, update, comment, location)
-            Balance.add_update(request.user, Balance.objects.latest("time").amount + update, location)
+            Balance.add_update(request.user, Balance.objects.filter(location=location).latest("time").amount + update, location)
         elif update < 0:
             CashBookEntry.withdrawal(request.user, update, comment, location)
-            Balance.add_update(request.user, Balance.objects.latest("time").amount + update, location)
+            Balance.add_update(request.user, Balance.objects.filter(location=location).latest("time").amount + update, location)
 
     # 'CSV-Export'-button triggered
     if action_csv:
