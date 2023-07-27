@@ -20,7 +20,7 @@ class UserManager(BaseUserManager):
         financier,
         referent,
         admin,
-        staff,
+        is_staff,
         default_location,
     ):
         user = self.model(
@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
             vendor=vendor,
             financier=financier,
             referent=referent,
-            staff=staff,
+            is_staff=is_staff,
             admin=admin,
             default_location=default_location,
         )
@@ -51,7 +51,7 @@ class UserManager(BaseUserManager):
             vendor=True,
             financier=True,
             referent=True,
-            staff=True,
+            is_staff=True,
             admin=True,
             default_location='MI',
         )
@@ -125,9 +125,9 @@ class User(AbstractBaseUser):
         verbose_name=_("financier"),
     )
 
-    staff = models.BooleanField(
+    is_staff = models.BooleanField(
         default=False,
-        verbose_name=_("staff"),
+        verbose_name=_("is_staff"),
     )
 
     admin = models.BooleanField(
@@ -168,10 +168,6 @@ class User(AbstractBaseUser):
 
     # allow backend access for admins only
     @property
-    def is_staff(self):
-        return self.staff
-
-    @property
     def is_superuser(self):
         return self.admin
 
@@ -190,7 +186,6 @@ class User(AbstractBaseUser):
         "update": {
             "is_referent": ["vendor", "referent", "default_location"],
             "is_financier": ["financier"],
-            "is_staff": ["staff"],
             "is_admin": ["admin"],
         },
         "delete": [
