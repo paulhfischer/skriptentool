@@ -154,22 +154,27 @@ class User(AbstractBaseUser):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        is_superuser_group = Group.find(name="is_superuser")
+        is_financier_group = Group.find(name="is_financier")
+        is_referent_group = Group.find(name="is_referent")
+        is_vendor_group = Group.find(name="is_vendor")
+        is_staff_group = Group.find(name="is_staff")
         if self.is_superuser:
             self.vendor = True
             self.referent = True
             self.financier = True
             self.is_staff = True
-            self.groups.add("is_superuser")
-            self.groups.add("is_financier")
-            self.groups.add("is_referent")
-            self.groups.add("is_vendor")
-            self.groups.add("is_staff")
+            self.groups.add(is_superuser_group)
+            self.groups.add(is_financier_group)
+            self.groups.add(is_referent_group)
+            self.groups.add(is_vendor_group)
+            self.groups.add(is_staff_group)
         elif self.referent:
             self.vendor = True
-            self.groups.add("is_referent")
-            self.groups.add("is_vendor")
+            self.groups.add(is_referent_group)
+            self.groups.add(is_vendor_group)
         elif self.vendor:
-            self.groups.add("is_vendor")
+            self.groups.add(is_vendor_group)
         super().save(force_insert, force_update, using, update_fields)
 
     def has_module_perms(self, app_label):

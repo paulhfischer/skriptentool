@@ -153,8 +153,8 @@ SETTINGS = {
 # return list of fields that are allowed for action or __all__ if all are allowed
 def _get_allowed_fields(user, model, action):
     allowed_fields = []
-    for group in user.groups:
-        fields = model.permissions.get(action).get(group, [])
+    for group in user.groups.all():
+        fields = model.permissions.get(action).get(group.name, [])
         if fields == "__all__":
             return fields
         allowed_fields += fields
@@ -245,7 +245,7 @@ def is_allowed(user, model, action):
 
     if action == "delete":
         return user.is_authenticated and any(
-            group in model.permissions.get("delete") for group in user.groups
+            group.name in model.permissions.get("delete") for group in user.groups.all()
         )
 
     return user.is_authenticated and _get_allowed_fields(user, model, action)
