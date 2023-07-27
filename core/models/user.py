@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
     def create_user(
         self,
         username,
-        mail,
+        email,
         first_name,
         last_name,
         password,
@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
     ):
         user = self.model(
             username=username,
-            mail=mail,
+            email=email,
             first_name=first_name,
             last_name=last_name,
             vendor=vendor,
@@ -39,10 +39,10 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, username, mail, first_name, last_name, password):
+    def create_superuser(self, username, email, first_name, last_name, password):
         self.create_user(
             username=username,
-            mail=mail,
+            email=email,
             first_name=first_name,
             last_name=last_name,
             password=password,
@@ -60,9 +60,9 @@ class User(AbstractBaseUser):
         verbose_name_plural = _("users")
         ordering = ["username"]
 
-    EMAIL_FIELD = "mail"
+    EMAIL_FIELD = "email"
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["mail", "first_name", "last_name"]
+    REQUIRED_FIELDS = ["email", "first_name", "last_name"]
     
     MI = "MI"
     CH = "CH"
@@ -86,8 +86,8 @@ class User(AbstractBaseUser):
         verbose_name=_("username"),
     )
 
-    mail = models.EmailField(
-        verbose_name=_("mail"),
+    email = models.EmailField(
+        verbose_name=_("email"),
     )
 
     first_name = models.CharField(
@@ -129,10 +129,10 @@ class User(AbstractBaseUser):
 
     def clean(self):
         super().clean()
-        self.mail = self.__class__.objects.normalize_email(self.mail)
+        self.email = self.__class__.objects.normalize_email(self.email)
 
     def email_user(self, subject, message, from_email=None, **kwargs):
-        send_mail(subject, message, from_email, [self.mail], **kwargs)
+        send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.admin:
