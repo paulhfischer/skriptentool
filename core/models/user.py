@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import models
@@ -133,6 +134,16 @@ class User(AbstractBaseUser):
     is_superuser = models.BooleanField(
         default=False,
         verbose_name=_("is_superuser"),
+    )
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_("groups"),
+        blank=True,
+        help_text=_(
+            "The groups this user belongs to. A user will get all permissions "
+            "granted to each of their groups."
+        ),
     )
 
     def clean(self):
