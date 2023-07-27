@@ -147,24 +147,18 @@ class User(AbstractBaseUser):
             self.vendor = True
             self.referent = True
             self.financier = True
+            self.is_staff = True
+            groups.add("is_superuser")
+            groups.add("is_financier")
+            groups.add("is_referent")
+            groups.add("is_vendor")
         elif self.referent:
             self.vendor = True
+            groups.add("is_referent")
+            groups.add("is_vendor")
+        elif self.vendor:
+            groups.add("is_vendor")
         super().save(force_insert, force_update, using, update_fields)
-
-    @property
-    def groups(self):
-        groups = []
-        if self.vendor:
-            groups.append("is_vendor")
-        if self.referent:
-            groups.append("is_referent")
-        if self.financier:
-            groups.append("is_financier")
-        if self.is_staff:
-            groups.append("is_staff")
-        if self.is_superuser:
-            groups.append("is_superuser")
-        return groups
 
     def has_module_perms(self, app_label):
         return self.is_superuser
