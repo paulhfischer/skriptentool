@@ -14,8 +14,8 @@ class UserManager(BaseUserManager):
         self,
         username,
         email,
-        first_name=None,
-        last_name=None,
+        first_name="",
+        last_name="",
         password=None,
         vendor=False,
         financier=False,
@@ -42,7 +42,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, username, email, first_name=None, last_name=None, password=None):
+    def create_superuser(self, username, email, first_name="", last_name="", password=None):
         self.create_user(
             username=username,
             email=email,
