@@ -14,15 +14,15 @@ class UserManager(BaseUserManager):
         self,
         username,
         email,
-        first_name,
-        last_name,
-        password,
-        vendor,
-        financier,
-        referent,
-        admin,
-        is_staff,
-        default_location,
+        first_name=None,
+        last_name=None,
+        password=None,
+        vendor=False,
+        financier=False,
+        referent=False,
+        admin=False,
+        is_staff=False,
+        default_location='MI',
     ):
         user = self.model(
             username=username,
@@ -33,7 +33,7 @@ class UserManager(BaseUserManager):
             financier=financier,
             referent=referent,
             is_staff=is_staff,
-            admin=admin,
+            is_superuser=admin,
             default_location=default_location,
         )
 
@@ -42,7 +42,7 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, username, email, first_name, last_name, password):
+    def create_superuser(self, username, email, first_name=None, last_name=None, password=None):
         self.create_user(
             username=username,
             email=email,
@@ -53,7 +53,7 @@ class UserManager(BaseUserManager):
             financier=True,
             referent=True,
             is_staff=True,
-            admin=True,
+            is_superuser=True,
             default_location='MI',
         )
 
