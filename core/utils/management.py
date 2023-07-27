@@ -50,11 +50,11 @@ SETTINGS = {
         "fieldsets": [
             {
                 "legend": None,
-                "fields": ["name", "mail"],
+                "fields": ["name", "email"],
             },
         ],
         "columns": {
-            "fields": ["name", "mail"],
+            "fields": ["name", "email"],
         },
     },
     Deposit: {
@@ -133,7 +133,7 @@ SETTINGS = {
                     "last_name",
                     "username",
                     "default_location",
-                    "mail",
+                    "email",
                     "password",
                     "password_repeat",
                 ],
