@@ -159,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 AUTH_USER_MODEL = "core.User"
 AUTHENTICATION_BACKENDS = [
-    "django_compref_keycloak.backend.CompRefKeycloakAuthenticationBackend"
+    "django_compref_keycloak.backend.CompRefKeycloakAuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
