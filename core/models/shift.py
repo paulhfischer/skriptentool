@@ -86,7 +86,7 @@ class Shift(models.Model):
             "is_financier": "__all__",
         },
         "create": {
-            "is_admin": "__all__",
+            "is_superuser": "__all__",
         },
         "update": {
             "is_referent": ["vendor", "location", "valid"],

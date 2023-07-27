@@ -140,11 +140,11 @@ SETTINGS = {
             },
             {
                 "legend": _("permissions"),
-                "fields": ["vendor", "referent", "financier", "admin"],
+                "fields": ["vendor", "referent", "financier", "is_superuser"],
             },
         ],
         "columns": {
-            "fields": ["username", "default_location", "vendor", "referent", "financier", "admin"],
+            "fields": ["username", "default_location", "vendor", "referent", "financier", "is_superuser"],
         },
     },
 }

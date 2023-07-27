@@ -130,9 +130,9 @@ class User(AbstractBaseUser):
         verbose_name=_("is_staff"),
     )
 
-    admin = models.BooleanField(
+    is_superuser = models.BooleanField(
         default=False,
-        verbose_name=_("admin"),
+        verbose_name=_("is_superuser"),
     )
 
     def clean(self):
@@ -143,7 +143,7 @@ class User(AbstractBaseUser):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.admin:
+        if self.is_superuser:
             self.vendor = True
             self.referent = True
             self.financier = True
@@ -160,22 +160,17 @@ class User(AbstractBaseUser):
             groups.append("is_referent")
         if self.financier:
             groups.append("is_financier")
-        if self.admin:
+        if self.is_staff:
             groups.append("is_staff")
-        if self.admin:
-            groups.append("is_admin")
+        if self.is_superuser:
+            groups.append("is_superuser")
         return groups
 
-    # allow backend access for admins only
-    @property
-    def is_superuser(self):
-        return self.admin
-
     def has_module_perms(self, app_label):
-        return self.admin
+        return self.is_superuser
 
     def has_perm(self, perm, obj=None):
-        return self.admin
+        return self.is_superuser
 
     permissions = {
         "list": {
@@ -186,9 +181,9 @@ class User(AbstractBaseUser):
         "update": {
             "is_referent": ["vendor", "referent", "default_location"],
             "is_financier": ["financier"],
-            "is_admin": ["admin"],
+            "is_superuser": ["is_superuser"],
         },
         "delete": [
-            "is_admin",
+            "is_superuser",
         ],
     }

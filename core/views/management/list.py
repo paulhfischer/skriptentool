@@ -68,7 +68,7 @@ def get_formset(user, form_model):
                 super().__init__(*args, **kwargs)
 
                 # enable update of local user for admins
-                if not (self.initial.get("username").startswith("@") and user.admin):
+                if not (self.initial.get("username").startswith("@") and user.is_superuser):
                     for field in self.fields:
                         if field in get_disabled_columns(user, form_model):
                             self.fields[field].disabled = True
