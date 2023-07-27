@@ -154,11 +154,11 @@ class User(AbstractBaseUser):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        is_superuser_group = Group.find(name="is_superuser")
-        is_financier_group = Group.find(name="is_financier")
-        is_referent_group = Group.find(name="is_referent")
-        is_vendor_group = Group.find(name="is_vendor")
-        is_staff_group = Group.find(name="is_staff")
+        is_superuser_group = Group.objects.filter(name="is_superuser")[0]
+        is_financier_group = Group.objects.filter(name="is_financier")[0]
+        is_referent_group = Group.objects.filter(name="is_referent")[0]
+        is_vendor_group = Group.objects.filter(name="is_vendor")[0]
+        is_staff_group = Group.objects.filter(name="is_staff")[0]
         if self.is_superuser:
             self.vendor = True
             self.referent = True
