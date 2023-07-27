@@ -167,10 +167,10 @@ AUTHENTICATION_BACKENDS = [
 #     KEYCLOAK     #
 ####################
 # realm is either federated-tum.de or fs.tum.de - provided by CompRef
-OIDC_OP_AUTHORIZATION_ENDPOINT = "https://auth.fs.tum.de/auth/realms/federated-tum.de/protocol/openid-connect/auth"
-OIDC_OP_TOKEN_ENDPOINT = "https://auth.fs.tum.de/auth/realms/federated-tum.de/protocol/openid-connect/token"
-OIDC_OP_USER_ENDPOINT = "https://auth.fs.tum.de/auth/realms/federated-tum.de/protocol/openid-connect/userinfo"
-OIDC_OP_JWKS_ENDPOINT = "https://auth.fs.tum.de/auth/realms/federated-tum.de/protocol/openid-connect/certs"
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://auth.fs.tum.de/auth/realms/fs.tum.de/protocol/openid-connect/auth"
+OIDC_OP_TOKEN_ENDPOINT = "https://auth.fs.tum.de/auth/realms/fs.tum.de/protocol/openid-connect/token"
+OIDC_OP_USER_ENDPOINT = "https://auth.fs.tum.de/auth/realms/fs.tum.de/protocol/openid-connect/userinfo"
+OIDC_OP_JWKS_ENDPOINT = "https://auth.fs.tum.de/auth/realms/fs.tum.de/protocol/openid-connect/certs"
 
 # We have OpenID Connect clients configured for testing.
 # It is okay to put their secrets to internal git repositories, but not to public ones!
