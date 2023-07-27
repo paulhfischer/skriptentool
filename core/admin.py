@@ -8,8 +8,9 @@ from django.template.loader import render_to_string
 from django.utils import translation
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
+from django_compref_ceycloak.admin import ComprefKeycloakUserInline
 
-from core.models import LectureNote
+from core.models import LectureNote, User
 from core.models.products import generate_cover
 from core.models.products import generate_order
 
@@ -82,9 +83,15 @@ class Admin(admin.ModelAdmin):
 class LectureNoteAdmin(Admin):
     actions = [create_order, create_cover]
 
+class UserAdmin(Admin):
+    inlines = (ComprefKeycloakUserInline,)
+
 
 for model in apps.get_app_config("core").get_models():
     if model == LectureNote:
         admin.site.register(model, LectureNoteAdmin)
+    elif model == User:
+        admin.site.unregister(model)
+        admin.site.register(model, UserAdmin)
     else:
         admin.site.register(model, Admin)
