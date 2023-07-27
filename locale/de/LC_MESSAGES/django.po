@@ -125,10 +125,8 @@ msgstr "Art"
 
 #: core/models/balance.py:74 core/models/cart.py:51 core/models/cart.py:238
 #: core/models/cashbookentry.py:74 core/models/shift.py:54
-#, fuzzy
-#| msgid "correction"
 msgid "location"
-msgstr "Korrektur"
+msgstr "Ort"
 
 #: core/models/balance.py:133
 msgid "high balance"
@@ -484,14 +482,10 @@ msgid "for sale"
 msgstr "steht zum Verkauf"
 
 #: core/models/products.py:355 core/models/products.py:572
-#, fuzzy
-#| msgid "stock"
 msgid "stock (MI)"
 msgstr "Bestand (MI)"
 
 #: core/models/products.py:360 core/models/products.py:577
-#, fuzzy
-#| msgid "stock"
 msgid "stock (CH)"
 msgstr "Bestand (CH)"
 
@@ -710,20 +704,14 @@ msgid "<strong>%(object_name)s</strong> successfully saved."
 msgstr "<strong>%(object_name)s</strong> erfolgreich gespeichert."
 
 #: core/views/sale.py:151
-#, fuzzy
-#| msgid "informatics"
 msgid "Information"
 msgstr "Information"
 
 #: core/views/sale.py:152
-#, fuzzy
-#| msgid "amount"
 msgid "Amount"
 msgstr "Anzahl"
 
 #: core/views/sale.py:153
-#, fuzzy
-#| msgid "price"
 msgid "Unitprice"
 msgstr "Preis"
 
@@ -732,8 +720,6 @@ msgid "MwSt"
 msgstr "USt"
 
 #: core/views/sale.py:155
-#, fuzzy
-#| msgid "total"
 msgid "Total"
 msgstr "Summe"
 
@@ -881,14 +867,7 @@ msgstr ""
 "Euer Skriptentool"
 
 #: templates/core/mail/high_balance.txt:1
-#, fuzzy, python-format
-#| msgid ""
-#| "Hello,\n"
-#| "\n"
-#| "the last sale has been closed with a balance of %(balance)s €!\n"
-#| "\n"
-#| "Regards,\n"
-#| "Your Skriptentool"
+#, python-format
 msgid ""
 "Hello,\n"
 "\n"
@@ -899,8 +878,8 @@ msgid ""
 msgstr ""
 "Hallo,\n"
 "\n"
-"der letzte %(location)s Verkauf wurde mit einem Kassenstand von %(balance)s € "
-"geschlossen!\n"
+"der letzte %(location)s Verkauf wurde mit einem Kassenstand von %(balance)s "
+"€ geschlossen!\n"
 "\n"
 "Liebe Grüße,\n"
 "Euer Skriptentool"
@@ -1042,16 +1021,12 @@ msgid "View EAN logic"
 msgstr "Zeige EAN-Logik an"
 
 #: templates/core/management/update_model.html:48
-#, fuzzy
-#| msgid "designation"
 msgid "abbreviation"
-msgstr "Bezeichnung"
+msgstr "Abkürzung"
 
 #: templates/core/management/update_model.html:49
-#, fuzzy
-#| msgid "opening"
 msgid "meaning"
-msgstr "Kassenöffnung"
+msgstr "Bedeutung"
 
 #: templates/core/management/update_model.html:52
 msgid "<code>A</code> (Product)"
@@ -1119,17 +1094,15 @@ msgstr "<code>T</code> (Teil)"
 
 #: templates/core/management/update_model.html:90
 msgid "Part number (default <code>0</code>)"
-msgstr "Teilenummer (standard <code>0</code>)"
+msgstr "Teilenummer (Standard <code>0</code>)"
 
 #: templates/core/management/update_model.html:93
 msgid "<code>NN</code> (Number)"
 msgstr "<code>NN</code> (Nummer)"
 
 #: templates/core/management/update_model.html:94
-#, fuzzy
-#| msgid "Enter account number"
 msgid "Consecutive number"
-msgstr "Accountnummer eingeben"
+msgstr "Fortlaufende Nummer"
 
 #: templates/core/sale/balance.html:21 templates/core/sale/popups.html:103
 #: templates/core/sale/popups.html:222 templates/core/sale/popups.html:282
