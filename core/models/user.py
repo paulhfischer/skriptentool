@@ -163,6 +163,7 @@ class User(AbstractBaseUser):
             groups.add("is_financier")
             groups.add("is_referent")
             groups.add("is_vendor")
+            groups.add("is_staff")
         elif self.referent:
             self.vendor = True
             groups.add("is_referent")
