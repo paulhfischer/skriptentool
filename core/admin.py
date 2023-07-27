@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.utils import translation
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
-from django_compref_ceycloak.admin import ComprefKeycloakUserInline
+from django_compref_keycloak.admin import ComprefKeycloakUserInline
 
 from core.models import LectureNote, User
 from core.models.products import generate_cover
