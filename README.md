@@ -19,6 +19,8 @@ QPILOT_USERNAME = # Benutzername des Druckkontingent-Accounts
 QPILOT_PASSWORD = # Passwort des Druckkontingent-Accounts
 ```
 
+Mit `python manage.py createsuperuser` kann lokal ein Superuser angelegt werden. Damit kann man sich dann unter `localhost:8000/admin` anmelden.
+
 ## Bedienungsanleitung
 
 ### Verkäufer
