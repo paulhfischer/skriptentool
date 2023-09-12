@@ -12,15 +12,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: core/admin.py:24
+#: core/admin.py:25
 msgid "generate orders"
 msgstr "Skriptenaufträge generieren"
 
-#: core/admin.py:32
+#: core/admin.py:33
 msgid "generate covers"
 msgstr "Deckblätter generieren"
 
-#: core/admin.py:39 core/admin.py:54 core/admin.py:69
+#: core/admin.py:40 core/admin.py:55 core/admin.py:70
 msgid "Changes in admin interface"
 msgstr "Änderungen im Admin-Interface"
 
@@ -58,7 +58,7 @@ msgstr "Autoren"
 msgid "name"
 msgstr "Name"
 
-#: core/models/author.py:18 core/models/user.py:90
+#: core/models/author.py:18
 msgid "mail"
 msgstr "E-Mail-Adresse"
 
@@ -89,17 +89,17 @@ msgstr "Zwischenstand"
 
 #: core/models/balance.py:38 core/models/cart.py:32 core/models/cart.py:209
 #: core/models/cashbookentry.py:36 core/models/shift.py:19
-#: core/models/user.py:71
+#: core/models/user.py:75
 msgid "MI"
 msgstr "MI"
 
 #: core/models/balance.py:39 core/models/cart.py:33 core/models/cart.py:210
 #: core/models/cashbookentry.py:37 core/models/shift.py:20
-#: core/models/user.py:72
+#: core/models/user.py:76
 msgid "CH"
 msgstr "CH"
 
-#: core/models/balance.py:45 core/models/user.py:59
+#: core/models/balance.py:45 core/models/user.py:63
 msgid "user"
 msgstr "Benutzer"
 
@@ -141,7 +141,7 @@ msgstr "Verkaufsvorgang"
 msgid "carts"
 msgstr "Verkaufsvorgänge"
 
-#: core/models/cart.py:39 core/models/shift.py:37 core/models/user.py:112
+#: core/models/cart.py:39 core/models/shift.py:37 core/models/user.py:116
 msgid "vendor"
 msgstr "Verkäufer"
 
@@ -575,43 +575,62 @@ msgstr "%(date)s (%(time_start)s bis %(time_end)s)"
 msgid "%(date)s (%(time_start)s until now)"
 msgstr "%(date)s (%(time_start)s bis jetzt)"
 
-#: core/models/user.py:60 templates/base.html:186
+#: core/models/user.py:64 templates/base.html:186
 msgid "users"
 msgstr "Benutzer"
 
-#: core/models/user.py:83
+#: core/models/user.py:87
 msgid "Local usernames have to start with \"@\" and may only contain letters."
 msgstr ""
 "Lokale Benutzernamen müssen mit \"@\" beginnen und dürfen nur Buchstaben "
 "enthalten."
 
-#: core/models/user.py:86 templates/core/finance.html:118
+#: core/models/user.py:90 templates/core/finance.html:118
 msgid "username"
 msgstr "Benutzername"
 
-#: core/models/user.py:95
+#: core/models/user.py:94
+msgid "email"
+msgstr "E-Mail-Adresse"
+
+#: core/models/user.py:99
 msgid "first name"
 msgstr "Vorname"
 
-#: core/models/user.py:100
+#: core/models/user.py:104
 msgid "last name"
 msgstr "Nachname"
 
-#: core/models/user.py:107
+#: core/models/user.py:111
 msgid "default location"
 msgstr "Standard-Ort"
 
-#: core/models/user.py:117
+#: core/models/user.py:121
 msgid "referent"
 msgstr "Referent"
 
-#: core/models/user.py:122
+#: core/models/user.py:126
 msgid "financier"
 msgstr "Finanzer"
 
-#: core/models/user.py:127
-msgid "admin"
-msgstr "Administrator"
+#: core/models/user.py:131
+msgid "is_staff"
+msgstr "Halbadmin"
+
+#: core/models/user.py:136
+msgid "is_superuser"
+msgstr "Admin"
+
+#: core/models/user.py:141
+msgid "groups"
+msgstr "Gruppen"
+
+#: core/models/user.py:144
+msgid ""
+"The groups this user belongs to. A user will get all permissions granted to "
+"each of their groups."
+msgstr ""
+"Die Gruppen zu der der Benutzer gehört. Der Benutzer wird alle Berechtigungen entsprechend seiner Gruppen bekommen"
 
 #: core/utils/bootstrap.py:62
 msgid "Please correct the marked fields."
