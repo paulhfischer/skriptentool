@@ -728,19 +728,19 @@ msgstr "Information"
 
 #: core/views/sale.py:152
 msgid "Amount"
-msgstr "Anzahl"
+msgstr "Amount"
 
 #: core/views/sale.py:153
 msgid "Unitprice"
-msgstr "Preis"
+msgstr "Unitprice"
 
 #: core/views/sale.py:154
 msgid "MwSt"
-msgstr "USt"
+msgstr "MwSt"
 
 #: core/views/sale.py:155
 msgid "Total"
-msgstr "Summe"
+msgstr "Total"
 
 #: core/views/sale.py:174 templates/core/sale/sale_process.html:36
 msgid "invoice"
