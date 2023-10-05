@@ -193,7 +193,7 @@ class CartItem(models.Model):
     LECTURENOTE = "lecturenote"
     PRINTINGQUOTA = "printingquota"
     DEPOSIT = "deposit"
-    LABCOAT = "labcaot"
+    LABCOAT = "labcoat"
 
     TYPES = [
         (LECTURENOTE, _("lecture note")),
