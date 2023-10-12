@@ -222,6 +222,7 @@ def sale(request):
 
             # check if artlicle exists
             try:
+                product = get_product(ean)
                 product_type = get_type(ean)
 
                 # remove if not deposit, start refund process otherwise
