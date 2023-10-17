@@ -630,7 +630,8 @@ msgid ""
 "The groups this user belongs to. A user will get all permissions granted to "
 "each of their groups."
 msgstr ""
-"Die Gruppen zu der der Benutzer gehört. Der Benutzer wird alle Berechtigungen entsprechend seiner Gruppen bekommen"
+"Die Gruppen zu der der Benutzer gehört. Der Benutzer wird alle "
+"Berechtigungen entsprechend seiner Gruppen bekommen"
 
 #: core/utils/bootstrap.py:62
 msgid "Please correct the marked fields."
@@ -742,32 +743,32 @@ msgstr "MwSt"
 msgid "Total"
 msgstr "Total"
 
-#: core/views/sale.py:174 templates/core/sale/sale_process.html:36
+#: core/views/sale.py:176 templates/core/sale/sale_process.html:36
 msgid "invoice"
 msgstr "Rechnung"
 
-#: core/views/sale.py:202
+#: core/views/sale.py:204
 msgid "Deposit notes can only be sold with a lecture note."
 msgstr "Kautionsscheine können nur mit Skript verkauft werden."
 
-#: core/views/sale.py:216
+#: core/views/sale.py:218
 msgid "This item isn't for sale."
 msgstr "Dieser Artikel steht nicht zum Verkauf."
 
-#: core/views/sale.py:218 core/views/sale.py:235
+#: core/views/sale.py:220 core/views/sale.py:237
 msgid "This item doesn't exist."
 msgstr "Dieser Artikel existiert nicht."
 
-#: core/views/sale.py:267
+#: core/views/sale.py:269
 #, python-format
 msgid "The deposit note %(num)s has alredy been refunded."
 msgstr "Der Kautionsschein %(num)s wurde bereits erstattet."
 
-#: core/views/sale.py:274
+#: core/views/sale.py:276
 msgid "This deposit note mustn't be refunded yet."
 msgstr "Dieser Kautionsschein darf noch nicht erstattet werden."
 
-#: core/views/sale.py:280
+#: core/views/sale.py:282
 #, python-format
 msgid "The deposit note %(num)s can only be refunded by a referent."
 msgstr ""
@@ -904,7 +905,6 @@ msgstr ""
 "Euer Skriptentool"
 
 #: templates/core/mail/invoice.txt:1
-#, python-format
 msgid ""
 "Hello,\n"
 "\n"
@@ -918,6 +918,9 @@ msgid ""
 "\n"
 "Vendor:\n"
 "%(vendor)s\n"
+"\n"
+"Items:\n"
+"%(items)s\n"
 "\n"
 "Regards,\n"
 "Your Skriptentool"
@@ -934,6 +937,9 @@ msgstr ""
 "\n"
 "Verkäufer:\n"
 "%(vendor)s\n"
+"\n"
+"Posten:\n"
+"%(items)s\n"
 "\n"
 "Viele Grüße,\n"
 "\n"

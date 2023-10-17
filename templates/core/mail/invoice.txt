@@ -11,5 +11,8 @@ Date:
 Vendor:
 {{ vendor }}
 
+Items:
+{{ items }}
+
 Regards,
 Your Skriptentool{% endblocktrans %}

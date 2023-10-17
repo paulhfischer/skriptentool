@@ -155,7 +155,9 @@ def sale(request):
                     _("Total"),
                 ],
             )
+            items = "Information Menge Einzelpreis USt Summe\n"
             for cart_item in CartItem.objects.filter(cart=cart, location=location):
+                items = items + get_type(cart_item) + " " + cart_item.name + " " + cart_item.quantity + " " + cart_item.price_single + " " + "19" + " " + cart_item.price_total + "\n"
                 writer.writerow(
                     [
                         get_type(cart_item) + " " + cart_item.name,
@@ -172,7 +174,7 @@ def sale(request):
             with translation.override(settings.LANGUAGE_CODE):
                 email = EmailMessage(
                         format_lazy("[Skriptentool] {}", capfirst(_("invoice"))),
-                        render_to_string("core/mail/invoice.txt", {"address": address, "date": str(date), "vendor": vendor}),
+                        render_to_string("core/mail/invoice.txt", {"address": address, "date": str(date), "vendor": vendor, "items": items}),
                         settings.DEFAULT_FROM_EMAIL,
                         settings.FINANCE_EMAILS,
                     )
