@@ -158,7 +158,8 @@ msgid "item"
 msgstr "Artikel"
 
 #: core/models/cart.py:189
-msgid "items"
+msgid "
+items"
 msgstr "Artikel"
 
 #: core/models/cart.py:199 core/models/products.py:247

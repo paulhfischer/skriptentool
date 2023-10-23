@@ -157,7 +157,7 @@ def sale(request):
             )
             items = "Information Menge Einzelpreis USt Summe\n"
             for cart_item in CartItem.objects.filter(cart=cart, location=location):
-                items = items + get_type(cart_item) + " " + cart_item.name + " " + cart_item.quantity + " " + cart_item.price_single + " " + "19" + " " + cart_item.price_total + "\n"
+                items = items + get_type(cart_item) + " " + cart_item.name + " " + str(cart_item.quantity) + " " + str(cart_item.price_single) + " " + "19" + " " + str(cart_item.price_total) + "\n"
                 writer.writerow(
                     [
                         get_type(cart_item) + " " + cart_item.name,
