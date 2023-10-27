@@ -1,6 +1,7 @@
 import csv
 from io import StringIO
 from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
@@ -157,12 +158,12 @@ def sale(request):
             )
             items = "Information Menge Einzelpreis USt Summe\n"
             for cart_item in CartItem.objects.filter(cart=cart, location=location):
-                items = items + get_type(cart_item) + " " + cart_item.name + " " + str(cart_item.quantity) + " " + str(cart_item.price_single) + " " + "19" + " " + str(cart_item.price_total) + "\n"
+                items = items + get_type(cart_item) + " " + cart_item.name + " " + str(cart_item.quantity) + " " + str((cart_item.price_single / Decimal("1.19")).quantize(Decimal(".00001"), rounding=ROUND_HALF_UP)) + " " + "19" + " " + str(cart_item.price_total) + "\n"
                 writer.writerow(
                     [
                         get_type(cart_item) + " " + cart_item.name,
                         cart_item.quantity,
-                        cart_item.price_single,
+                        (cart_item.price_single / Decimal("1.19")).quantize(Decimal(".00001"), rounding=ROUND_HALF_UP),
                         "19",
                         cart_item.price_total,
                     ],
