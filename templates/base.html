@@ -5,7 +5,8 @@
 {% url 'core:catalogue' as catalogue_url %}
 {% url 'core:sale' as sale_url %}
 {% url 'core:shifts' as shifts_url %}
-{% url 'core:management_finance' 'MI' as management_finance %}
+{% url 'core:management_finance' 'MI' as management_finance_MI %}
+{% url 'core:management_finance' 'CH' as management_finance_CH %}
 {% url 'core:management_list' 'lecturenote' as management_lecturenote %}
 {% url 'core:management_list' 'author' as management_author%}
 {% url 'core:management_list' 'depositnote' as management_depositnote %}
@@ -170,10 +171,18 @@
                             <div class="dropdown-divider"></div>
                             {% endif %}
                             {% if request.user.financier %}
-                            <a
-                                class="dropdown-item{% if management_finance in request.path %} active{% endif %}"
-                                href="{{ management_finance }}"
-                            >
+                              {% if request.user.default_location == 'MI' %}
+                                <a
+                                    class="dropdown-item{% if management_finance in request.path %} active{% endif %}"
+                                    href="{{ management_finance_MI }}"
+                                >
+                              {% endif %}
+                              {% if request.user.default_location == 'CH' %}
+                                <a
+                                    class="dropdown-item{% if management_finance in request.path %} active{% endif %}"
+                                    href="{{ management_finance_CH }}"
+                                >
+                              {% endif %}
                                 {% trans 'cashbook'|capfirst %}
                             </a>
                             {% endif %}

@@ -175,8 +175,8 @@ OIDC_OP_JWKS_ENDPOINT = "https://auth.fs.tum.de/auth/realms/fs.tum.de/protocol/o
 # We have OpenID Connect clients configured for testing.
 # It is okay to put their secrets to internal git repositories, but not to public ones!
 # These test clients only accept http://localhost:8000 as redirect URL.
-OIDC_RP_CLIENT_ID = "..."  # provided by CompRef and overwritten for prod deployment
-OIDC_RP_CLIENT_SECRET = "..."  # provided by CompRef and overwritten for prod deployment
+OIDC_RP_CLIENT_ID = "localhost-test"  # provided by CompRef and overwritten for prod deployment
+OIDC_RP_CLIENT_SECRET = "842e9bc6-7b0d-4acc-8091-6f04d831e616"  # provided by CompRef and overwritten for prod deployment
 
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_STORE_ID_TOKEN = True
