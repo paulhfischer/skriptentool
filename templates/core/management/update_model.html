@@ -12,7 +12,7 @@
     id="select-script"
     defer
 ></script>
-<script>
+<script type="text/javascript">
     // update label of file-upload-field after file has been selected
     $(window).on('load', () => {
         const fileField = $('input[type="file"]');
@@ -23,6 +23,55 @@
             fileLabel.text(fileName);
         });
     });
+
+    const lecturenotes = {{ products|safe }};
+    function generateEAN() {
+        var ean;
+        var product = '0';
+        var teil = '0';
+        var studienfach = document.getElementById('dropdown-id_subject').innerText[0];
+        var semester = document.getElementById('dropdown-id_semester_start').innerText;
+        var semster_gespeichert = semester[0];
+
+        //Product zur EAN
+        ean += product;
+
+        //Fach zur EAN
+        switch(studienfach) {
+            case('I'): ean += '0'; break;
+            case('M'): ean += '1'; break;
+            case('P'): ean += '2'; break;
+            case('C'): ean += '3'; break;
+        }
+
+        var length_semester = semester.length;
+        var temp = '';
+        //Semester zur EAN
+        switch(semester[0]) {
+            case('W'): ean += '1'; semster_gespeichert += semester[length_semester-11]; semster_gespeichert += semester[length_semester-10]; temp += semester[length_semester-9]; temp += semester[length_semester-8]; break;
+            case('S'): ean += '2'; semster_gespeichert += semester[length_semester-4]; semster_gespeichert += semester[length_semester-3]; temp += semester[length_semester-2]; temp += semester[length_semester-1]; break;
+        }
+        ean += temp;
+        semster_gespeichert += temp;
+
+        //Nummer zur EAN
+        var number = 0;
+        lecturenotes.forEach(element => {
+            if(element.semester_start == semster_gespeichert && element.subject == studienfach) {
+                number++;
+            }
+        });
+
+        if(number<10) {
+            ean += '0';
+        }
+        ean += number.toString();
+
+        //Teil zur EAN
+        ean += teil;
+
+        document.getElementById('id_ean').value = ean;
+    }
 </script>
 {% endblock %}
 
@@ -41,6 +90,10 @@
                 <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#eanlogic" onclick=""s>
                     {% blocktrans %}View EAN logic{% endblocktrans %}
                 </button>
+                <button type="button" class="btn btn-primary" onclick="generateEAN()"s>
+                    {% blocktrans %}Generate EAN{% endblocktrans %}
+                </button>
+                
                 <div id="eanlogic" class="collapse">
                     <table class="table table-xsm mb-0 table-striped table-fixed text-nowrap table-bordered-vertical">
                       <caption class="pb-0">EAN: <code>AFSJJNNT</code></caption
