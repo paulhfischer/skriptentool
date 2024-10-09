@@ -9,7 +9,7 @@ from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 
-from core.models import User
+from core.models import User , LectureNote
 from core.utils.functions import get_model
 from core.utils.management import get_fields
 from core.utils.management import get_fieldsets
@@ -22,6 +22,7 @@ def get_context(user, model):
         "mode": "create",
         "abort_url": reverse("core:management_list", args=[model.__name__.lower()]),
         "fieldsets": get_fieldsets(user, model),
+        'products': list(LectureNote.objects.values('ean', 'id', 'name','semester_start', 'subject')),
     }
 
 
