@@ -12,3 +12,4 @@ media/skripten/*
 !media/skripten/.gitkeep
 media/druck/*
 !media/druck/.gitkeep
+/venv/

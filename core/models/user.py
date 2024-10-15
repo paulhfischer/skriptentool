@@ -53,7 +53,7 @@ class UserManager(BaseUserManager):
             financier=True,
             referent=True,
             is_staff=True,
-            is_superuser=True,
+            admin=True,
             default_location='MI',
         )
 
