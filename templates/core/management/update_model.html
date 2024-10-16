@@ -24,21 +24,56 @@
         });
     });
 
-    var number_lecturenotes = 0;
+    var ean = '';
     var path = window.location.pathname + 'products';
-    function request(studienfach, semester) {
-        const request_date = {
-            fach: studienfach,
-            semester: semester,
-        };
+    var request_data = '';
+
+    function eanrequest() {
+        var what_create = document.querySelector('h2.card-header').innerText;
+        if(what_create.includes('Skript')){
+            var product = document.getElementById('id_product').value;
+            var teil = document.getElementById('id_part').value;
+            var studienfach = document.getElementById('dropdown-id_subject').innerText[0];
+            var semester = document.getElementById('dropdown-id_semester_start').innerText;
+            var semster_gespeichert = semester[0];
+
+            var length_semester = semester.length;
+            switch(semester[0]) {
+                case('W'): semster_gespeichert += semester[length_semester-11]; semster_gespeichert += semester[length_semester-10]; semster_gespeichert += semester[length_semester-9]; semster_gespeichert += semester[length_semester-8]; break;
+                case('S'): semster_gespeichert += semester[length_semester-4]; semster_gespeichert += semester[length_semester-3]; semster_gespeichert += semester[length_semester-2]; semster_gespeichert += semester[length_semester-1]; break;
+            }
+
+            request_data = {
+                product: product,
+                teil: teil,
+                studienfach: studienfach,
+                semester: semster_gespeichert,
+            }
+        }
+        else if(what_create.includes('Druckkontingent') ) {
+            request_data = {
+                product: 'D',
+                content: document.getElementById('id_pages').value,
+                qpilot: document.getElementById('id_qpilot').checked,
+            }
+        }
+        else if(what_create.includes('Kittel')) {
+            request_data = {
+                product: 'K',
+                content: document.getElementById('id_size').value,
+                qpilot: true,
+            }
+        }
+
         const csrftoken = document.cookie.split('=')[1];
-        return fetch(path, {
+
+        fetch(path, {
             method: 'POST',
             headers: {
                     "Content-Type": "application/json", // Damit der Server weiß, dass wir JSON senden
                     "X-CSRFToken": csrftoken,
                 },
-                body: JSON.stringify(request_date)
+                body: JSON.stringify(request_data)
         })
         .then(response => {
             if(!response.ok) {
@@ -47,78 +82,8 @@
             return response.json();
         })
         .then(data => {
-            number_lecturenotes = data.content;
+            document.getElementById('id_ean').value = data.content;
         });
-    }
-
-    function generateEAN() {
-        var what_create = document.querySelector('h2.card-header').innerText;
-        var ean = '';
-        if(what_create.includes('Skript')){
-            var product = document.getElementById('id_product').value;
-            var teil = document.getElementById('id_part').value;
-            var studienfach = document.getElementById('dropdown-id_subject').innerText[0];
-            var semester = document.getElementById('dropdown-id_semester_start').innerText;
-            var semster_gespeichert = semester[0];
-
-            //Semester vorbereiten
-            var length_semester = semester.length;
-            var temp = '';
-            var ean_temp = '';
-            switch(semester[0]) {
-                case('W'): ean_temp += '1'; semster_gespeichert += semester[length_semester-11]; semster_gespeichert += semester[length_semester-10]; temp += semester[length_semester-9]; temp += semester[length_semester-8]; break;
-                case('S'): ean_temp += '2'; semster_gespeichert += semester[length_semester-4]; semster_gespeichert += semester[length_semester-3]; temp += semester[length_semester-2]; temp += semester[length_semester-1]; break;
-            }
-            ean_temp += temp;
-            semster_gespeichert += temp;
-
-            request(studienfach, semster_gespeichert).then( () => {
-
-            //Product zur EAN
-            switch(product) {
-                case('S'): ean += '0'; break;
-                case('P'): ean += '1'; break;
-            }
-
-            //Fach zur EAN
-            switch(studienfach) {
-                case('I'): ean += '0'; break;
-                case('M'): ean += '1'; break;
-                case('P'): ean += '2'; break;
-                case('C'): ean += '3'; break;
-            }
-
-            //Semester zur EAN
-            ean += ean_temp;
-
-            //Nummer zur EAN
-            var number = number_lecturenotes
-
-            if(number<10) {
-                ean += '0';
-            }
-            ean += number.toString();
-
-            //Teil zur EAN
-            ean += teil;
-
-            document.getElementById('id_ean').value = ean;
-            });
-        }
-        else if(what_create.includes('Druckkontingent') || what_create.includes('Kittel')) {
-            var content;
-            switch(what_create[0]) {
-                case 'D': content = document.getElementById('id_pages').value; ean = '9'; break;
-                case 'K': content = document.getElementById('id_size').value; ean = '7'; break;
-            }
-            var length_rest = 5 - content.length;
-            for(i=0;i<length_rest;i++) {
-                ean += '0';
-            }
-            ean += content;
-
-            document.getElementById('id_ean').value = ean;
-        }
     }
 </script>
 {% endblock %}
@@ -192,7 +157,7 @@
                       </tr>
                   </table>
                 </div>
-                <button type="button" class="btn btn-primary" onclick="generateEAN()"s>
+                <button type="button" class="btn btn-primary" onclick="eanrequest()"s>
                     {% blocktrans %}Generate EAN{% endblocktrans %}
                 </button>
                 <div id="product_part" class="list-group-item pt-md-3">
@@ -205,8 +170,6 @@
                                 <option value="S">Skript</option>
                               
                                 <option value="P">Protokoll</option>
-
-                                <option value="D">Druckkontingent</option>
                               
                               </select>
                         </div>

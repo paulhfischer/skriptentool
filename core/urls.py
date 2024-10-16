@@ -25,7 +25,7 @@ urlpatterns = [
         name="shifts",
     ),
     path(
-        "management/lecturenote/create/products",
+        "management/<str:model>/create/products",
         views.products,
         name="products",
     ),
