@@ -31,10 +31,12 @@
             fach: studienfach,
             semester: semester,
         };
+        const csrftoken = document.cookie.split('=')[1];
         return fetch(path, {
             method: 'POST',
             headers: {
-                    "Content-Type": "application/json" // Damit der Server weiß, dass wir JSON senden
+                    "Content-Type": "application/json", // Damit der Server weiß, dass wir JSON senden
+                    "X-CSRFToken": csrftoken,
                 },
                 body: JSON.stringify(request_date)
         })

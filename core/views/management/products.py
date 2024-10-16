@@ -1,9 +1,9 @@
 from django.http import JsonResponse
 from core.models import LectureNote
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 import json
 
-@csrf_exempt
+@csrf_protect
 def products(request):
     if request.method == 'POST':
         try: 
