@@ -26,6 +26,9 @@
         if(document.querySelector('h2.card-header').innerText.includes('Skript')||document.querySelector('h2.card-header').innerText.includes('lecture note')) {
             document.getElementById('product_part').style.display = 'block';
         }
+        if(document.querySelector('h2.card-header').innerText.includes('Kaution') || document.querySelector('h2.card-header').innerText.includes('deposit')) {  
+            document.getElementById('ean_generation').style.display = 'none';
+        }
     });
 
     var ean = '';
@@ -34,7 +37,6 @@
 
     function eanrequest() {
         var what_create = document.querySelector('h2.card-header').innerText;
-        console.log(what_create);
         if(what_create.includes('Skript') || what_create.includes('lecture note')){
             var product = document.getElementById('id_product').value;
             var teil = document.getElementById('id_part').value;
@@ -42,6 +44,11 @@
             var semester = document.getElementById('dropdown-id_semester_start').innerText;
             var semster_gespeichert = semester[0].toUpperCase();
 
+            if(product == '' || teil == '' || studienfach == '-' || semester == '---------') {
+                document.getElementById('ean_generation').innerText = 'Es sind nicht alle notwendigen Informationen vorhanden!'
+                document.getElementById('ean_generation').style.backgroundColor = 'red';
+                return;
+            }
             var length_semester = semester.length;
             switch(semester[0].toUpperCase()) {
                 case('W'): semster_gespeichert += semester[length_semester-11]; semster_gespeichert += semester[length_semester-10]; semster_gespeichert += semester[length_semester-9]; semster_gespeichert += semester[length_semester-8]; break;
@@ -56,16 +63,26 @@
             }
         }
         else if(what_create.includes('Druckkontingent') || what_create.includes('printing quota')) {
+            pages = document.getElementById('id_pages').value;
+            if(pages == '') {
+                error_ean_generation();
+                return;
+            }
             request_data = {
                 product: 'D',
-                content: document.getElementById('id_pages').value,
+                content: pages,
                 qpilot: document.getElementById('id_qpilot').checked,
             }
         }
         else if(what_create.includes('Kittel') || what_create.includes('labcoat')) {
+            size = document.getElementById('id_size').value;
+            if(size == ''){
+                error_ean_generation();
+                return;
+            }
             request_data = {
                 product: 'K',
-                content: document.getElementById('id_size').value,
+                content: size,
                 qpilot: true,
             }
         }
@@ -89,6 +106,11 @@
         .then(data => {
             document.getElementById('id_ean').value = data.content;
         });
+    }
+
+    function error_ean_generation() {
+        document.getElementById('ean_generation').innerText = 'Es sind nicht alle notwendigen Informationen vorhanden!'
+        document.getElementById('ean_generation').style.backgroundColor = 'red';
     }
 </script>
 {% endblock %}
@@ -162,7 +184,7 @@
                       </tr>
                   </table>
                 </div>
-                <button type="button" class="btn btn-primary" onclick="eanrequest()"s>
+                <button id="ean_generation" type="button" class="btn btn-primary" onclick="eanrequest()"s>
                     {% blocktrans %}Generate EAN{% endblocktrans %}
                 </button>
                 <div id="product_part" class="list-group-item pt-md-3" style="display: none;">
@@ -170,9 +192,7 @@
                         <label class="col-md-3 col-form-label" for="id_product">Product</label>
                         <div class="col-md-9 my-auto">
                             <select name="product" class="custom-select " required="" id="id_product" hidden="">
-                                <option value="" selected="">---------</option>
-                              
-                                <option value="S">Skript</option>
+                                <option value="S" selected>Skript</option>
                               
                                 <option value="P">Protokoll</option>
                               
@@ -183,7 +203,7 @@
                         <label class="col-md-3 col-form-label" for="id_part">Part</label>
                         <div class="col-md-9 my-auto">
                             <select name="part" class="custom-select " required="" id="id_part" hidden="">
-                                <option value="0" selected="">---------</option>
+                                <option value="0" selected="">Teil 0</option>
                               
                                 <option value="1">Teil 1</option>
                               
