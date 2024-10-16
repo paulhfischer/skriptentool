@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import password_validation
 from django.forms import ModelForm
 from django.forms import ValidationError
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.urls import reverse
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
@@ -22,9 +22,7 @@ def get_context(user, model):
         "mode": "create",
         "abort_url": reverse("core:management_list", args=[model.__name__.lower()]),
         "fieldsets": get_fieldsets(user, model),
-        'products': list(LectureNote.objects.values('ean', 'id', 'name','semester_start', 'subject')),
     }
-
 
 def get_form(form_model, user):
     if form_model != User:

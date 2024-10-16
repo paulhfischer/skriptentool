@@ -24,7 +24,31 @@
         });
     });
 
-    const lecturenotes = {{ products|safe }};
+    var number_lecturenotes = 0;
+    var path = window.location.pathname + 'products';
+    function request(studienfach, semester) {
+        const request_date = {
+            fach: studienfach,
+            semester: semester,
+        };
+        return fetch(path, {
+            method: 'POST',
+            headers: {
+                    "Content-Type": "application/json" // Damit der Server weiß, dass wir JSON senden
+                },
+                body: JSON.stringify(request_date)
+        })
+        .then(response => {
+            if(!response.ok) {
+                throw new Error('Netzwerk ist nicht ok.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            number_lecturenotes = data.content;
+        });
+    }
+
     function generateEAN() {
         var what_create = document.querySelector('h2.card-header').innerText;
         var ean = '';
@@ -34,6 +58,19 @@
             var studienfach = document.getElementById('dropdown-id_subject').innerText[0];
             var semester = document.getElementById('dropdown-id_semester_start').innerText;
             var semster_gespeichert = semester[0];
+
+            //Semester vorbereiten
+            var length_semester = semester.length;
+            var temp = '';
+            var ean_temp = '';
+            switch(semester[0]) {
+                case('W'): ean_temp += '1'; semster_gespeichert += semester[length_semester-11]; semster_gespeichert += semester[length_semester-10]; temp += semester[length_semester-9]; temp += semester[length_semester-8]; break;
+                case('S'): ean_temp += '2'; semster_gespeichert += semester[length_semester-4]; semster_gespeichert += semester[length_semester-3]; temp += semester[length_semester-2]; temp += semester[length_semester-1]; break;
+            }
+            ean_temp += temp;
+            semster_gespeichert += temp;
+
+            request(studienfach, semster_gespeichert).then( () => {
 
             //Product zur EAN
             switch(product) {
@@ -49,23 +86,11 @@
                 case('C'): ean += '3'; break;
             }
 
-            var length_semester = semester.length;
-            var temp = '';
             //Semester zur EAN
-            switch(semester[0]) {
-                case('W'): ean += '1'; semster_gespeichert += semester[length_semester-11]; semster_gespeichert += semester[length_semester-10]; temp += semester[length_semester-9]; temp += semester[length_semester-8]; break;
-                case('S'): ean += '2'; semster_gespeichert += semester[length_semester-4]; semster_gespeichert += semester[length_semester-3]; temp += semester[length_semester-2]; temp += semester[length_semester-1]; break;
-            }
-            ean += temp;
-            semster_gespeichert += temp;
+            ean += ean_temp;
 
             //Nummer zur EAN
-            var number = 0;
-            lecturenotes.forEach(element => {
-                if(element.semester_start == semster_gespeichert && element.subject == studienfach && teil <= 1) {
-                    number++;
-                }
-            });
+            var number = number_lecturenotes
 
             if(number<10) {
                 ean += '0';
@@ -76,6 +101,7 @@
             ean += teil;
 
             document.getElementById('id_ean').value = ean;
+            });
         }
         else if(what_create.includes('Druckkontingent') || what_create.includes('Kittel')) {
             var content;

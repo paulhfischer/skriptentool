@@ -6,6 +6,7 @@ from .management import ListModelView
 from .management import UpdateModelView
 from .sale import sale
 from .shifts import shifts
+from .management.products import products
 
 __all__ = [
     "catalogue",
@@ -16,4 +17,5 @@ __all__ = [
     "DeleteModelView",
     "ListModelView",
     "UpdateModelView",
+    "products"
 ]
