@@ -23,7 +23,7 @@
             fileLabel.text(fileName);
         });
 
-        if(document.querySelector('h2.card-header').innerText.includes('Skript')) {
+        if(document.querySelector('h2.card-header').innerText.includes('Skript')||document.querySelector('h2.card-header').innerText.includes('lecture note')) {
             document.getElementById('product_part').style.display = 'block';
         }
     });
@@ -34,15 +34,16 @@
 
     function eanrequest() {
         var what_create = document.querySelector('h2.card-header').innerText;
-        if(what_create.includes('Skript')){
+        console.log(what_create);
+        if(what_create.includes('Skript') || what_create.includes('lecture note')){
             var product = document.getElementById('id_product').value;
             var teil = document.getElementById('id_part').value;
-            var studienfach = document.getElementById('dropdown-id_subject').innerText[0];
+            var studienfach = document.getElementById('dropdown-id_subject').innerText[0].toUpperCase();
             var semester = document.getElementById('dropdown-id_semester_start').innerText;
-            var semster_gespeichert = semester[0];
+            var semster_gespeichert = semester[0].toUpperCase();
 
             var length_semester = semester.length;
-            switch(semester[0]) {
+            switch(semester[0].toUpperCase()) {
                 case('W'): semster_gespeichert += semester[length_semester-11]; semster_gespeichert += semester[length_semester-10]; semster_gespeichert += semester[length_semester-9]; semster_gespeichert += semester[length_semester-8]; break;
                 case('S'): semster_gespeichert += semester[length_semester-4]; semster_gespeichert += semester[length_semester-3]; semster_gespeichert += semester[length_semester-2]; semster_gespeichert += semester[length_semester-1]; break;
             }
@@ -54,14 +55,14 @@
                 semester: semster_gespeichert,
             }
         }
-        else if(what_create.includes('Druckkontingent') ) {
+        else if(what_create.includes('Druckkontingent') || what_create.includes('printing quota')) {
             request_data = {
                 product: 'D',
                 content: document.getElementById('id_pages').value,
                 qpilot: document.getElementById('id_qpilot').checked,
             }
         }
-        else if(what_create.includes('Kittel')) {
+        else if(what_create.includes('Kittel') || what_create.includes('labcoat')) {
             request_data = {
                 product: 'K',
                 content: document.getElementById('id_size').value,
@@ -69,7 +70,7 @@
             }
         }
 
-        const csrftoken = document.cookie.split('=')[1];
+        const csrftoken = document.cookie.split('=')[1].split(';')[0];
 
         fetch(path, {
             method: 'POST',

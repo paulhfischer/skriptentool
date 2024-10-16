@@ -10,7 +10,7 @@ def products(request, model):
             ean = '';
             data = json.loads(request.body);
             product = data.get('product');
-            if (product == 'S') or (product == 'P'): 
+            if (product == 'S') or (product == 'P') or (product == 's') or (product == 'p'): 
                 teil = data.get('teil');
                 studienfach = data.get('studienfach');
                 semester = data.get('semester');
@@ -45,7 +45,7 @@ def products(request, model):
                 #Teil to EAN
                 ean += teil
 
-            elif (product == 'K') or (product == 'D'): 
+            elif (product == 'K') or (product == 'D') or (product == 'k') or (product == 'd'): 
                 content = data.get('content');
                 qpilot = data.get('qpilot')
 
