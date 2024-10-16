@@ -22,6 +22,10 @@
             const fileLabel = $(`label.custom-file-label[for=${event.target.id}]`);
             fileLabel.text(fileName);
         });
+
+        if(document.querySelector('h2.card-header').innerText.includes('Skript')) {
+            document.getElementById('product_part').style.display = 'block';
+        }
     });
 
     var ean = '';
@@ -160,7 +164,7 @@
                 <button type="button" class="btn btn-primary" onclick="eanrequest()"s>
                     {% blocktrans %}Generate EAN{% endblocktrans %}
                 </button>
-                <div id="product_part" class="list-group-item pt-md-3">
+                <div id="product_part" class="list-group-item pt-md-3" style="display: none;">
                     <div id="product" class="form-group row font-weight-bold">
                         <label class="col-md-3 col-form-label" for="id_product">Product</label>
                         <div class="col-md-9 my-auto">
