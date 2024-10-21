@@ -553,6 +553,8 @@ class Labcoat(models.Model):
         ("54", "54"),
         ("56", "56"),
         ("58", "58"),
+        ("60", "60"),
+        ("62", "62"),
     ]
     
     ean = models.CharField(
