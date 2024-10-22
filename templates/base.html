@@ -205,7 +205,7 @@
                         {% if request.user.is_authenticated %}
                         <a
                             class="nav-link"
-                            href="{% url 'logout' %}"
+                            href="{% url 'oidc_logout' %}"
                         >
                             {% blocktrans trimmed with username=request.user.username %}
                             Log out {{ username }}
