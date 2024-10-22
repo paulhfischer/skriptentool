@@ -45,8 +45,7 @@
             var semster_gespeichert = semester[0].toUpperCase();
 
             if(product == '' || teil == '' || studienfach == '-' || semester == '---------') {
-                document.getElementById('ean_generation').innerText = 'Es sind nicht alle notwendigen Informationen vorhanden!'
-                document.getElementById('ean_generation').style.backgroundColor = 'red';
+                error_ean_generation()
                 return;
             }
             var length_semester = semester.length;
@@ -105,12 +104,17 @@
         })
         .then(data => {
             document.getElementById('id_ean').value = data.content;
+            success_ean_generation();
         });
     }
 
     function error_ean_generation() {
         document.getElementById('ean_generation').innerText = 'Es sind nicht alle notwendigen Informationen vorhanden!'
         document.getElementById('ean_generation').style.backgroundColor = 'red';
+    }
+    function success_ean_generation() {
+        document.getElementById('ean_generation').innerText = 'Done!'
+        document.getElementById('ean_generation').style.backgroundColor = 'green';
     }
 </script>
 {% endblock %}

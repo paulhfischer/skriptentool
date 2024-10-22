@@ -28,8 +28,8 @@ OUTPUT_DIR = os.path.join(MEDIA_ROOT, "druck")
 ROOT_URLCONF = "skriptentool.urls"
 STATIC_URL = "/static/"
 LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "core:catalogue"
-LOGOUT_REDIRECT_URL = "core:catalogue"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL_FAILURE = "/login/failed"
 MEDIA_URL = "/media/"
 
