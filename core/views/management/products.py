@@ -16,7 +16,10 @@ def products(request, model):
                 semester = data.get('semester');
 
                 lecture_notes = LectureNote.objects.filter(semester_start = semester, subject = studienfach);
-                number_lecturenotes = len(lecture_notes);
+                if (product == 'S') or (product == 's'):
+                    number_lecturenotes = len(list(filter(lambda l: l.ean.startswith('0'), lecture_notes)))
+                else:
+                    number_lecturenotes = len(list(filter(lambda l: l.ean.startswith('1'), lecture_notes)))
 
                 #Product to EAN
                 match(product):
