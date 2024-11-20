@@ -29,6 +29,10 @@ def catalogue(request):
             LectureNote.objects.filter(subject="I", active=True).order_by("name"),
             _("informatics"),
         ),
+        'chemistry_list': render_table(
+             LectureNote.objects.filter(subject="C", active=True).order_by("name"),
+            _("chemistry"),
+        )
     }
 
     return render(request, "core/catalogue.html", context)

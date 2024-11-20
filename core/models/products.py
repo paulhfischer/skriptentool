@@ -252,6 +252,7 @@ class LectureNote(models.Model):
         ("M", _("mathematics")),
         ("P", _("physics")),
         ("I", _("informatics")),
+        ("C", _("chemistry")),
     ]
 
     COLORS = [

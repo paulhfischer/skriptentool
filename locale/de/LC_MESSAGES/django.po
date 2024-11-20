@@ -153,13 +153,16 @@ msgstr "Erstellzeitpunkt"
 msgid "There can only be one sale at a time."
 msgstr "Es darf nur ein Verkauf gleichzeitig stattfinden."
 
+#: templates/core/catalogue.html:27
+msgid "only available in the chemistry building, like the lab coats!"
+msgstr "Nur im Chemiegebäude erhältlich, wie die Laborkittel!"
+
 #: core/models/cart.py:188
 msgid "item"
 msgstr "Artikel"
 
 #: core/models/cart.py:189
-msgid "
-items"
+msgid "items"
 msgstr "Artikel"
 
 #: core/models/cart.py:199 core/models/products.py:247
@@ -367,6 +370,11 @@ msgstr "Physik"
 #: templates/core/catalogue.html:20
 msgid "informatics"
 msgstr "Informatik"
+
+#: core/models/products.py:254 core/views/catalogue.py:34
+#: templates/core/catalogue.html:26
+msgid "chemistry"
+msgstr "Chemie"
 
 #: core/models/products.py:258
 msgid "royal blue"

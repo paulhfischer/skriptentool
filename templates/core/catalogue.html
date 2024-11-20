@@ -16,10 +16,17 @@
         {{ physics_list }}
     </div>
 </div>
-<div class="card">
+<div class="card spacer-b">
     <h2 class="card-header">{% trans 'informatics'|capfirst %}</h2>
     <div class="card-body table-responsive">
         {{ informatics_list }}
+    </div>
+</div>
+<div class="card">
+    <h2 class="card-header">{% trans 'chemistry'|capfirst %}</h2>
+    <a class="card-header">{% trans 'only available in the chemistry building, like the lab coats!'|capfirst  %}</a>
+    <div class="card-body table-responsive">
+        {{ chemistry_list }}
     </div>
 </div>
 {% endblock %}

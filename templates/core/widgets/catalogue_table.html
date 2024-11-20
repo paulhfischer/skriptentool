@@ -14,6 +14,8 @@
         <td class="text-right">
             {% if lecturenote.stock_MI > 0 %}
             {% blocktrans with stock=lecturenote.stock_MI %}{{ stock }} copies{% endblocktrans %}
+            {% elif lecturenote.stock_CH > 0 %}
+            {% blocktrans with stock=lecturenote.stock_CH %}{{ stock }} copies{% endblocktrans %}
             {% else %}
             {% trans 'sold out' %}
             {% endif %}
@@ -22,5 +24,5 @@
     {% endfor %}
 </table>
 {% else %}
-{% blocktrans %}There are currently no lecture notes for {{ subject }} available.{% endblocktrans %}
+{% blocktrans %}There are currently no lecture notes for {{subject}} available.{% endblocktrans %}
 {% endif %}
