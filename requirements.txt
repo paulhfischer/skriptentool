@@ -1,4 +1,4 @@
-django~=4.0.0
+django~=4.2.0
 requests~=2.27.0
 
 --extra-index-url https://git.fs.tum.de/api/v4/groups/django/-/packages/pypi/simple
